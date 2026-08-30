@@ -1,0 +1,9 @@
+.env
+.env.production
+.env.local
+
+
+apm_modules/
+.claude/
+.mcp.json
+apm.lock.yaml

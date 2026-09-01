@@ -1,0 +1,20 @@
+{
+  "sessionStart": [
+    {
+      "type": "command",
+      "bash": "node \".cursor/hooks/ponytail/hooks/ponytail-activate.js\"",
+      "powershell": "node \".cursor/hooks/ponytail/hooks/ponytail-activate.js\"",
+      "timeoutSec": 5,
+      "_apm_source": "dietrichgebert/ponytail"
+    }
+  ],
+  "userPromptSubmitted": [
+    {
+      "type": "command",
+      "bash": "node \".cursor/hooks/ponytail/hooks/ponytail-mode-tracker.js\"",
+      "powershell": "node \".cursor/hooks/ponytail/hooks/ponytail-mode-tracker.js\"",
+      "timeoutSec": 5,
+      "_apm_source": "dietrichgebert/ponytail"
+    }
+  ]
+}

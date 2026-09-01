@@ -7,6 +7,7 @@ author: Chad Lee
 # Accepted values: agent-skills, antigravity, claude, codex, copilot, cursor, gemini, kiro, opencode, windsurf
 targets:
   - claude
+  - cursor
 dependencies:
   apm: []
   mcp: []

@@ -9,10 +9,3 @@ Agent skills are managed with [APM](https://github.com/microsoft/apm):
 ```sh
 apm install
 ```
-
-To run the app locally:
-
-```sh
-npm install
-npm run dev
-```

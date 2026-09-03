@@ -7,7 +7,14 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { SCENES, SCENE_ORDER } from '../data/scenes'
+import {
+  CORE_SCENE_ORDER,
+  HEART_SCENE_ORDER,
+  SCENES,
+  THORACIC_SCENE_ORDER,
+  isHeartScene,
+  isThoracicScene,
+} from '../data/scenes'
 import type { Scene, SceneId } from '../types'
 
 interface SceneContextValue {
@@ -24,6 +31,7 @@ function isSceneId(value: string | null): value is SceneId {
 
 function readSceneParam(): SceneId {
   const param = new URLSearchParams(window.location.search).get('scene')
+  if (param === 'thoracic-scan') return 'thoracic-idle'
   return isSceneId(param) ? param : 'idle'
 }
 
@@ -47,11 +55,18 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       const target = event.target as HTMLElement | null
       if (target && (target.tagName === 'SELECT' || target.tagName === 'INPUT')) return
       const index = Number(event.key) - 1
-      if (index >= 0 && index < SCENE_ORDER.length) {
-        setSceneId(SCENE_ORDER[index])
+      if (index < 0) return
+      if (isThoracicScene(sceneId)) {
+        if (index < THORACIC_SCENE_ORDER.length) setSceneId(THORACIC_SCENE_ORDER[index])
+        return
       }
+      if (isHeartScene(sceneId)) {
+        if (index < HEART_SCENE_ORDER.length) setSceneId(HEART_SCENE_ORDER[index])
+        return
+      }
+      if (index < CORE_SCENE_ORDER.length) setSceneId(CORE_SCENE_ORDER[index])
     },
-    [setSceneId],
+    [sceneId, setSceneId],
   )
 
   useEffect(() => {

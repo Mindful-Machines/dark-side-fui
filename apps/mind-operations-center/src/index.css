@@ -78,6 +78,14 @@ select {
   --status: var(--red);
 }
 
+.app[data-scene^="heart"] {
+  --status: #c47a72;
+}
+
+.app[data-scene^="heart"] .col-left .waveform path {
+  stroke: #c47a72;
+}
+
 .app::before {
   content: "";
   pointer-events: none;
@@ -118,6 +126,7 @@ select {
 .panel-meta,
 .switcher-label,
 .dev-badge,
+.wip-badge,
 .header-meta,
 .app-footer,
 .channel .ch-id,
@@ -193,6 +202,22 @@ select {
   background: var(--green);
   padding: 2px 6px;
   letter-spacing: 0.12em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.wip-badge {
+  color: var(--amber);
+  background: var(--amber-dim);
+  padding: 2px 6px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.footer-wip {
+  color: var(--amber);
+  white-space: nowrap;
 }
 
 .scene-switcher select {
@@ -200,7 +225,7 @@ select {
   background: var(--bg-elevated);
   border: 1px solid var(--border-strong);
   padding: 6px 28px 6px 10px;
-  min-width: 320px;
+  min-width: 360px;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.02em;
@@ -214,6 +239,11 @@ select {
 .scene-switcher select:focus {
   outline: 1px solid var(--green);
   outline-offset: 1px;
+}
+
+.scene-switcher optgroup {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
 }
 
 .app-body {
@@ -270,6 +300,12 @@ select {
 .main-panel .panel-body {
   padding: 16px 18px;
   gap: 16px;
+}
+
+.main-panel.is-cardiac .panel-body {
+  padding: 12px 14px;
+  gap: 10px;
+  overflow: hidden;
 }
 
 .vital-grid {

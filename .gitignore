@@ -8,3 +8,4 @@ apm_modules/
 .agents/
 .cursor/
 .mcp.json
+.DS_Store

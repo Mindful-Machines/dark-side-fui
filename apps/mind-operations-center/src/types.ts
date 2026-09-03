@@ -6,6 +6,17 @@ export type SceneId =
   | 'paused'
   | 'uploading'
   | 'partial'
+  | 'heart-idle'
+  | 'heart-elevated'
+  | 'heart-irregular'
+  | 'heart-intervention'
+  | 'heart-recovered'
+  | 'thoracic-idle'
+  | 'thoracic-elevated'
+  | 'thoracic-irregular'
+  | 'thoracic-intervention'
+  | 'thoracic-recovered'
+  | 'thoracic-scan'
 
 export type Tone = 'nominal' | 'warning' | 'critical'
 

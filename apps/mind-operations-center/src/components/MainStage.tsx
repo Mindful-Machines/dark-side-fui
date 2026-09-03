@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { Panel } from './Panel'
 import { ProgressBar } from './ProgressBar'
 import { Waveform } from './Waveform'
+import { HeartMonitorScene } from './organ-monitor/heart/HeartMonitorScene'
 import { useScene } from '../context/SceneContext'
+import { isHeartScene } from '../data/scenes'
 import type { Scene } from '../types'
 
 function OverviewStage({ scene }: { scene: Scene }) {
@@ -198,8 +200,9 @@ function UploadStage({ scene }: { scene: Scene }) {
 export function MainStage() {
   const { scene } = useScene()
 
-  const title =
-    scene.id === 'idle'
+  const title = isHeartScene(scene.id)
+    ? 'Cardiac monitor'
+    : scene.id === 'idle'
       ? 'System overview'
       : scene.id === 'elevated'
         ? 'Elevated heart rate'
@@ -213,8 +216,9 @@ export function MainStage() {
                 ? 'Uploading new script'
                 : 'Incomplete payload'
 
-  const body =
-    scene.id === 'idle' ? (
+  const body = isHeartScene(scene.id) ? (
+    <HeartMonitorScene />
+  ) : scene.id === 'idle' ? (
       <OverviewStage scene={scene} />
     ) : scene.id === 'elevated' ? (
       <HeartRateStage scene={scene} />
@@ -227,7 +231,12 @@ export function MainStage() {
     )
 
   return (
-    <Panel title={title} meta={scene.shortLabel} className="main-panel" tone={scene.tone === 'nominal' ? undefined : scene.tone}>
+    <Panel
+      title={title}
+      meta={scene.shortLabel}
+      className={`main-panel${isHeartScene(scene.id) ? ' is-cardiac' : ''}`}
+      tone={scene.tone === 'nominal' ? undefined : scene.tone}
+    >
       {body}
     </Panel>
   )

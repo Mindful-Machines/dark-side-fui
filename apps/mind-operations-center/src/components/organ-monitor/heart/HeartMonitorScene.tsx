@@ -12,10 +12,16 @@ import '../organ-monitor.css'
 
 export function HeartMonitorScene() {
   const { scene } = useScene()
-  const thoracic = isThoracicStateId(scene.id)
-  if (!thoracic && !isHeartStateId(scene.id)) return null
-
-  const profile = thoracic ? THORACIC_PROFILES[scene.id] : HEART_PROFILES[scene.id]
+  let thoracic = false
+  let profile
+  if (isThoracicStateId(scene.id)) {
+    thoracic = true
+    profile = THORACIC_PROFILES[scene.id]
+  } else if (isHeartStateId(scene.id)) {
+    profile = HEART_PROFILES[scene.id]
+  } else {
+    return null
+  }
   const beatMs = Math.round(60_000 / Math.max(scene.heartRate, 1))
 
   return (

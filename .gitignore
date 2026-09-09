@@ -2,13 +2,10 @@
 .env.production
 .env.local
 
-.DS_Store
 
 apm_modules/
 .claude/
 .agents/
-.codex/
-.opencode/
 .cursor/
 .mcp.json
-opencode.json
+.DS_Store

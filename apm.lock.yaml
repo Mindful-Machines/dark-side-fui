@@ -1,6 +1,6 @@
 lockfile_version: '1'
-generated_at: '2026-09-01T18:45:43.019017+00:00'
-apm_version: 0.28.0
+generated_at: '2026-09-09T03:10:05.626891+00:00'
+apm_version: 0.29.0
 dependencies:
 - repo_url: chadly/skillz
   name: skillz
@@ -37,327 +37,173 @@ dependencies:
   content_hash: sha256:1b09154812a80b3f87cea3f5678f8ca72921ee5bab84888b22d71a565702c60a
   is_dev: true
   declared_license: MIT
-- repo_url: dietrichgebert/ponytail
-  name: ponytail
+- repo_url: mindful-machines/ai-studio
+  name: ai-studio
   host: github.com
-  resolved_commit: bc9ee949d5f439e8b9f3bb92c6d6d3d1e6ebd324
-  resolved_ref: v4.8.4
-  version: 4.8.4
-  package_type: marketplace_plugin
-  deployed_files:
-  - .agents/skills/ponytail
-  - .agents/skills/ponytail-audit
-  - .agents/skills/ponytail-audit/SKILL.md
-  - .agents/skills/ponytail-debt
-  - .agents/skills/ponytail-debt/SKILL.md
-  - .agents/skills/ponytail-gain
-  - .agents/skills/ponytail-gain/SKILL.md
-  - .agents/skills/ponytail-help
-  - .agents/skills/ponytail-help/SKILL.md
-  - .agents/skills/ponytail-review
-  - .agents/skills/ponytail-review/SKILL.md
-  - .agents/skills/ponytail/SKILL.md
-  - .claude/hooks/ponytail/hooks/package.json
-  - .claude/hooks/ponytail/hooks/ponytail-activate.js
-  - .claude/hooks/ponytail/hooks/ponytail-config.js
-  - .claude/hooks/ponytail/hooks/ponytail-instructions.js
-  - .claude/hooks/ponytail/hooks/ponytail-mode-tracker.js
-  - .claude/hooks/ponytail/hooks/ponytail-runtime.js
-  - .claude/hooks/ponytail/hooks/ponytail-statusline.ps1
-  - .claude/hooks/ponytail/hooks/ponytail-statusline.sh
-  - .claude/hooks/ponytail/hooks/ponytail-subagent.js
-  - .claude/skills/ponytail
-  - .claude/skills/ponytail-audit
-  - .claude/skills/ponytail-audit/SKILL.md
-  - .claude/skills/ponytail-debt
-  - .claude/skills/ponytail-debt/SKILL.md
-  - .claude/skills/ponytail-gain
-  - .claude/skills/ponytail-gain/SKILL.md
-  - .claude/skills/ponytail-help
-  - .claude/skills/ponytail-help/SKILL.md
-  - .claude/skills/ponytail-review
-  - .claude/skills/ponytail-review/SKILL.md
-  - .claude/skills/ponytail/SKILL.md
-  - .cursor/hooks/ponytail/hooks/package.json
-  - .cursor/hooks/ponytail/hooks/ponytail-activate.js
-  - .cursor/hooks/ponytail/hooks/ponytail-config.js
-  - .cursor/hooks/ponytail/hooks/ponytail-instructions.js
-  - .cursor/hooks/ponytail/hooks/ponytail-mode-tracker.js
-  - .cursor/hooks/ponytail/hooks/ponytail-runtime.js
-  - .cursor/hooks/ponytail/hooks/ponytail-statusline.ps1
-  - .cursor/hooks/ponytail/hooks/ponytail-statusline.sh
-  - .cursor/hooks/ponytail/hooks/ponytail-subagent.js
-  deployed_file_hashes:
-    .agents/skills/ponytail-audit/SKILL.md: sha256:5560b8e383dbe2ddfddc873a1e2bf2e586e23e0cd7d995537482b2315331f6d1
-    .agents/skills/ponytail-debt/SKILL.md: sha256:c84fba75f0ca12bfe83f9a78ea02fd125c5dd3f1fbb18124105a489937f284e6
-    .agents/skills/ponytail-gain/SKILL.md: sha256:24e01d1c9715cb136ba1c4f1e52a95940c0193558b876828e537736480d6408b
-    .agents/skills/ponytail-help/SKILL.md: sha256:23ee3856c727129f87ab850985f9e9ed6368f10449816aa7ff043bf2dd45ab4d
-    .agents/skills/ponytail-review/SKILL.md: sha256:40df33b58fc6ef889b93585733feb9566b76e9586efa7f376785c1e995197ac0
-    .agents/skills/ponytail/SKILL.md: sha256:d1ffcddbc486ab787d5797441e8b6e4717da3249c6786b83fc2abd2f12803c29
-    .claude/hooks/ponytail/hooks/package.json: sha256:8005a3491db7d92f36ac66369861589f9c47123d3a7c71e643fc2c06168cd45a
-    .claude/hooks/ponytail/hooks/ponytail-activate.js: sha256:ff7c15a7f7a8c0fdb8c0a12654fb4d5d33ee745e1e8d37afae074eebef93085a
-    .claude/hooks/ponytail/hooks/ponytail-config.js: sha256:35f6632fc086d5d42211f23fcd72de72c7e56048808702c95690bc5f22e0b0d2
-    .claude/hooks/ponytail/hooks/ponytail-instructions.js: sha256:d935b7672409324c7be0be793a3299facb8b229a03de39ac6e861ef1455f6ba2
-    .claude/hooks/ponytail/hooks/ponytail-mode-tracker.js: sha256:97c12a9038636bc1d6e583f673f1e979070b1519bd8db43bfb69f92f37fe8f5b
-    .claude/hooks/ponytail/hooks/ponytail-runtime.js: sha256:20646e38f2923afb5767601a3c7919d5d1d8fae8d6699ab1903383a89dd5cebb
-    .claude/hooks/ponytail/hooks/ponytail-statusline.ps1: sha256:be9335c98dca581f5729886dc53a3d9b2ac3d652902e549b79c24351aa03a7da
-    .claude/hooks/ponytail/hooks/ponytail-statusline.sh: sha256:91b6733884f74d2b0a43d48c4c55fc97a9c768fd172ebb86511a1a3e01dece45
-    .claude/hooks/ponytail/hooks/ponytail-subagent.js: sha256:eb67677ca3c447a34cd01927534ef2c139fd7749264d745f035f43c1787ca8c3
-    .claude/skills/ponytail-audit/SKILL.md: sha256:5560b8e383dbe2ddfddc873a1e2bf2e586e23e0cd7d995537482b2315331f6d1
-    .claude/skills/ponytail-debt/SKILL.md: sha256:c84fba75f0ca12bfe83f9a78ea02fd125c5dd3f1fbb18124105a489937f284e6
-    .claude/skills/ponytail-gain/SKILL.md: sha256:24e01d1c9715cb136ba1c4f1e52a95940c0193558b876828e537736480d6408b
-    .claude/skills/ponytail-help/SKILL.md: sha256:23ee3856c727129f87ab850985f9e9ed6368f10449816aa7ff043bf2dd45ab4d
-    .claude/skills/ponytail-review/SKILL.md: sha256:40df33b58fc6ef889b93585733feb9566b76e9586efa7f376785c1e995197ac0
-    .claude/skills/ponytail/SKILL.md: sha256:d1ffcddbc486ab787d5797441e8b6e4717da3249c6786b83fc2abd2f12803c29
-    .cursor/hooks/ponytail/hooks/package.json: sha256:8005a3491db7d92f36ac66369861589f9c47123d3a7c71e643fc2c06168cd45a
-    .cursor/hooks/ponytail/hooks/ponytail-activate.js: sha256:ff7c15a7f7a8c0fdb8c0a12654fb4d5d33ee745e1e8d37afae074eebef93085a
-    .cursor/hooks/ponytail/hooks/ponytail-config.js: sha256:35f6632fc086d5d42211f23fcd72de72c7e56048808702c95690bc5f22e0b0d2
-    .cursor/hooks/ponytail/hooks/ponytail-instructions.js: sha256:d935b7672409324c7be0be793a3299facb8b229a03de39ac6e861ef1455f6ba2
-    .cursor/hooks/ponytail/hooks/ponytail-mode-tracker.js: sha256:97c12a9038636bc1d6e583f673f1e979070b1519bd8db43bfb69f92f37fe8f5b
-    .cursor/hooks/ponytail/hooks/ponytail-runtime.js: sha256:20646e38f2923afb5767601a3c7919d5d1d8fae8d6699ab1903383a89dd5cebb
-    .cursor/hooks/ponytail/hooks/ponytail-statusline.ps1: sha256:be9335c98dca581f5729886dc53a3d9b2ac3d652902e549b79c24351aa03a7da
-    .cursor/hooks/ponytail/hooks/ponytail-statusline.sh: sha256:91b6733884f74d2b0a43d48c4c55fc97a9c768fd172ebb86511a1a3e01dece45
-    .cursor/hooks/ponytail/hooks/ponytail-subagent.js: sha256:eb67677ca3c447a34cd01927534ef2c139fd7749264d745f035f43c1787ca8c3
-  content_hash: sha256:cfddead8eddb75e915aff01e64eb241dd9f21275be87a4d7c39aff2720828587
-  is_dev: true
-  declared_license: MIT
-- repo_url: microsoft/apm
-  name: apm-guide
-  host: github.com
-  resolved_commit: 64a7fb51cfa2cb405cf4d46f69492c51d210b7c2
-  resolved_ref: v0.26.0
+  resolved_commit: 23a2a214b9ebb4bf8778ed41f146b63b4e016503
+  resolved_ref: v1.0.0
   version: 1.0.0
-  virtual_path: packages/apm-guide
-  is_virtual: true
   package_type: apm_package
   deployed_files:
-  - .agents/skills/apm-usage
-  - .agents/skills/apm-usage/SKILL.md
-  - .agents/skills/apm-usage/authentication.md
-  - .agents/skills/apm-usage/commands.md
-  - .agents/skills/apm-usage/dependencies.md
-  - .agents/skills/apm-usage/governance.md
-  - .agents/skills/apm-usage/installation.md
-  - .agents/skills/apm-usage/package-authoring.md
-  - .agents/skills/apm-usage/troubleshooting.md
-  - .agents/skills/apm-usage/workflow.md
-  - .claude/agents/apm-expert.md
-  - .claude/skills/apm-usage
-  - .claude/skills/apm-usage/SKILL.md
-  - .claude/skills/apm-usage/authentication.md
-  - .claude/skills/apm-usage/commands.md
-  - .claude/skills/apm-usage/dependencies.md
-  - .claude/skills/apm-usage/governance.md
-  - .claude/skills/apm-usage/installation.md
-  - .claude/skills/apm-usage/package-authoring.md
-  - .claude/skills/apm-usage/troubleshooting.md
-  - .claude/skills/apm-usage/workflow.md
-  - .cursor/agents/apm-expert.md
+  - .agents/skills/prompt-nano-banana
+  - .agents/skills/prompt-nano-banana/SKILL.md
+  - .agents/skills/prompt-seedance
+  - .agents/skills/prompt-seedance-animation
+  - .agents/skills/prompt-seedance-animation/SKILL.md
+  - .agents/skills/prompt-seedance-animation/styles/01-old-animation-style.md
+  - .agents/skills/prompt-seedance-animation/styles/02-1980s-anime.md
+  - .agents/skills/prompt-seedance-animation/styles/03-1990s-fantasy-anime.md
+  - .agents/skills/prompt-seedance-animation/styles/04-1980s-sci-fi-anime.md
+  - .agents/skills/prompt-seedance-animation/styles/05-creature-adventure-tv-anime.md
+  - .agents/skills/prompt-seedance-animation/styles/06-ink.md
+  - .agents/skills/prompt-seedance-animation/styles/07-hand-painted-silk.md
+  - .agents/skills/prompt-seedance-animation/styles/08-thick-paint.md
+  - .agents/skills/prompt-seedance-animation/styles/09-oil-painting.md
+  - .agents/skills/prompt-seedance-animation/styles/10-charcoal.md
+  - .agents/skills/prompt-seedance-animation/styles/11-doodle-children-s-marker.md
+  - .agents/skills/prompt-seedance-animation/styles/12-tom-jerry-style.md
+  - .agents/skills/prompt-seedance-animation/styles/13-action-figure.md
+  - .agents/skills/prompt-seedance-animation/styles/14-puppet.md
+  - .agents/skills/prompt-seedance-animation/styles/15-noir-cartoon.md
+  - .agents/skills/prompt-seedance-animation/styles/16-live-action-hybrid.md
+  - .agents/skills/prompt-seedance-animation/styles/17-smear-animation.md
+  - .agents/skills/prompt-seedance-animation/styles/18-cgi.md
+  - .agents/skills/prompt-seedance-animation/styles/19-cgi-live-action-hybrid.md
+  - .agents/skills/prompt-seedance-animation/styles/20-claymation.md
+  - .agents/skills/prompt-seedance-animation/styles/21-wool.md
+  - .agents/skills/prompt-seedance-animation/styles/22-paper-cut-out.md
+  - .agents/skills/prompt-seedance-animation/styles/23-medieval-parchment.md
+  - .agents/skills/prompt-seedance-animation/styles/24-embroidery.md
+  - .agents/skills/prompt-seedance-animation/styles/25-paper-stop-motion.md
+  - .agents/skills/prompt-seedance-animation/styles/26-marbled-paper.md
+  - .agents/skills/prompt-seedance-animation/styles/27-painted-cgi.md
+  - .agents/skills/prompt-seedance-animation/styles/28-vintage-poster.md
+  - .agents/skills/prompt-seedance-animation/styles/29-1970s-tokusatsu.md
+  - .agents/skills/prompt-seedance-animation/styles/30-1930s-animation.md
+  - .agents/skills/prompt-seedance-animation/styles/31-american-sitcom-animation.md
+  - .agents/skills/prompt-seedance-animation/styles/32-stylized-2d-editorial.md
+  - .agents/skills/prompt-seedance-animation/styles/33-rgb-phosphor-crt-arcade.md
+  - .agents/skills/prompt-seedance-vfx
+  - .agents/skills/prompt-seedance-vfx/SKILL.md
+  - .agents/skills/prompt-seedance/SKILL.md
+  - .claude/skills/prompt-nano-banana
+  - .claude/skills/prompt-nano-banana/SKILL.md
+  - .claude/skills/prompt-seedance
+  - .claude/skills/prompt-seedance-animation
+  - .claude/skills/prompt-seedance-animation/SKILL.md
+  - .claude/skills/prompt-seedance-animation/styles/01-old-animation-style.md
+  - .claude/skills/prompt-seedance-animation/styles/02-1980s-anime.md
+  - .claude/skills/prompt-seedance-animation/styles/03-1990s-fantasy-anime.md
+  - .claude/skills/prompt-seedance-animation/styles/04-1980s-sci-fi-anime.md
+  - .claude/skills/prompt-seedance-animation/styles/05-creature-adventure-tv-anime.md
+  - .claude/skills/prompt-seedance-animation/styles/06-ink.md
+  - .claude/skills/prompt-seedance-animation/styles/07-hand-painted-silk.md
+  - .claude/skills/prompt-seedance-animation/styles/08-thick-paint.md
+  - .claude/skills/prompt-seedance-animation/styles/09-oil-painting.md
+  - .claude/skills/prompt-seedance-animation/styles/10-charcoal.md
+  - .claude/skills/prompt-seedance-animation/styles/11-doodle-children-s-marker.md
+  - .claude/skills/prompt-seedance-animation/styles/12-tom-jerry-style.md
+  - .claude/skills/prompt-seedance-animation/styles/13-action-figure.md
+  - .claude/skills/prompt-seedance-animation/styles/14-puppet.md
+  - .claude/skills/prompt-seedance-animation/styles/15-noir-cartoon.md
+  - .claude/skills/prompt-seedance-animation/styles/16-live-action-hybrid.md
+  - .claude/skills/prompt-seedance-animation/styles/17-smear-animation.md
+  - .claude/skills/prompt-seedance-animation/styles/18-cgi.md
+  - .claude/skills/prompt-seedance-animation/styles/19-cgi-live-action-hybrid.md
+  - .claude/skills/prompt-seedance-animation/styles/20-claymation.md
+  - .claude/skills/prompt-seedance-animation/styles/21-wool.md
+  - .claude/skills/prompt-seedance-animation/styles/22-paper-cut-out.md
+  - .claude/skills/prompt-seedance-animation/styles/23-medieval-parchment.md
+  - .claude/skills/prompt-seedance-animation/styles/24-embroidery.md
+  - .claude/skills/prompt-seedance-animation/styles/25-paper-stop-motion.md
+  - .claude/skills/prompt-seedance-animation/styles/26-marbled-paper.md
+  - .claude/skills/prompt-seedance-animation/styles/27-painted-cgi.md
+  - .claude/skills/prompt-seedance-animation/styles/28-vintage-poster.md
+  - .claude/skills/prompt-seedance-animation/styles/29-1970s-tokusatsu.md
+  - .claude/skills/prompt-seedance-animation/styles/30-1930s-animation.md
+  - .claude/skills/prompt-seedance-animation/styles/31-american-sitcom-animation.md
+  - .claude/skills/prompt-seedance-animation/styles/32-stylized-2d-editorial.md
+  - .claude/skills/prompt-seedance-animation/styles/33-rgb-phosphor-crt-arcade.md
+  - .claude/skills/prompt-seedance-vfx
+  - .claude/skills/prompt-seedance-vfx/SKILL.md
+  - .claude/skills/prompt-seedance/SKILL.md
   deployed_file_hashes:
-    .agents/skills/apm-usage/SKILL.md: sha256:e020dd84d578054403884e7d71aaf6b87fdac7835da9661923d9de8853cbf140
-    .agents/skills/apm-usage/authentication.md: sha256:d2f3fff27edfc55d39212a741d1e092fba7cbc293e3e3decc5280464c4405401
-    .agents/skills/apm-usage/commands.md: sha256:c465e3577393fe781d99822c047c40142fecdefc5239a0b0ff4aac4ab1c232c1
-    .agents/skills/apm-usage/dependencies.md: sha256:61313c0743b93a95e49322aa642b09c77bc80358f2d385bdd8ac74b98c83f815
-    .agents/skills/apm-usage/governance.md: sha256:cdf611f2e772ec524b22eb7111e292bdd0c319938b2b721b0030b6e461e2c000
-    .agents/skills/apm-usage/installation.md: sha256:8361fde8ce2deabbfdf02bc966704de52f14e9130f1422e6bf9dc9e8016d9e6e
-    .agents/skills/apm-usage/package-authoring.md: sha256:acf5b500725d91e406a68f1962ea1c8c4a5ce693c0fbd3206d332ac1ca4bf7bf
-    .agents/skills/apm-usage/troubleshooting.md: sha256:9ee88100a64857f25e9cb49d1a56d3921d8e69974158c11b0d9431f4ce68362d
-    .agents/skills/apm-usage/workflow.md: sha256:805207ce68f51ee84d967f95ae9a3c316dfb7da011ebc8f5cc18a1817333a64f
-    .claude/agents/apm-expert.md: sha256:f6cded3e7eef97ad8fff06208bcfd5a0beafb9cfe810f78e10294c90e16fd8ae
-    .claude/skills/apm-usage/SKILL.md: sha256:e020dd84d578054403884e7d71aaf6b87fdac7835da9661923d9de8853cbf140
-    .claude/skills/apm-usage/authentication.md: sha256:d2f3fff27edfc55d39212a741d1e092fba7cbc293e3e3decc5280464c4405401
-    .claude/skills/apm-usage/commands.md: sha256:c465e3577393fe781d99822c047c40142fecdefc5239a0b0ff4aac4ab1c232c1
-    .claude/skills/apm-usage/dependencies.md: sha256:61313c0743b93a95e49322aa642b09c77bc80358f2d385bdd8ac74b98c83f815
-    .claude/skills/apm-usage/governance.md: sha256:cdf611f2e772ec524b22eb7111e292bdd0c319938b2b721b0030b6e461e2c000
-    .claude/skills/apm-usage/installation.md: sha256:8361fde8ce2deabbfdf02bc966704de52f14e9130f1422e6bf9dc9e8016d9e6e
-    .claude/skills/apm-usage/package-authoring.md: sha256:acf5b500725d91e406a68f1962ea1c8c4a5ce693c0fbd3206d332ac1ca4bf7bf
-    .claude/skills/apm-usage/troubleshooting.md: sha256:9ee88100a64857f25e9cb49d1a56d3921d8e69974158c11b0d9431f4ce68362d
-    .claude/skills/apm-usage/workflow.md: sha256:805207ce68f51ee84d967f95ae9a3c316dfb7da011ebc8f5cc18a1817333a64f
-    .cursor/agents/apm-expert.md: sha256:f6cded3e7eef97ad8fff06208bcfd5a0beafb9cfe810f78e10294c90e16fd8ae
-  content_hash: sha256:8d432503f5acd6e0e9e0db6989c583171f8a67d91fbf94560c161c5416506aa6
-  is_dev: true
-  declared_license: MIT
+    .agents/skills/prompt-nano-banana/SKILL.md: sha256:d4256125b3d86630c86ab522c3db95f279d403e25e708f1cf520d965752b2874
+    .agents/skills/prompt-seedance-animation/SKILL.md: sha256:7b9637b47bf3a3dd919bfb2bc6c8b7e900fcd6811fd5958c3a8518a600b26660
+    .agents/skills/prompt-seedance-animation/styles/01-old-animation-style.md: sha256:a6572b6ee2a35ee6589c862a7f900179c7095306b3755cd51b3cfdc385f7af95
+    .agents/skills/prompt-seedance-animation/styles/02-1980s-anime.md: sha256:f36458af8dda3a048532d34440089834bec15f516cd096e9ab2d4f9f02c4b2ae
+    .agents/skills/prompt-seedance-animation/styles/03-1990s-fantasy-anime.md: sha256:b57b851bc5a51bb13b2b814abae64bdeea2df877d174d9b85942f0ab0ce3f9cf
+    .agents/skills/prompt-seedance-animation/styles/04-1980s-sci-fi-anime.md: sha256:79e8d33a9c95a96f822d6525d70c0645da1deda03480b45af1bbf0a87de0d731
+    .agents/skills/prompt-seedance-animation/styles/05-creature-adventure-tv-anime.md: sha256:79f4398b9b1b2766145d3a7586dcdbb0a2f26234116537966f7f434a528d0a19
+    .agents/skills/prompt-seedance-animation/styles/06-ink.md: sha256:8d0f1f68b3f59a7661e3e5784ae0ac3a4a1066960c13d97e78d054d2439123b8
+    .agents/skills/prompt-seedance-animation/styles/07-hand-painted-silk.md: sha256:e155da0c3dd8b10cb1fca9a41b947a66a09f9fc772a4a80e45eddc5d2ac59799
+    .agents/skills/prompt-seedance-animation/styles/08-thick-paint.md: sha256:7891186b3786a700e3cbf99ee707e301d4d34a5b3e58b018ebd8f39abd3496a3
+    .agents/skills/prompt-seedance-animation/styles/09-oil-painting.md: sha256:8230b0723cace987912b8f4e4d79293ae2487e18a8f64cb695ca5e10014b6cda
+    .agents/skills/prompt-seedance-animation/styles/10-charcoal.md: sha256:0aa0d87f8e98ca6407854f100961f5039910d72cc8dca9c1e4f4823d4fba5433
+    .agents/skills/prompt-seedance-animation/styles/11-doodle-children-s-marker.md: sha256:1ca82718a70743e577d44d3249f0c568a1f81f34d24040bbfbe5f20b9f3b6e94
+    .agents/skills/prompt-seedance-animation/styles/12-tom-jerry-style.md: sha256:344b012e3979b3d81e58d5cb62f2e8c76e186bdbe381df94e52d2be02b33d81e
+    .agents/skills/prompt-seedance-animation/styles/13-action-figure.md: sha256:a4afab3a54bece4ada5ff59f3992d36d38c8a6d980d2bc3f90ba8a5bf145c4a2
+    .agents/skills/prompt-seedance-animation/styles/14-puppet.md: sha256:72fb057a3e57e76940baa31d3845381a7f197691f330e9b8e1d06dee89f425f1
+    .agents/skills/prompt-seedance-animation/styles/15-noir-cartoon.md: sha256:4468e48f2caa4ca93b477ddded6d70da6648c328a965367db3649f0ec1d5f87f
+    .agents/skills/prompt-seedance-animation/styles/16-live-action-hybrid.md: sha256:ce203b935d2b243656f6ba42fd399e10dbdd3bb6d7442cf9b8c54be0e2dd13a8
+    .agents/skills/prompt-seedance-animation/styles/17-smear-animation.md: sha256:e4bc6d4bb7d6505f3ebec1b0166a95b084d4862dc14461098ea18f0b022a8976
+    .agents/skills/prompt-seedance-animation/styles/18-cgi.md: sha256:a5068f9db1ee009c619eefed145372db5bff2ffce41877caf576c0cb702467a6
+    .agents/skills/prompt-seedance-animation/styles/19-cgi-live-action-hybrid.md: sha256:2fc8ed48339302a53c4a86274e6cd660dd3206a7ea9015dc9cd2966c2f74f6ff
+    .agents/skills/prompt-seedance-animation/styles/20-claymation.md: sha256:7907928fd9eba23b5986830b6f71994214b06fb5d88218d54baa24beec45fdd0
+    .agents/skills/prompt-seedance-animation/styles/21-wool.md: sha256:4cdac76fb5ff89570cc22e64d6043def9d00ce01475f3006c41315e42c340d53
+    .agents/skills/prompt-seedance-animation/styles/22-paper-cut-out.md: sha256:8d012406ab6c821c36e35d5a5004e7ae19278448ea10c313c6cc5e38c2c1ac7d
+    .agents/skills/prompt-seedance-animation/styles/23-medieval-parchment.md: sha256:9108721d5cd6c48836c4af326176bdd4d2cd4381387e75bc1114f767a797a016
+    .agents/skills/prompt-seedance-animation/styles/24-embroidery.md: sha256:8a7035386c2f9c65f6363f26ceecaa39f1807d51cd6bf6413828e647d2b48c54
+    .agents/skills/prompt-seedance-animation/styles/25-paper-stop-motion.md: sha256:94e6de3b7de932f95b072dc6f0be4309c8e2c93ac762c7f25ff47bcb3ca13f48
+    .agents/skills/prompt-seedance-animation/styles/26-marbled-paper.md: sha256:0791c5cf54313da1c545ecd3d21b98fe1fb1655462ece5404dc634279a530844
+    .agents/skills/prompt-seedance-animation/styles/27-painted-cgi.md: sha256:c0b6df0692ce0ca092228036831be2de3566dce1947dce1de5383eb16a62e381
+    .agents/skills/prompt-seedance-animation/styles/28-vintage-poster.md: sha256:f01befa8a12ff48e0358efaa411878c421b1a5ac3b43ec1954e49a5532eae7ae
+    .agents/skills/prompt-seedance-animation/styles/29-1970s-tokusatsu.md: sha256:1b7b0fc1b8c40033da61e56bbb9eedfe955c533061c01e5052710c616dbdf8ac
+    .agents/skills/prompt-seedance-animation/styles/30-1930s-animation.md: sha256:24b47aa839b6d079d8fe6ba030b264d8540f07cbcd56e1532670d2bf8d9c0b1f
+    .agents/skills/prompt-seedance-animation/styles/31-american-sitcom-animation.md: sha256:48d36d5fec89ee12826687816cb9e0a004fcb82cc1598a0c530923b9565106e9
+    .agents/skills/prompt-seedance-animation/styles/32-stylized-2d-editorial.md: sha256:5a15cb08c0751a4f18d59528be9f30638c6d79d691621a2a61a926d2d7d7cba2
+    .agents/skills/prompt-seedance-animation/styles/33-rgb-phosphor-crt-arcade.md: sha256:be84e9575d3fdbb6c815f791385cc70d3442b53ddb05d67259fd3546ea98bf50
+    .agents/skills/prompt-seedance-vfx/SKILL.md: sha256:f1ab42884c50044bdd55e95901ff7d822d91405ff720630a782221457baaf7f7
+    .agents/skills/prompt-seedance/SKILL.md: sha256:2517d66848a59d0b92527951817cdc9e043b04a7960c4b28f0a69cf1e6f8dc50
+    .claude/skills/prompt-nano-banana/SKILL.md: sha256:d4256125b3d86630c86ab522c3db95f279d403e25e708f1cf520d965752b2874
+    .claude/skills/prompt-seedance-animation/SKILL.md: sha256:7b9637b47bf3a3dd919bfb2bc6c8b7e900fcd6811fd5958c3a8518a600b26660
+    .claude/skills/prompt-seedance-animation/styles/01-old-animation-style.md: sha256:a6572b6ee2a35ee6589c862a7f900179c7095306b3755cd51b3cfdc385f7af95
+    .claude/skills/prompt-seedance-animation/styles/02-1980s-anime.md: sha256:f36458af8dda3a048532d34440089834bec15f516cd096e9ab2d4f9f02c4b2ae
+    .claude/skills/prompt-seedance-animation/styles/03-1990s-fantasy-anime.md: sha256:b57b851bc5a51bb13b2b814abae64bdeea2df877d174d9b85942f0ab0ce3f9cf
+    .claude/skills/prompt-seedance-animation/styles/04-1980s-sci-fi-anime.md: sha256:79e8d33a9c95a96f822d6525d70c0645da1deda03480b45af1bbf0a87de0d731
+    .claude/skills/prompt-seedance-animation/styles/05-creature-adventure-tv-anime.md: sha256:79f4398b9b1b2766145d3a7586dcdbb0a2f26234116537966f7f434a528d0a19
+    .claude/skills/prompt-seedance-animation/styles/06-ink.md: sha256:8d0f1f68b3f59a7661e3e5784ae0ac3a4a1066960c13d97e78d054d2439123b8
+    .claude/skills/prompt-seedance-animation/styles/07-hand-painted-silk.md: sha256:e155da0c3dd8b10cb1fca9a41b947a66a09f9fc772a4a80e45eddc5d2ac59799
+    .claude/skills/prompt-seedance-animation/styles/08-thick-paint.md: sha256:7891186b3786a700e3cbf99ee707e301d4d34a5b3e58b018ebd8f39abd3496a3
+    .claude/skills/prompt-seedance-animation/styles/09-oil-painting.md: sha256:8230b0723cace987912b8f4e4d79293ae2487e18a8f64cb695ca5e10014b6cda
+    .claude/skills/prompt-seedance-animation/styles/10-charcoal.md: sha256:0aa0d87f8e98ca6407854f100961f5039910d72cc8dca9c1e4f4823d4fba5433
+    .claude/skills/prompt-seedance-animation/styles/11-doodle-children-s-marker.md: sha256:1ca82718a70743e577d44d3249f0c568a1f81f34d24040bbfbe5f20b9f3b6e94
+    .claude/skills/prompt-seedance-animation/styles/12-tom-jerry-style.md: sha256:344b012e3979b3d81e58d5cb62f2e8c76e186bdbe381df94e52d2be02b33d81e
+    .claude/skills/prompt-seedance-animation/styles/13-action-figure.md: sha256:a4afab3a54bece4ada5ff59f3992d36d38c8a6d980d2bc3f90ba8a5bf145c4a2
+    .claude/skills/prompt-seedance-animation/styles/14-puppet.md: sha256:72fb057a3e57e76940baa31d3845381a7f197691f330e9b8e1d06dee89f425f1
+    .claude/skills/prompt-seedance-animation/styles/15-noir-cartoon.md: sha256:4468e48f2caa4ca93b477ddded6d70da6648c328a965367db3649f0ec1d5f87f
+    .claude/skills/prompt-seedance-animation/styles/16-live-action-hybrid.md: sha256:ce203b935d2b243656f6ba42fd399e10dbdd3bb6d7442cf9b8c54be0e2dd13a8
+    .claude/skills/prompt-seedance-animation/styles/17-smear-animation.md: sha256:e4bc6d4bb7d6505f3ebec1b0166a95b084d4862dc14461098ea18f0b022a8976
+    .claude/skills/prompt-seedance-animation/styles/18-cgi.md: sha256:a5068f9db1ee009c619eefed145372db5bff2ffce41877caf576c0cb702467a6
+    .claude/skills/prompt-seedance-animation/styles/19-cgi-live-action-hybrid.md: sha256:2fc8ed48339302a53c4a86274e6cd660dd3206a7ea9015dc9cd2966c2f74f6ff
+    .claude/skills/prompt-seedance-animation/styles/20-claymation.md: sha256:7907928fd9eba23b5986830b6f71994214b06fb5d88218d54baa24beec45fdd0
+    .claude/skills/prompt-seedance-animation/styles/21-wool.md: sha256:4cdac76fb5ff89570cc22e64d6043def9d00ce01475f3006c41315e42c340d53
+    .claude/skills/prompt-seedance-animation/styles/22-paper-cut-out.md: sha256:8d012406ab6c821c36e35d5a5004e7ae19278448ea10c313c6cc5e38c2c1ac7d
+    .claude/skills/prompt-seedance-animation/styles/23-medieval-parchment.md: sha256:9108721d5cd6c48836c4af326176bdd4d2cd4381387e75bc1114f767a797a016
+    .claude/skills/prompt-seedance-animation/styles/24-embroidery.md: sha256:8a7035386c2f9c65f6363f26ceecaa39f1807d51cd6bf6413828e647d2b48c54
+    .claude/skills/prompt-seedance-animation/styles/25-paper-stop-motion.md: sha256:94e6de3b7de932f95b072dc6f0be4309c8e2c93ac762c7f25ff47bcb3ca13f48
+    .claude/skills/prompt-seedance-animation/styles/26-marbled-paper.md: sha256:0791c5cf54313da1c545ecd3d21b98fe1fb1655462ece5404dc634279a530844
+    .claude/skills/prompt-seedance-animation/styles/27-painted-cgi.md: sha256:c0b6df0692ce0ca092228036831be2de3566dce1947dce1de5383eb16a62e381
+    .claude/skills/prompt-seedance-animation/styles/28-vintage-poster.md: sha256:f01befa8a12ff48e0358efaa411878c421b1a5ac3b43ec1954e49a5532eae7ae
+    .claude/skills/prompt-seedance-animation/styles/29-1970s-tokusatsu.md: sha256:1b7b0fc1b8c40033da61e56bbb9eedfe955c533061c01e5052710c616dbdf8ac
+    .claude/skills/prompt-seedance-animation/styles/30-1930s-animation.md: sha256:24b47aa839b6d079d8fe6ba030b264d8540f07cbcd56e1532670d2bf8d9c0b1f
+    .claude/skills/prompt-seedance-animation/styles/31-american-sitcom-animation.md: sha256:48d36d5fec89ee12826687816cb9e0a004fcb82cc1598a0c530923b9565106e9
+    .claude/skills/prompt-seedance-animation/styles/32-stylized-2d-editorial.md: sha256:5a15cb08c0751a4f18d59528be9f30638c6d79d691621a2a61a926d2d7d7cba2
+    .claude/skills/prompt-seedance-animation/styles/33-rgb-phosphor-crt-arcade.md: sha256:be84e9575d3fdbb6c815f791385cc70d3442b53ddb05d67259fd3546ea98bf50
+    .claude/skills/prompt-seedance-vfx/SKILL.md: sha256:f1ab42884c50044bdd55e95901ff7d822d91405ff720630a782221457baaf7f7
+    .claude/skills/prompt-seedance/SKILL.md: sha256:2517d66848a59d0b92527951817cdc9e043b04a7960c4b28f0a69cf1e6f8dc50
+  content_hash: sha256:f7917304017bd1c333a55667c81b3ab3b3572ab7ed707f37f161d90b80347596
 deployments:
-- kind: project-relative
-  target: claude
-  value: .claude/agents/apm-expert.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:f6cded3e7eef97ad8fff06208bcfd5a0beafb9cfe810f78e10294c90e16fd8ae
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/ponytail/hooks/package.json
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:8005a3491db7d92f36ac66369861589f9c47123d3a7c71e643fc2c06168cd45a
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/ponytail/hooks/ponytail-activate.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:ff7c15a7f7a8c0fdb8c0a12654fb4d5d33ee745e1e8d37afae074eebef93085a
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/ponytail/hooks/ponytail-config.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:35f6632fc086d5d42211f23fcd72de72c7e56048808702c95690bc5f22e0b0d2
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/ponytail/hooks/ponytail-instructions.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:d935b7672409324c7be0be793a3299facb8b229a03de39ac6e861ef1455f6ba2
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/ponytail/hooks/ponytail-mode-tracker.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:97c12a9038636bc1d6e583f673f1e979070b1519bd8db43bfb69f92f37fe8f5b
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/ponytail/hooks/ponytail-runtime.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:20646e38f2923afb5767601a3c7919d5d1d8fae8d6699ab1903383a89dd5cebb
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/ponytail/hooks/ponytail-statusline.ps1
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:be9335c98dca581f5729886dc53a3d9b2ac3d652902e549b79c24351aa03a7da
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/ponytail/hooks/ponytail-statusline.sh
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:91b6733884f74d2b0a43d48c4c55fc97a9c768fd172ebb86511a1a3e01dece45
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/ponytail/hooks/ponytail-subagent.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:eb67677ca3c447a34cd01927534ef2c139fd7749264d745f035f43c1787ca8c3
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:e020dd84d578054403884e7d71aaf6b87fdac7835da9661923d9de8853cbf140
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage/authentication.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:d2f3fff27edfc55d39212a741d1e092fba7cbc293e3e3decc5280464c4405401
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage/commands.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:c465e3577393fe781d99822c047c40142fecdefc5239a0b0ff4aac4ab1c232c1
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage/dependencies.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:61313c0743b93a95e49322aa642b09c77bc80358f2d385bdd8ac74b98c83f815
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage/governance.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:cdf611f2e772ec524b22eb7111e292bdd0c319938b2b721b0030b6e461e2c000
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage/installation.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:8361fde8ce2deabbfdf02bc966704de52f14e9130f1422e6bf9dc9e8016d9e6e
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage/package-authoring.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:acf5b500725d91e406a68f1962ea1c8c4a5ce693c0fbd3206d332ac1ca4bf7bf
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage/troubleshooting.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:9ee88100a64857f25e9cb49d1a56d3921d8e69974158c11b0d9431f4ce68362d
-- kind: project-relative
-  target: claude
-  value: .claude/skills/apm-usage/workflow.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:805207ce68f51ee84d967f95ae9a3c316dfb7da011ebc8f5cc18a1817333a64f
 - kind: project-relative
   target: claude
   value: .claude/skills/database
@@ -432,112 +278,373 @@ deployments:
   content_hash: sha256:31bc8a2d645cca585eda272f3311cf42e182f64b2e0a593b904725d00ecd65ae
 - kind: project-relative
   target: claude
-  value: .claude/skills/ponytail
+  value: .claude/skills/prompt-nano-banana
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
   content_hash: null
 - kind: project-relative
   target: claude
-  value: .claude/skills/ponytail-audit
+  value: .claude/skills/prompt-nano-banana/SKILL.md
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:d4256125b3d86630c86ab522c3db95f279d403e25e708f1cf520d965752b2874
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
   content_hash: null
 - kind: project-relative
   target: claude
-  value: .claude/skills/ponytail-audit/SKILL.md
+  value: .claude/skills/prompt-seedance-animation
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:5560b8e383dbe2ddfddc873a1e2bf2e586e23e0cd7d995537482b2315331f6d1
-- kind: project-relative
-  target: claude
-  value: .claude/skills/ponytail-debt
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
   content_hash: null
 - kind: project-relative
   target: claude
-  value: .claude/skills/ponytail-debt/SKILL.md
+  value: .claude/skills/prompt-seedance-animation/SKILL.md
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:c84fba75f0ca12bfe83f9a78ea02fd125c5dd3f1fbb18124105a489937f284e6
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:7b9637b47bf3a3dd919bfb2bc6c8b7e900fcd6811fd5958c3a8518a600b26660
 - kind: project-relative
   target: claude
-  value: .claude/skills/ponytail-gain
+  value: .claude/skills/prompt-seedance-animation/styles/01-old-animation-style.md
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:a6572b6ee2a35ee6589c862a7f900179c7095306b3755cd51b3cfdc385f7af95
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/02-1980s-anime.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:f36458af8dda3a048532d34440089834bec15f516cd096e9ab2d4f9f02c4b2ae
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/03-1990s-fantasy-anime.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:b57b851bc5a51bb13b2b814abae64bdeea2df877d174d9b85942f0ab0ce3f9cf
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/04-1980s-sci-fi-anime.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:79e8d33a9c95a96f822d6525d70c0645da1deda03480b45af1bbf0a87de0d731
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/05-creature-adventure-tv-anime.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:79f4398b9b1b2766145d3a7586dcdbb0a2f26234116537966f7f434a528d0a19
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/06-ink.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:8d0f1f68b3f59a7661e3e5784ae0ac3a4a1066960c13d97e78d054d2439123b8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/07-hand-painted-silk.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:e155da0c3dd8b10cb1fca9a41b947a66a09f9fc772a4a80e45eddc5d2ac59799
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/08-thick-paint.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:7891186b3786a700e3cbf99ee707e301d4d34a5b3e58b018ebd8f39abd3496a3
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/09-oil-painting.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:8230b0723cace987912b8f4e4d79293ae2487e18a8f64cb695ca5e10014b6cda
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/10-charcoal.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:0aa0d87f8e98ca6407854f100961f5039910d72cc8dca9c1e4f4823d4fba5433
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/11-doodle-children-s-marker.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:1ca82718a70743e577d44d3249f0c568a1f81f34d24040bbfbe5f20b9f3b6e94
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/12-tom-jerry-style.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:344b012e3979b3d81e58d5cb62f2e8c76e186bdbe381df94e52d2be02b33d81e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/13-action-figure.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:a4afab3a54bece4ada5ff59f3992d36d38c8a6d980d2bc3f90ba8a5bf145c4a2
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/14-puppet.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:72fb057a3e57e76940baa31d3845381a7f197691f330e9b8e1d06dee89f425f1
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/15-noir-cartoon.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:4468e48f2caa4ca93b477ddded6d70da6648c328a965367db3649f0ec1d5f87f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/16-live-action-hybrid.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:ce203b935d2b243656f6ba42fd399e10dbdd3bb6d7442cf9b8c54be0e2dd13a8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/17-smear-animation.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:e4bc6d4bb7d6505f3ebec1b0166a95b084d4862dc14461098ea18f0b022a8976
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/18-cgi.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:a5068f9db1ee009c619eefed145372db5bff2ffce41877caf576c0cb702467a6
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/19-cgi-live-action-hybrid.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:2fc8ed48339302a53c4a86274e6cd660dd3206a7ea9015dc9cd2966c2f74f6ff
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/20-claymation.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:7907928fd9eba23b5986830b6f71994214b06fb5d88218d54baa24beec45fdd0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/21-wool.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:4cdac76fb5ff89570cc22e64d6043def9d00ce01475f3006c41315e42c340d53
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/22-paper-cut-out.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:8d012406ab6c821c36e35d5a5004e7ae19278448ea10c313c6cc5e38c2c1ac7d
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/23-medieval-parchment.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:9108721d5cd6c48836c4af326176bdd4d2cd4381387e75bc1114f767a797a016
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/24-embroidery.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:8a7035386c2f9c65f6363f26ceecaa39f1807d51cd6bf6413828e647d2b48c54
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/25-paper-stop-motion.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:94e6de3b7de932f95b072dc6f0be4309c8e2c93ac762c7f25ff47bcb3ca13f48
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/26-marbled-paper.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:0791c5cf54313da1c545ecd3d21b98fe1fb1655462ece5404dc634279a530844
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/27-painted-cgi.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:c0b6df0692ce0ca092228036831be2de3566dce1947dce1de5383eb16a62e381
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/28-vintage-poster.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:f01befa8a12ff48e0358efaa411878c421b1a5ac3b43ec1954e49a5532eae7ae
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/29-1970s-tokusatsu.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:1b7b0fc1b8c40033da61e56bbb9eedfe955c533061c01e5052710c616dbdf8ac
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/30-1930s-animation.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:24b47aa839b6d079d8fe6ba030b264d8540f07cbcd56e1532670d2bf8d9c0b1f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/31-american-sitcom-animation.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:48d36d5fec89ee12826687816cb9e0a004fcb82cc1598a0c530923b9565106e9
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/32-stylized-2d-editorial.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:5a15cb08c0751a4f18d59528be9f30638c6d79d691621a2a61a926d2d7d7cba2
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-animation/styles/33-rgb-phosphor-crt-arcade.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:be84e9575d3fdbb6c815f791385cc70d3442b53ddb05d67259fd3546ea98bf50
+- kind: project-relative
+  target: claude
+  value: .claude/skills/prompt-seedance-vfx
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
   content_hash: null
 - kind: project-relative
   target: claude
-  value: .claude/skills/ponytail-gain/SKILL.md
+  value: .claude/skills/prompt-seedance-vfx/SKILL.md
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:24e01d1c9715cb136ba1c4f1e52a95940c0193558b876828e537736480d6408b
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:f1ab42884c50044bdd55e95901ff7d822d91405ff720630a782221457baaf7f7
 - kind: project-relative
   target: claude
-  value: .claude/skills/ponytail-help
+  value: .claude/skills/prompt-seedance/SKILL.md
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/ponytail-help/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:23ee3856c727129f87ab850985f9e9ed6368f10449816aa7ff043bf2dd45ab4d
-- kind: project-relative
-  target: claude
-  value: .claude/skills/ponytail-review
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/ponytail-review/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:40df33b58fc6ef889b93585733feb9566b76e9586efa7f376785c1e995197ac0
-- kind: project-relative
-  target: claude
-  value: .claude/skills/ponytail/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:d1ffcddbc486ab787d5797441e8b6e4717da3249c6786b83fc2abd2f12803c29
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:2517d66848a59d0b92527951817cdc9e043b04a7960c4b28f0a69cf1e6f8dc50
 - kind: project-relative
   target: claude
   value: .claude/skills/screenshots
@@ -594,289 +701,454 @@ deployments:
   content_hash: sha256:ff9e945793f04676019d8915bcaeb7908e3e132bbe213ac0cd198369ef011d1a
 - kind: project-relative
   target: cursor
-  value: .agents/skills/apm-usage
+  value: .agents/skills/prompt-nano-banana
   runtime: null
   scope: project
   owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
   content_hash: null
 - kind: project-relative
   target: cursor
-  value: .agents/skills/apm-usage/SKILL.md
+  value: .agents/skills/prompt-nano-banana/SKILL.md
   runtime: null
   scope: project
   owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:e020dd84d578054403884e7d71aaf6b87fdac7835da9661923d9de8853cbf140
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:d4256125b3d86630c86ab522c3db95f279d403e25e708f1cf520d965752b2874
 - kind: project-relative
   target: cursor
-  value: .agents/skills/apm-usage/authentication.md
+  value: .agents/skills/prompt-seedance
   runtime: null
   scope: project
   owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:d2f3fff27edfc55d39212a741d1e092fba7cbc293e3e3decc5280464c4405401
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/apm-usage/commands.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:c465e3577393fe781d99822c047c40142fecdefc5239a0b0ff4aac4ab1c232c1
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/apm-usage/dependencies.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:61313c0743b93a95e49322aa642b09c77bc80358f2d385bdd8ac74b98c83f815
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/apm-usage/governance.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:cdf611f2e772ec524b22eb7111e292bdd0c319938b2b721b0030b6e461e2c000
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/apm-usage/installation.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:8361fde8ce2deabbfdf02bc966704de52f14e9130f1422e6bf9dc9e8016d9e6e
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/apm-usage/package-authoring.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:acf5b500725d91e406a68f1962ea1c8c4a5ce693c0fbd3206d332ac1ca4bf7bf
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/apm-usage/troubleshooting.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:9ee88100a64857f25e9cb49d1a56d3921d8e69974158c11b0d9431f4ce68362d
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/apm-usage/workflow.md
-  runtime: null
-  scope: project
-  owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:805207ce68f51ee84d967f95ae9a3c316dfb7da011ebc8f5cc18a1817333a64f
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/ponytail
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
   content_hash: null
 - kind: project-relative
   target: cursor
-  value: .agents/skills/ponytail-audit
+  value: .agents/skills/prompt-seedance-animation
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
   content_hash: null
 - kind: project-relative
   target: cursor
-  value: .agents/skills/ponytail-audit/SKILL.md
+  value: .agents/skills/prompt-seedance-animation/SKILL.md
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:5560b8e383dbe2ddfddc873a1e2bf2e586e23e0cd7d995537482b2315331f6d1
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:7b9637b47bf3a3dd919bfb2bc6c8b7e900fcd6811fd5958c3a8518a600b26660
 - kind: project-relative
   target: cursor
-  value: .agents/skills/ponytail-debt
+  value: .agents/skills/prompt-seedance-animation/styles/01-old-animation-style.md
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:a6572b6ee2a35ee6589c862a7f900179c7095306b3755cd51b3cfdc385f7af95
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/02-1980s-anime.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:f36458af8dda3a048532d34440089834bec15f516cd096e9ab2d4f9f02c4b2ae
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/03-1990s-fantasy-anime.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:b57b851bc5a51bb13b2b814abae64bdeea2df877d174d9b85942f0ab0ce3f9cf
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/04-1980s-sci-fi-anime.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:79e8d33a9c95a96f822d6525d70c0645da1deda03480b45af1bbf0a87de0d731
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/05-creature-adventure-tv-anime.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:79f4398b9b1b2766145d3a7586dcdbb0a2f26234116537966f7f434a528d0a19
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/06-ink.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:8d0f1f68b3f59a7661e3e5784ae0ac3a4a1066960c13d97e78d054d2439123b8
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/07-hand-painted-silk.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:e155da0c3dd8b10cb1fca9a41b947a66a09f9fc772a4a80e45eddc5d2ac59799
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/08-thick-paint.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:7891186b3786a700e3cbf99ee707e301d4d34a5b3e58b018ebd8f39abd3496a3
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/09-oil-painting.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:8230b0723cace987912b8f4e4d79293ae2487e18a8f64cb695ca5e10014b6cda
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/10-charcoal.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:0aa0d87f8e98ca6407854f100961f5039910d72cc8dca9c1e4f4823d4fba5433
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/11-doodle-children-s-marker.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:1ca82718a70743e577d44d3249f0c568a1f81f34d24040bbfbe5f20b9f3b6e94
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/12-tom-jerry-style.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:344b012e3979b3d81e58d5cb62f2e8c76e186bdbe381df94e52d2be02b33d81e
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/13-action-figure.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:a4afab3a54bece4ada5ff59f3992d36d38c8a6d980d2bc3f90ba8a5bf145c4a2
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/14-puppet.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:72fb057a3e57e76940baa31d3845381a7f197691f330e9b8e1d06dee89f425f1
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/15-noir-cartoon.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:4468e48f2caa4ca93b477ddded6d70da6648c328a965367db3649f0ec1d5f87f
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/16-live-action-hybrid.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:ce203b935d2b243656f6ba42fd399e10dbdd3bb6d7442cf9b8c54be0e2dd13a8
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/17-smear-animation.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:e4bc6d4bb7d6505f3ebec1b0166a95b084d4862dc14461098ea18f0b022a8976
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/18-cgi.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:a5068f9db1ee009c619eefed145372db5bff2ffce41877caf576c0cb702467a6
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/19-cgi-live-action-hybrid.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:2fc8ed48339302a53c4a86274e6cd660dd3206a7ea9015dc9cd2966c2f74f6ff
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/20-claymation.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:7907928fd9eba23b5986830b6f71994214b06fb5d88218d54baa24beec45fdd0
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/21-wool.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:4cdac76fb5ff89570cc22e64d6043def9d00ce01475f3006c41315e42c340d53
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/22-paper-cut-out.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:8d012406ab6c821c36e35d5a5004e7ae19278448ea10c313c6cc5e38c2c1ac7d
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/23-medieval-parchment.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:9108721d5cd6c48836c4af326176bdd4d2cd4381387e75bc1114f767a797a016
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/24-embroidery.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:8a7035386c2f9c65f6363f26ceecaa39f1807d51cd6bf6413828e647d2b48c54
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/25-paper-stop-motion.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:94e6de3b7de932f95b072dc6f0be4309c8e2c93ac762c7f25ff47bcb3ca13f48
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/26-marbled-paper.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:0791c5cf54313da1c545ecd3d21b98fe1fb1655462ece5404dc634279a530844
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/27-painted-cgi.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:c0b6df0692ce0ca092228036831be2de3566dce1947dce1de5383eb16a62e381
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/28-vintage-poster.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:f01befa8a12ff48e0358efaa411878c421b1a5ac3b43ec1954e49a5532eae7ae
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/29-1970s-tokusatsu.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:1b7b0fc1b8c40033da61e56bbb9eedfe955c533061c01e5052710c616dbdf8ac
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/30-1930s-animation.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:24b47aa839b6d079d8fe6ba030b264d8540f07cbcd56e1532670d2bf8d9c0b1f
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/31-american-sitcom-animation.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:48d36d5fec89ee12826687816cb9e0a004fcb82cc1598a0c530923b9565106e9
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/32-stylized-2d-editorial.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:5a15cb08c0751a4f18d59528be9f30638c6d79d691621a2a61a926d2d7d7cba2
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-animation/styles/33-rgb-phosphor-crt-arcade.md
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:be84e9575d3fdbb6c815f791385cc70d3442b53ddb05d67259fd3546ea98bf50
+- kind: project-relative
+  target: cursor
+  value: .agents/skills/prompt-seedance-vfx
+  runtime: null
+  scope: project
+  owners:
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
   content_hash: null
 - kind: project-relative
   target: cursor
-  value: .agents/skills/ponytail-debt/SKILL.md
+  value: .agents/skills/prompt-seedance-vfx/SKILL.md
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:c84fba75f0ca12bfe83f9a78ea02fd125c5dd3f1fbb18124105a489937f284e6
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:f1ab42884c50044bdd55e95901ff7d822d91405ff720630a782221457baaf7f7
 - kind: project-relative
   target: cursor
-  value: .agents/skills/ponytail-gain
+  value: .agents/skills/prompt-seedance/SKILL.md
   runtime: null
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - mindful-machines/ai-studio
+  active_owner: mindful-machines/ai-studio
+  content_hash: sha256:2517d66848a59d0b92527951817cdc9e043b04a7960c4b28f0a69cf1e6f8dc50
+- kind: uri
+  target: mcp
+  value: blender
+  runtime: claude
+  scope: project
+  owners:
+  - .
+  active_owner: .
   content_hash: null
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/ponytail-gain/SKILL.md
-  runtime: null
+- kind: uri
+  target: mcp
+  value: resolve
+  runtime: claude
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:24e01d1c9715cb136ba1c4f1e52a95940c0193558b876828e537736480d6408b
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/ponytail-help
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - .
+  active_owner: .
   content_hash: null
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/ponytail-help/SKILL.md
-  runtime: null
+- kind: uri
+  target: mcp
+  value: blender
+  runtime: cursor
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:23ee3856c727129f87ab850985f9e9ed6368f10449816aa7ff043bf2dd45ab4d
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/ponytail-review
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
+  - .
+  active_owner: .
   content_hash: null
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/ponytail-review/SKILL.md
-  runtime: null
+- kind: uri
+  target: mcp
+  value: resolve
+  runtime: cursor
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:40df33b58fc6ef889b93585733feb9566b76e9586efa7f376785c1e995197ac0
-- kind: project-relative
-  target: cursor
-  value: .agents/skills/ponytail/SKILL.md
-  runtime: null
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: blender
+  runtime: opencode
   scope: project
   owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:d1ffcddbc486ab787d5797441e8b6e4717da3249c6786b83fc2abd2f12803c29
-- kind: project-relative
-  target: cursor
-  value: .cursor/agents/apm-expert.md
-  runtime: null
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: resolve
+  runtime: opencode
   scope: project
   owners:
-  - microsoft/apm/packages/apm-guide
-  active_owner: microsoft/apm/packages/apm-guide
-  content_hash: sha256:f6cded3e7eef97ad8fff06208bcfd5a0beafb9cfe810f78e10294c90e16fd8ae
-- kind: project-relative
-  target: cursor
-  value: .cursor/hooks/ponytail/hooks/package.json
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:8005a3491db7d92f36ac66369861589f9c47123d3a7c71e643fc2c06168cd45a
-- kind: project-relative
-  target: cursor
-  value: .cursor/hooks/ponytail/hooks/ponytail-activate.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:ff7c15a7f7a8c0fdb8c0a12654fb4d5d33ee745e1e8d37afae074eebef93085a
-- kind: project-relative
-  target: cursor
-  value: .cursor/hooks/ponytail/hooks/ponytail-config.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:35f6632fc086d5d42211f23fcd72de72c7e56048808702c95690bc5f22e0b0d2
-- kind: project-relative
-  target: cursor
-  value: .cursor/hooks/ponytail/hooks/ponytail-instructions.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:d935b7672409324c7be0be793a3299facb8b229a03de39ac6e861ef1455f6ba2
-- kind: project-relative
-  target: cursor
-  value: .cursor/hooks/ponytail/hooks/ponytail-mode-tracker.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:97c12a9038636bc1d6e583f673f1e979070b1519bd8db43bfb69f92f37fe8f5b
-- kind: project-relative
-  target: cursor
-  value: .cursor/hooks/ponytail/hooks/ponytail-runtime.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:20646e38f2923afb5767601a3c7919d5d1d8fae8d6699ab1903383a89dd5cebb
-- kind: project-relative
-  target: cursor
-  value: .cursor/hooks/ponytail/hooks/ponytail-statusline.ps1
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:be9335c98dca581f5729886dc53a3d9b2ac3d652902e549b79c24351aa03a7da
-- kind: project-relative
-  target: cursor
-  value: .cursor/hooks/ponytail/hooks/ponytail-statusline.sh
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:91b6733884f74d2b0a43d48c4c55fc97a9c768fd172ebb86511a1a3e01dece45
-- kind: project-relative
-  target: cursor
-  value: .cursor/hooks/ponytail/hooks/ponytail-subagent.js
-  runtime: null
-  scope: project
-  owners:
-  - dietrichgebert/ponytail
-  active_owner: dietrichgebert/ponytail
-  content_hash: sha256:eb67677ca3c447a34cd01927534ef2c139fd7749264d745f035f43c1787ca8c3
+  - .
+  active_owner: .
+  content_hash: null
+mcp_servers:
+- blender
+- resolve
+mcp_configs:
+  blender:
+    name: blender
+    transport: stdio
+    args:
+    - blender-mcp
+    registry: false
+    command: uvx
+  resolve:
+    name: resolve
+    transport: stdio
+    args: []
+    registry: false
+    command: /mnt/c/Program Files/Blackmagic Design/DaVinci Resolve/ResolveMCP.exe
+mcp_target_servers:
+  claude:
+  - blender
+  - resolve
+  cursor:
+  - blender
+  - resolve
+  opencode:
+  - blender
+  - resolve
+mcp_config_provenance:
+  blender: ai-studio
+  resolve: ai-studio

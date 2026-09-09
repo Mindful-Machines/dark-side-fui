@@ -7,14 +7,14 @@ author: Chad Lee
 # Accepted values: agent-skills, antigravity, claude, codex, copilot, cursor, gemini, kiro, opencode, windsurf
 targets:
   - claude
+  - opencode
   - cursor
 dependencies:
-  apm: []
+  apm:
+    - mindful-machines/ai-studio#v1.0.0
   mcp: []
 includes: auto
 scripts: {}
 devDependencies:
   apm:
-    - microsoft/apm/packages/apm-guide#v0.26.0
     - chadly/skillz#v1.0.0
-    - dietrichgebert/ponytail#v4.8.4

@@ -2,12 +2,13 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
-// VITE_BASE overrides the production base. Use VITE_BASE=/ for local/tunnel previews.
-// Default build base remains /dark-side/ for GitHub Pages.
+// VITE_BASE / --base overrides the production base.
+// - `npm run build` → /dark-side/ for GitHub Pages
+// - `npm run on-set` → / for LAN filming (see package.json)
 export default defineConfig(({ command }) => ({
   plugins: [react()],
   base: process.env.VITE_BASE ?? (command === 'build' ? '/dark-side/' : '/'),
-  // Required so temporary Cloudflare Quick Tunnels can reach vite preview.
+  // IP hosts are allowed by default; Cloudflare hosts kept for optional tunnels.
   preview: {
     allowedHosts: ['.trycloudflare.com'],
   },

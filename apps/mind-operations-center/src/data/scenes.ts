@@ -37,6 +37,8 @@ export const CORE_SCENE_ORDER: SceneId[] = [
   'paused',
   'uploading',
   'partial',
+  'script-cogito',
+  'script-tower-cranes',
 ]
 
 export const HEART_SCENE_ORDER: SceneId[] = [
@@ -55,7 +57,21 @@ export const THORACIC_SCENE_ORDER: SceneId[] = [
   'thoracic-recovered',
 ]
 
-export const SCENE_ORDER: SceneId[] = [...CORE_SCENE_ORDER, ...HEART_SCENE_ORDER, ...THORACIC_SCENE_ORDER]
+export const RESEARCH_SCENE_ORDER: SceneId[] = ['research-pending', 'research-approved']
+
+export const OPERATOR_SCENE_ORDER: SceneId[] = ['operator-console']
+
+export const PHONE_SCENE_ORDER: SceneId[] = ['phone-story-status', 'phone-map']
+
+export const SCENE_ORDER: SceneId[] = [
+  'directory',
+  ...CORE_SCENE_ORDER,
+  ...HEART_SCENE_ORDER,
+  ...THORACIC_SCENE_ORDER,
+  ...RESEARCH_SCENE_ORDER,
+  ...OPERATOR_SCENE_ORDER,
+  ...PHONE_SCENE_ORDER,
+]
 
 export function isThoracicScene(id: SceneId): boolean {
   return THORACIC_SCENE_ORDER.includes(id) || id === 'thoracic-scan'
@@ -65,7 +81,51 @@ export function isHeartScene(id: SceneId): boolean {
   return HEART_SCENE_ORDER.includes(id) || isThoracicScene(id)
 }
 
+export function isOperatorScene(id: SceneId): boolean {
+  return id === 'operator-console'
+}
+
+export function isResearchScene(id: SceneId): boolean {
+  return id === 'research-pending' || id === 'research-approved'
+}
+
+export function isPhoneScene(id: SceneId): boolean {
+  return id === 'phone-story-status' || id === 'phone-map'
+}
+
 export const SCENES: Record<SceneId, Scene> = {
+  directory: {
+    id: 'directory',
+    label: '00 / Scene Directory',
+    shortLabel: 'Directory',
+    status: 'INDEX',
+    tone: 'nominal',
+    heartRate: 62,
+    neuralLoad: 0.12,
+    coherence: 0.99,
+    latencyMs: 28,
+    uplink: 'STABLE',
+    scriptName: '—',
+    scriptStatus: 'STANDBY',
+    scriptHash: '—',
+    uploadProgress: null,
+    executingLine: null,
+    contaminationLine: null,
+    waveformNoise: 0.02,
+    waveformPaused: false,
+    thoughts: [],
+    scriptLines: script(Array(8).fill('ok')),
+    channels: CHANNELS_IDLE,
+    metrics: [
+      { label: 'Views', value: 'READY', hint: 'directory live' },
+      { label: 'Mode', value: 'REVIEW', hint: 'operator index' },
+      { label: 'Uplink', value: 'STABLE', hint: 'local' },
+      { label: 'Capture', value: 'ARMED', hint: 'display mode' },
+    ],
+    initialLog: ['INDEX  scene directory open', 'CORE   awaiting selection'],
+    logPool: ['INDEX  idle', 'CORE   hold', 'UPLINK rtt 28ms'],
+  },
+
   idle: {
     id: 'idle',
     label: 'Idle / system overview',
@@ -429,6 +489,182 @@ export const SCENES: Record<SceneId, Scene> = {
       'CORE   execute inhibit',
       'SIGN   partial only',
     ],
+  },
+
+  'script-cogito': {
+    id: 'script-cogito',
+    label: 'I think, therefore I am.',
+    shortLabel: 'Cogito',
+    status: 'EXECUTING',
+    tone: 'nominal',
+    heartRate: 71,
+    neuralLoad: 0.48,
+    coherence: 0.93,
+    latencyMs: 42,
+    uplink: 'STABLE',
+    scriptName: 'AURORA-7',
+    scriptStatus: 'RUNNING',
+    scriptHash: 'a7f3.c19e.04',
+    uploadProgress: null,
+    executingLine: 5,
+    contaminationLine: null,
+    waveformNoise: 0.05,
+    waveformPaused: false,
+    thoughts: ['the line is speaking'],
+    scriptLines: [
+      { n: 1, code: 'SESSION.HOLD           subject=04', state: 'ok' },
+      { n: 2, code: 'ATTN.LOCK              window=live', state: 'ok' },
+      { n: 3, code: 'SPEECH.ROUTE           channel=CH-8', state: 'ok' },
+      { n: 4, code: 'INTENT.ALIGN           coeff=0.91', state: 'ok' },
+      { n: 5, code: 'I think, therefore I am.', state: 'current' },
+      { n: 6, code: 'MOTOR.HOLD             path=standby', state: 'ok' },
+      { n: 7, code: 'RECALL.MARK            tag=spoken', state: 'ok' },
+      { n: 8, code: 'SESSION.CONTINUE       checksum=ok', state: 'ok' },
+    ],
+    channels: CHANNELS_IDLE.map((ch) =>
+      ch.id === 'CH-8' || ch.id === 'CH-4'
+        ? { ...ch, state: 'active' as const }
+        : { ...ch, state: 'ok' as const },
+    ),
+    metrics: [
+      { label: 'Line', value: '05', hint: 'active' },
+      { label: 'Speech', value: 'LIVE', hint: 'CH-8' },
+      { label: 'Clock', value: '00:04.2', hint: 'line hold' },
+      { label: 'Seal', value: 'OPEN', hint: 'continue' },
+    ],
+    initialLog: [
+      'SCRIPT AURORA-7 line 05',
+      'SPEECH route open',
+      'CORE   execution hold',
+      'CH-8   active',
+    ],
+    logPool: [
+      'SCRIPT line 05 hold',
+      'SPEECH sync ok',
+      'CORE   executing',
+      'CH-8   live',
+      'UPLINK rtt 42ms',
+      'BUF    AURORA-7',
+    ],
+  },
+
+  'script-tower-cranes': {
+    id: 'script-tower-cranes',
+    label: 'Script edit / tower cranes',
+    shortLabel: 'Edit',
+    status: 'REVISING',
+    tone: 'warning',
+    heartRate: 69,
+    neuralLoad: 0.4,
+    coherence: 0.9,
+    latencyMs: 48,
+    uplink: 'STABLE',
+    scriptName: 'AURORA-7',
+    scriptStatus: 'EDIT',
+    scriptHash: 'rev.39.a7',
+    uploadProgress: null,
+    executingLine: 5,
+    contaminationLine: null,
+    waveformNoise: 0.04,
+    waveformPaused: true,
+    thoughts: ['revision staged'],
+    scriptLines: [
+      { n: 1, code: 'SESSION.HOLD           subject=04', state: 'ok' },
+      { n: 2, code: 'ATTN.LOCK              window=edit', state: 'ok' },
+      { n: 3, code: 'BUF.SELECT             line=05', state: 'ok' },
+      { n: 4, code: 'LINE.PRIOR             [cleared]', state: 'deleted' },
+      { n: 5, code: 'This whole idea reminds me of tower cranes', state: 'inserted' },
+      { n: 6, code: 'PLAY.ARM               revision=39', state: 'ok' },
+      { n: 7, code: 'RECALL.MARK            tag=revised', state: 'ok' },
+      { n: 8, code: 'SESSION.HOLD           await=play', state: 'ok' },
+    ],
+    channels: CHANNELS_IDLE.map((ch) =>
+      ch.id === 'CH-4' ? { ...ch, state: 'active' as const } : ch,
+    ),
+    metrics: [
+      { label: 'Mode', value: 'EDIT', hint: 'line 05' },
+      { label: 'Diff', value: '1 INS', hint: '1 DEL' },
+      { label: 'Play', value: 'ARMED', hint: 'revision' },
+      { label: 'Scene', value: '39', hint: 'script' },
+    ],
+    initialLog: [
+      'EDIT   line 05 selected',
+      'BUF    prior cleared',
+      'EDIT   insert staged',
+      'PLAY   armed',
+    ],
+    logPool: [
+      'EDIT   hold revision',
+      'BUF    line 05',
+      'PLAY   await execute',
+      'CORE   edit mode',
+      'UPLINK rtt 48ms',
+      'CH-4   index write',
+    ],
+  },
+
+  'phone-story-status': {
+    id: 'phone-story-status',
+    label: 'Phone · Story Status',
+    shortLabel: 'Phone',
+    status: 'STALLED',
+    tone: 'warning',
+    heartRate: 68,
+    neuralLoad: 0.25,
+    coherence: 0.88,
+    latencyMs: 90,
+    uplink: 'STALLED',
+    scriptName: 'AURORA-8',
+    scriptStatus: 'INCOMPLETE',
+    scriptHash: 'trunc.—',
+    uploadProgress: 0.82,
+    executingLine: null,
+    contaminationLine: null,
+    waveformNoise: 0.06,
+    waveformPaused: true,
+    thoughts: [],
+    scriptLines: script(Array(8).fill('ok')),
+    channels: CHANNELS_IDLE,
+    metrics: [
+      { label: 'Story', value: '82%', hint: 'incomplete' },
+      { label: 'Ending', value: 'MISSING', hint: 'stall' },
+      { label: 'Link', value: 'WEAK', hint: 'phone' },
+      { label: 'Scene', value: '54', hint: 'script' },
+    ],
+    initialLog: ['PHONE  story status 82%', 'WARN   missing ending'],
+    logPool: ['PHONE  stall hold', 'STORY  82%', 'UPLINK weak'],
+  },
+
+  'phone-map': {
+    id: 'phone-map',
+    label: 'Phone · Map + Story Status',
+    shortLabel: 'Phone',
+    status: 'NAV',
+    tone: 'nominal',
+    heartRate: 70,
+    neuralLoad: 0.27,
+    coherence: 0.9,
+    latencyMs: 55,
+    uplink: 'STABLE',
+    scriptName: 'AURORA-8',
+    scriptStatus: 'INCOMPLETE',
+    scriptHash: 'trunc.—',
+    uploadProgress: 0.82,
+    executingLine: null,
+    contaminationLine: null,
+    waveformNoise: 0.05,
+    waveformPaused: false,
+    thoughts: [],
+    scriptLines: script(Array(8).fill('ok')),
+    channels: CHANNELS_IDLE,
+    metrics: [
+      { label: 'Pos', value: 'NODE-4', hint: 'current' },
+      { label: 'Route', value: 'EAST', hint: 'objective' },
+      { label: 'Story', value: '82%', hint: 'missing end' },
+      { label: 'Scene', value: '67', hint: 'script' },
+    ],
+    initialLog: ['PHONE  map open', 'NAV    node-4 hold'],
+    logPool: ['PHONE  route east', 'STORY  82%', 'NAV    scan'],
   },
 
   'heart-idle': {
@@ -936,6 +1172,116 @@ export const SCENES: Record<SceneId, Scene> = {
       'CH-3   settled',
       'CORE   observe',
       'UPLINK rtt 41ms',
+    ],
+  },
+
+  'research-pending': {
+    id: 'research-pending',
+    label: 'Research Terminal · Authorization Pending',
+    shortLabel: 'Research',
+    status: 'PENDING',
+    tone: 'warning',
+    heartRate: 72,
+    neuralLoad: 0.31,
+    coherence: 0.92,
+    latencyMs: 36,
+    uplink: 'STABLE',
+    scriptName: 'AUTH-18',
+    scriptStatus: 'AWAIT',
+    scriptHash: 'lab.term.01',
+    uploadProgress: null,
+    executingLine: null,
+    contaminationLine: null,
+    waveformNoise: 0.03,
+    waveformPaused: false,
+    thoughts: ['awaiting confirmation'],
+    scriptLines: script(Array(8).fill('ok')),
+    channels: CHANNELS_IDLE,
+    metrics: [
+      { label: 'Auth', value: 'PENDING', hint: 'YES selected' },
+      { label: 'Mode', value: 'MANUAL', hint: 'await ENTER' },
+      { label: 'Term', value: 'LAB-01', hint: 'research' },
+      { label: 'Scene', value: '18', hint: 'script' },
+    ],
+    initialLog: ['LAB    authorization pending', 'CORE   await ENTER'],
+    logPool: ['LAB    cursor hold', 'AUTH   yes armed', 'UPLINK rtt 36ms'],
+  },
+
+  'research-approved': {
+    id: 'research-approved',
+    label: 'Research Terminal · Autonomous Approved',
+    shortLabel: 'Research',
+    status: 'APPROVED',
+    tone: 'nominal',
+    heartRate: 70,
+    neuralLoad: 0.28,
+    coherence: 0.96,
+    latencyMs: 34,
+    uplink: 'STABLE',
+    scriptName: 'AUTH-18',
+    scriptStatus: 'ACTIVE',
+    scriptHash: 'lab.term.01',
+    uploadProgress: null,
+    executingLine: null,
+    contaminationLine: null,
+    waveformNoise: 0.03,
+    waveformPaused: false,
+    thoughts: ['control mode autonomous'],
+    scriptLines: script(Array(8).fill('ok')),
+    channels: CHANNELS_IDLE.map((ch) =>
+      ch.id === 'CH-6' ? { ...ch, state: 'active' as const } : ch,
+    ),
+    metrics: [
+      { label: 'Auth', value: 'ACCEPTED', hint: 'ENTER confirmed' },
+      { label: 'Mode', value: 'AUTO', hint: 'autonomous' },
+      { label: 'Term', value: 'LAB-01', hint: 'research' },
+      { label: 'Scene', value: '18', hint: 'script' },
+    ],
+    initialLog: ['LAB    autonomous approved', 'AUTH   accepted'],
+    logPool: ['LAB    control autonomous', 'AUTH   held', 'UPLINK rtt 34ms'],
+  },
+
+  'operator-console': {
+    id: 'operator-console',
+    label: 'Operator Console',
+    shortLabel: 'Operator',
+    status: 'READY',
+    tone: 'nominal',
+    heartRate: 68,
+    neuralLoad: 0.22,
+    coherence: 0.961,
+    latencyMs: 39,
+    uplink: 'STABLE',
+    scriptName: 'AURORA-7',
+    scriptStatus: 'STANDBY',
+    scriptHash: 'a7f3.c19e.04',
+    uploadProgress: null,
+    executingLine: null,
+    contaminationLine: null,
+    waveformNoise: 0.04,
+    waveformPaused: false,
+    thoughts: ['awaiting directive', 'channel open'],
+    scriptLines: script(Array(8).fill('ok')),
+    channels: CHANNELS_IDLE,
+    metrics: [
+      { label: 'Channel', value: 'OPS', hint: 'console' },
+      { label: 'Subject', value: '04', hint: 'locked' },
+      { label: 'Script', value: 'AURORA-7', hint: 'ready' },
+      { label: 'Uplink', value: 'STABLE', hint: '39 ms' },
+    ],
+    initialLog: [
+      'OPS    console open',
+      'CORE   awaiting directive',
+      'CH-3   somatic quiet',
+      'UPLINK heartbeat 39ms',
+    ],
+    logPool: [
+      'OPS    idle cursor',
+      'CORE   channel open',
+      'VITAL  sinus 68',
+      'BUF    AURORA-7 ready',
+      'CH-6   motor idle',
+      'UPLINK rtt 39ms',
     ],
   },
 }

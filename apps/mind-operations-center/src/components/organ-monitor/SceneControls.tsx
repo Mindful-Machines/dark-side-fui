@@ -7,9 +7,10 @@ export function SceneControls() {
   const { sceneId, setSceneId } = useScene()
   const thoracic = isThoracicScene(sceneId)
   const order = thoracic ? THORACIC_SCENE_ORDER : HEART_SCENE_ORDER
+  const letters = ['Q', 'W', 'E', 'R', 'T'] as const
 
   return (
-    <div className="om-controls" role="tablist" aria-label="Cardiac states">
+    <div className="om-controls" role="tablist" aria-label="Organ monitor states">
       {order.map((id, index) => {
         const active = sceneId === id || (id === 'thoracic-idle' && sceneId === 'thoracic-scan')
         const label = thoracic
@@ -24,7 +25,7 @@ export function SceneControls() {
             className={active ? 'is-active' : undefined}
             onClick={() => setSceneId(id)}
           >
-            {index + 1} {label}
+            {letters[index]} {label}
           </button>
         )
       })}

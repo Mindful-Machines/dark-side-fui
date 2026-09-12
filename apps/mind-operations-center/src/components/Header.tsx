@@ -16,14 +16,32 @@ function formatClock(date: Date) {
 }
 
 export function Header() {
-  const { scene } = useScene()
+  const { scene, mode, setMode, goTo } = useScene()
   const now = useClock()
+
+  const requestFullscreen = () => {
+    const el = document.documentElement
+    if (!document.fullscreenElement) {
+      void el.requestFullscreen?.()
+    } else {
+      void document.exitFullscreen?.()
+    }
+  }
 
   return (
     <header className="app-header">
       <div className="brand">
         <span className="brand-kicker">Mindful Machines</span>
-        <h1>Mind Operations Center</h1>
+        <h1>
+          <button
+            type="button"
+            className="brand-title"
+            aria-label="Return to Scene Directory"
+            onClick={() => goTo('directory', 'review', 'push')}
+          >
+            Mind Operations Center
+          </button>
+        </h1>
       </div>
 
       <div className={`status-pill tone-${scene.tone}`}>
@@ -39,6 +57,36 @@ export function Header() {
           <span className="sep">/</span>
           <time dateTime={now.toISOString()}>{formatClock(now)}</time>
         </div>
+
+        <div className="review-controls">
+          <button
+            type="button"
+            className="review-link"
+            onClick={() => goTo('directory', 'review', 'push')}
+          >
+            Directory
+          </button>
+          <div className="dir-mode compact" role="group" aria-label="Review or display mode">
+            <button
+              type="button"
+              className={mode === 'review' ? 'is-active' : undefined}
+              onClick={() => setMode('review')}
+            >
+              Review
+            </button>
+            <button
+              type="button"
+              className={mode === 'display' ? 'is-active' : undefined}
+              onClick={() => setMode('display')}
+            >
+              Display
+            </button>
+          </div>
+          <button type="button" className="dir-fs compact" onClick={requestFullscreen}>
+            Fullscreen
+          </button>
+        </div>
+
         <SceneSwitcher />
       </div>
     </header>

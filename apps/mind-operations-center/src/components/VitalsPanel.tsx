@@ -22,6 +22,7 @@ const LOAD_SERIES: Record<string, number[]> = {
   'thoracic-irregular': [0.38, 0.52, 0.44, 0.61, 0.49, 0.66, 0.58, 0.7, 0.55, 0.64, 0.6, 0.66],
   'thoracic-intervention': [0.48, 0.62, 0.7, 0.66, 0.78, 0.74, 0.82, 0.79, 0.81, 0.8, 0.78, 0.81],
   'thoracic-recovered': [0.14, 0.16, 0.15, 0.18, 0.17, 0.19, 0.18, 0.17, 0.19, 0.2, 0.18, 0.19],
+  'operator-console': [0.16, 0.18, 0.17, 0.2, 0.19, 0.22, 0.21, 0.2, 0.22, 0.23, 0.21, 0.22],
 }
 
 function formatPct(n: number) {

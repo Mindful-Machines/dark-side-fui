@@ -24,7 +24,7 @@ Other commands:
 | Command | Purpose |
 | --- | --- |
 | `npm run lint` | Lint |
-| `npm run build` | Production build (GitHub Pages base `/dark-side/`) |
+| `npm run build` | Production build (GitHub Pages base `/dark-side-fui/`) |
 | `npm run preview` | Serve the last build (localhost) |
 | `npm run on-set` | **On-set:** rebuild with base `/`, serve on `0.0.0.0:5191` |
 
@@ -117,10 +117,10 @@ http://127.0.0.1:5191/?scene=phone-story-status&mode=display
 http://127.0.0.1:5191/?scene=phone-map&mode=display
 ```
 
-GitHub Pages (after merge to `master`) uses base path `/dark-side/`:
+GitHub Pages (after merge to `master`) uses base path `/dark-side-fui/`:
 
 ```
-https://mindful-machines.github.io/dark-side/?scene=script-cogito&mode=display
+https://mindful-machines.github.io/dark-side-fui/?scene=script-cogito&mode=display
 ```
 
 Directory **URL** copies the current origin + path + `scene` + `mode`.
@@ -158,7 +158,7 @@ Use the app **Fullscreen** control or the browser/OS fullscreen shortcut on the 
 
 - Hard-refresh (cache). Prefer a Display-mode direct URL.
 - Confirm you are not on an old `dist` — re-run `npm run on-set`.
-- Local/tunnel builds need asset base `/` (`on-set` sets this). GitHub Pages builds use `/dark-side/`.
+- Local/tunnel builds need asset base `/` (`on-set` sets this). GitHub Pages builds use `/dark-side-fui/`.
 
 **Stale build / wrong UI**
 
@@ -194,6 +194,6 @@ See [`PRODUCTION-GUIDE.md`](./PRODUCTION-GUIDE.md) for the scene/surface table, 
 
 Automatic deploy runs on pushes to **`master`** that touch this app (or the Pages workflow). Merging this feature branch is required for the public site to update. Expected URL:
 
-`https://mindful-machines.github.io/dark-side/`
+`https://mindful-machines.github.io/dark-side-fui/`
 
 The workflow publishes only `apps/mind-operations-center/dist` — not `docs/` or other repo content.

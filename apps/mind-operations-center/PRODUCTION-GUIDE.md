@@ -30,7 +30,7 @@ Press the **section number**, then (when listed) a **letter**. Never simultaneou
 Direct URL slug → `?scene=<slug>&mode=review|display`
 
 On-set host example: `http://<LAN-IP>:5191/?scene=<slug>&mode=display`  
-GitHub Pages example: `https://mindful-machines.github.io/dark-side/?scene=<slug>&mode=display`
+GitHub Pages example: `https://mindful-machines.github.io/dark-side-fui/?scene=<slug>&mode=display`
 
 ## Screen inventory
 

@@ -197,3 +197,10 @@ Automatic deploy runs on pushes to **`master`** that touch this app (or the Page
 `https://mindful-machines.github.io/dark-side-fui/`
 
 The workflow publishes only `apps/mind-operations-center/dist` — not `docs/` or other repo content.
+
+### Search indexing during production
+
+The Pages site is **public by URL** (anyone with the link can open it). During production it is intentionally marked `noindex` / `nofollow` (and related robots directives) in `index.html` so search engines should not list or follow it.
+
+- Remove those meta directives when the project is ready for public discovery.
+- **`noindex` is not authentication or password protection.** It only asks crawlers not to index the site; it does not keep the URL private.

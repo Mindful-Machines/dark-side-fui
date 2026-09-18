@@ -1,4 +1,5 @@
 export type SceneId =
+  | 'directory'
   | 'idle'
   | 'elevated'
   | 'thoughts'
@@ -6,6 +7,10 @@ export type SceneId =
   | 'paused'
   | 'uploading'
   | 'partial'
+  | 'script-cogito'
+  | 'script-tower-cranes'
+  | 'phone-story-status'
+  | 'phone-map'
   | 'heart-idle'
   | 'heart-elevated'
   | 'heart-irregular'
@@ -17,6 +22,9 @@ export type SceneId =
   | 'thoracic-intervention'
   | 'thoracic-recovered'
   | 'thoracic-scan'
+  | 'research-pending'
+  | 'research-approved'
+  | 'operator-console'
 
 export type Tone = 'nominal' | 'warning' | 'critical'
 
@@ -25,7 +33,7 @@ export type ChannelState = 'ok' | 'warn' | 'crit' | 'idle' | 'active'
 export interface ScriptLine {
   n: number
   code: string
-  state: 'ok' | 'current' | 'corrupt' | 'missing'
+  state: 'ok' | 'current' | 'corrupt' | 'missing' | 'deleted' | 'inserted' | 'selected'
 }
 
 export interface Channel {

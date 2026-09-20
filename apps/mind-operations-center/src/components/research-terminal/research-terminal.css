@@ -96,21 +96,28 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
+  overflow: visible;
 }
 
 .rt-yes-arm {
   color: var(--green);
 }
 
+.rt-enter {
+  overflow: visible;
+}
+
 .rt-enter kbd {
   display: inline-block;
   margin-left: 6px;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border: 1px solid var(--border-strong);
   background: var(--bg-elevated);
   color: var(--text);
   font: inherit;
-  animation: rt-pulse 1.6s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+  animation: rt-enter-pulse 2s ease-in-out infinite;
 }
 
 .rt-confirm-line {
@@ -151,6 +158,10 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--green);
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+  animation: rt-seal-pulse 2.2s ease-in-out infinite;
 }
 
 .research-terminal.is-approved.is-confirm .rt-body {
@@ -158,16 +169,48 @@
 }
 
 .research-terminal.is-approved.is-confirm .rt-seal {
-  animation: rt-seal 0.9s ease-out;
+  animation:
+    rt-seal 0.9s ease-out,
+    rt-seal-pulse 2.4s ease-in-out 0.9s infinite;
 }
 
-@keyframes rt-pulse {
+@keyframes rt-enter-pulse {
   0%,
   100% {
-    opacity: 0.55;
+    color: var(--text-muted);
+    border-color: var(--border-strong);
+    background: var(--bg-elevated);
+    box-shadow: inset 0 0 0 1px transparent;
+    filter: brightness(0.92);
   }
   50% {
-    opacity: 1;
+    color: var(--text);
+    border-color: #d4b06a;
+    background: color-mix(in srgb, var(--amber) 28%, var(--bg-elevated));
+    box-shadow:
+      inset 0 0 10px color-mix(in srgb, var(--amber) 35%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--amber) 45%, transparent);
+    filter: brightness(1.18);
+  }
+}
+
+@keyframes rt-seal-pulse {
+  0%,
+  100% {
+    color: color-mix(in srgb, var(--green) 85%, var(--text-muted));
+    border-color: color-mix(in srgb, var(--green) 38%, var(--border));
+    background: var(--green-dim);
+    box-shadow: inset 0 0 0 1px transparent;
+    filter: brightness(0.95);
+  }
+  50% {
+    color: #b7d4ba;
+    border-color: color-mix(in srgb, var(--green) 72%, #d4b06a 10%);
+    background: color-mix(in srgb, var(--green) 22%, var(--bg-elevated));
+    box-shadow:
+      inset 0 0 12px color-mix(in srgb, var(--green) 32%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--green) 40%, transparent);
+    filter: brightness(1.14);
   }
 }
 
@@ -199,8 +242,18 @@
 
 @media (prefers-reduced-motion: reduce) {
   .rt-enter kbd,
+  .rt-seal,
   .research-terminal.is-approved.is-confirm .rt-body,
   .research-terminal.is-approved.is-confirm .rt-seal {
     animation: none;
+  }
+
+  .rt-enter kbd {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--amber) 55%, var(--border-strong));
+  }
+
+  .rt-seal {
+    border-color: color-mix(in srgb, var(--green) 55%, var(--border));
   }
 }

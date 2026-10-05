@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useMemo, useRef } from 'react'
 import type { Tone } from '../types'
 
 interface WaveformProps {
@@ -11,6 +11,12 @@ interface WaveformProps {
   irregular?: boolean
   className?: string
 }
+
+const POINT_COUNT = 140
+/** ~10 FPS — preserves waveform character with far less React/SVG churn than 50ms. */
+const FRAME_MS = 100
+/** Advance sample clock to keep visual scroll speed matched to the old 50ms/0.05 step. */
+const TIME_STEP = 0.1
 
 function sample(
   t: number,
@@ -49,7 +55,21 @@ function sample(
   return v
 }
 
-export function Waveform({
+function buildPath(points: number[], height: number) {
+  const w = 600
+  const mid = height / 2
+  const amp = height * 0.38
+  const step = w / Math.max(points.length - 1, 1)
+  return points
+    .map((p, i) => {
+      const x = i * step
+      const y = mid - p * amp
+      return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`
+    })
+    .join(' ')
+}
+
+function WaveformInner({
   bpm,
   noise,
   paused = false,
@@ -59,42 +79,65 @@ export function Waveform({
   irregular = false,
   className,
 }: WaveformProps) {
-  const [points, setPoints] = useState<number[]>(() =>
-    Array.from({ length: 140 }, (_, i) => sample(i * 0.05, bpm, noise, mode, irregular)),
+  const pathRef = useRef<SVGPathElement>(null)
+  const pointsRef = useRef<number[]>(
+    Array.from({ length: POINT_COUNT }, (_, i) => sample(i * 0.05, bpm, noise, mode, irregular)),
+  )
+  const initialD = useMemo(
+    () => buildPath(pointsRef.current, height),
+    // Initial paint only — live updates mutate the path attribute directly.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   )
 
   useEffect(() => {
     if (paused) return
-    let t = 7
-    const id = window.setInterval(() => {
-      t += 0.05
-      const next = sample(t, bpm, noise, mode, irregular)
-      setPoints((prev) => [...prev.slice(1), next])
-    }, 50)
-    return () => window.clearInterval(id)
-  }, [bpm, noise, paused, mode, irregular])
 
-  const w = 600
-  const mid = height / 2
-  const amp = height * 0.38
-  const step = w / Math.max(points.length - 1, 1)
-  const d = points
-    .map((p, i) => {
-      const x = i * step
-      const y = mid - p * amp
-      return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`
-    })
-    .join(' ')
+    let t = 7
+    let id = 0
+
+    const paint = () => {
+      t += TIME_STEP
+      const pts = pointsRef.current
+      pts.shift()
+      pts.push(sample(t, bpm, noise, mode, irregular))
+      const el = pathRef.current
+      if (el) el.setAttribute('d', buildPath(pts, height))
+    }
+
+    const start = () => {
+      if (id !== 0) return
+      id = window.setInterval(paint, FRAME_MS)
+    }
+    const stop = () => {
+      if (id === 0) return
+      window.clearInterval(id)
+      id = 0
+    }
+    const onVis = () => {
+      if (document.hidden) stop()
+      else start()
+    }
+
+    if (!document.hidden) start()
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      stop()
+      document.removeEventListener('visibilitychange', onVis)
+    }
+  }, [bpm, noise, paused, mode, irregular, height])
 
   return (
     <svg
       className={`waveform tone-${tone}${paused ? ' is-paused' : ''}${className ? ` ${className}` : ''}`}
-      viewBox={`0 0 ${w} ${height}`}
+      viewBox={`0 0 600 ${height}`}
       preserveAspectRatio="none"
       role="img"
       aria-label={mode === 'ecg' ? 'Cardiac waveform' : 'Neural waveform'}
     >
-      <path d={d} />
+      <path ref={pathRef} d={initialD} />
     </svg>
   )
 }
+
+export const Waveform = memo(WaveformInner)

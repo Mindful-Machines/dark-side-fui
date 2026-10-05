@@ -414,14 +414,14 @@
 @keyframes ph-amber-pulse {
   0%,
   100% {
-    color: var(--amber);
-    filter: brightness(0.92);
+    color: color-mix(in srgb, var(--amber) 88%, #000);
     text-shadow: none;
   }
   50% {
-    color: #e8c878;
-    filter: brightness(1.22);
-    text-shadow: 0 0 10px color-mix(in srgb, var(--amber) 45%, transparent);
+    color: #f0d090;
+    text-shadow:
+      0 0 10px color-mix(in srgb, var(--amber) 55%, transparent),
+      0 0 2px color-mix(in srgb, var(--amber) 40%, transparent);
   }
 }
 
@@ -430,22 +430,22 @@
   100% {
     border-color: color-mix(in srgb, var(--amber) 35%, var(--border));
     background: var(--amber-dim);
-    filter: brightness(0.96);
   }
   50% {
-    border-color: color-mix(in srgb, #e8c878 55%, var(--border));
-    background: color-mix(in srgb, var(--amber) 22%, var(--bg-panel-2));
-    filter: brightness(1.12);
+    border-color: color-mix(in srgb, #e8c878 65%, var(--border));
+    background: color-mix(in srgb, var(--amber) 28%, var(--bg-panel-2));
   }
 }
 
 @keyframes ph-pct-breath {
   0%,
   100% {
-    filter: brightness(0.96);
+    color: color-mix(in srgb, var(--amber) 90%, var(--text));
+    opacity: 0.92;
   }
   50% {
-    filter: brightness(1.08);
+    color: #f0d090;
+    opacity: 1;
   }
 }
 
@@ -505,35 +505,53 @@
   100% {
     border-color: color-mix(in srgb, var(--amber) 32%, var(--border));
     background: var(--amber-dim);
-    filter: brightness(0.97);
   }
   50% {
-    border-color: color-mix(in srgb, #e8c878 50%, var(--border));
-    background: color-mix(in srgb, var(--amber) 20%, var(--bg-panel-2));
-    filter: brightness(1.1);
+    border-color: color-mix(in srgb, #e8c878 58%, var(--border));
+    background: color-mix(in srgb, var(--amber) 26%, var(--bg-panel-2));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ph-missing,
-  .ph-manifest .is-missing,
-  .ph-progress-shim,
-  .ph-tile-scan,
-  .ph-path.route,
-  .ph-pulse,
-  .ph-obj-glow,
-  .ph-story-strip,
-  .ph-hero-pct strong {
+  .app[data-motion='auto'] .ph-missing,
+  .app[data-motion='auto'] .ph-manifest .is-missing,
+  .app[data-motion='auto'] .ph-progress-shim,
+  .app[data-motion='auto'] .ph-tile-scan,
+  .app[data-motion='auto'] .ph-path.route,
+  .app[data-motion='auto'] .ph-pulse,
+  .app[data-motion='auto'] .ph-obj-glow,
+  .app[data-motion='auto'] .ph-story-strip,
+  .app[data-motion='auto'] .ph-hero-pct strong {
     animation: none;
   }
 
-  .ph-missing,
-  .ph-manifest .is-missing,
-  .ph-story-strip,
-  .ph-hero-pct strong {
+  .app[data-motion='auto'] .ph-missing,
+  .app[data-motion='auto'] .ph-manifest .is-missing,
+  .app[data-motion='auto'] .ph-story-strip,
+  .app[data-motion='auto'] .ph-hero-pct strong {
     filter: none;
     opacity: 1;
   }
+}
+
+.app[data-motion='reduce'] .ph-missing,
+.app[data-motion='reduce'] .ph-manifest .is-missing,
+.app[data-motion='reduce'] .ph-progress-shim,
+.app[data-motion='reduce'] .ph-tile-scan,
+.app[data-motion='reduce'] .ph-path.route,
+.app[data-motion='reduce'] .ph-pulse,
+.app[data-motion='reduce'] .ph-obj-glow,
+.app[data-motion='reduce'] .ph-story-strip,
+.app[data-motion='reduce'] .ph-hero-pct strong {
+  animation: none;
+}
+
+.app[data-motion='reduce'] .ph-missing,
+.app[data-motion='reduce'] .ph-manifest .is-missing,
+.app[data-motion='reduce'] .ph-story-strip,
+.app[data-motion='reduce'] .ph-hero-pct strong {
+  filter: none;
+  opacity: 1;
 }
 
 .app.is-phone {

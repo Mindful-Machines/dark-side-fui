@@ -405,6 +405,8 @@ select {
   display: block;
   background: #080a08;
   border: 1px solid var(--border);
+  contain: layout paint style;
+  isolation: isolate;
 }
 
 .waveform path {
@@ -817,10 +819,15 @@ select {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .script-cursor {
+  .app[data-motion='auto'] .script-cursor {
     animation: none;
     opacity: 1;
   }
+}
+
+.app[data-motion='reduce'] .script-cursor {
+  animation: none;
+  opacity: 1;
 }
 
 .progress-meta {

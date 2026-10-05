@@ -74,8 +74,16 @@ function ThoughtStage({ scene }: { scene: Scene }) {
   const thoughts = scene.thoughts
   const [shown, setShown] = useState(0)
   const [typed, setTyped] = useState(0)
+  const [visible, setVisible] = useState(() => typeof document !== 'undefined' && !document.hidden)
 
   useEffect(() => {
+    const onVis = () => setVisible(!document.hidden)
+    document.addEventListener('visibilitychange', onVis)
+    return () => document.removeEventListener('visibilitychange', onVis)
+  }, [])
+
+  useEffect(() => {
+    if (!visible) return
     const current = thoughts[shown]
     if (current === undefined) return
 
@@ -91,7 +99,7 @@ function ThoughtStage({ scene }: { scene: Scene }) {
       }
     }, 1500)
     return () => window.clearTimeout(id)
-  }, [thoughts, shown, typed])
+  }, [thoughts, shown, typed, visible])
 
   return (
     <div className="thought-stage">
@@ -118,10 +126,27 @@ function ScriptStage({ scene }: { scene: Scene }) {
 
   useEffect(() => {
     if (!isExecuting) return
-    const id = window.setInterval(() => {
-      setLine((prev) => (prev >= 8 ? 1 : prev + 1))
-    }, 1800)
-    return () => window.clearInterval(id)
+    let id = 0
+    const tick = () => setLine((prev) => (prev >= 8 ? 1 : prev + 1))
+    const start = () => {
+      if (id !== 0) return
+      id = window.setInterval(tick, 1800)
+    }
+    const stop = () => {
+      if (id === 0) return
+      window.clearInterval(id)
+      id = 0
+    }
+    const onVis = () => {
+      if (document.hidden) stop()
+      else start()
+    }
+    if (!document.hidden) start()
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      stop()
+      document.removeEventListener('visibilitychange', onVis)
+    }
   }, [isExecuting, scene.id])
 
   const lines = useMemo(
@@ -163,13 +188,32 @@ function UploadStage({ scene }: { scene: Scene }) {
 
   useEffect(() => {
     if (!isLive) return
-    const id = window.setInterval(() => {
+    let id = 0
+    const tick = () => {
       setProgress((prev) => {
         const next = prev + 0.012
         return next > 0.97 ? 0.14 : next
       })
-    }, 180)
-    return () => window.clearInterval(id)
+    }
+    const start = () => {
+      if (id !== 0) return
+      id = window.setInterval(tick, 180)
+    }
+    const stop = () => {
+      if (id === 0) return
+      window.clearInterval(id)
+      id = 0
+    }
+    const onVis = () => {
+      if (document.hidden) stop()
+      else start()
+    }
+    if (!document.hidden) start()
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      stop()
+      document.removeEventListener('visibilitychange', onVis)
+    }
   }, [isLive, scene.id])
 
   return (

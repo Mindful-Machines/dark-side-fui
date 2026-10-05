@@ -94,6 +94,7 @@
   overflow: hidden;
   background: #080a0b;
   border: 1px solid var(--border);
+  container-type: size;
 }
 
 .anatomy-frame {
@@ -139,18 +140,26 @@
 .anatomy-scan {
   pointer-events: none;
   position: absolute;
+  top: 0;
   left: 12px;
   right: 12px;
   height: 1px;
   z-index: 3;
   background: linear-gradient(90deg, transparent, var(--om-line) 18%, var(--om-line) 82%, transparent);
   opacity: 0.16;
+  will-change: transform;
+  contain: layout style;
   animation: om-scan 16s linear infinite;
 }
 
 .anatomy-stage {
   height: 100%;
   min-height: 220px;
+  min-width: 0;
+}
+
+.heart-monitor[data-view="thoracic"] .anatomy-stage {
+  height: 100%;
 }
 
 .anatomy-scan-root {
@@ -944,10 +953,10 @@
 
 @keyframes om-scan {
   from {
-    top: 8%;
+    transform: translate3d(0, 8cqh, 0);
   }
   to {
-    top: 86%;
+    transform: translate3d(0, 86cqh, 0);
   }
 }
 
@@ -1158,6 +1167,10 @@
   }
 }
 
+.heart-monitor[data-view="thoracic"] .heart-monitor-body {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .thoracic-scan {
   position: relative;
   width: 100%;
@@ -1165,107 +1178,204 @@
   container-type: size;
 }
 
-.thx-field {
+/* Default / narrow: anatomy fills; telemetry overlays compactly */
+.thx-visual-composition {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.thx-anatomy-column {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.thx-guides-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   display: block;
   width: 100%;
   height: 100%;
+  pointer-events: none;
   overflow: visible;
 }
 
-.thx-outline {
-  stroke: #a9a498;
-  stroke-width: 1.05;
-  stroke-linejoin: round;
-  opacity: 0.58;
-  vector-effect: non-scaling-stroke;
+.anatomy-zone {
+  position: absolute;
+  inset: 4% 8% 8% 5%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
 }
 
-.thx-spine,
-.thx-clavicle,
-.thx-margin {
-  stroke: #7d868c;
-  stroke-width: 0.55;
-  opacity: 0.16;
-  vector-effect: non-scaling-stroke;
+.thoracic-anatomy-stage {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Clip y>1180 so legs never paint outside the upper-torso viewBox */
+  overflow: hidden;
 }
 
-.thx-sternum {
-  stroke: #8d969c;
-  stroke-width: 0.7;
+.thx-telemetry-rail {
+  position: absolute;
+  top: 14%;
+  right: 12px;
+  z-index: 3;
+  width: 148px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  pointer-events: none;
+}
+
+.thx-telemetry-rail .om-readout {
+  gap: 14px;
+}
+
+.thx-telemetry-rail .om-bpm-row strong {
+  font-size: 34px;
+}
+
+.thx-body-fill {
+  fill: color-mix(in srgb, var(--green, #7a9a7e) 40%, #9aa3a8);
+  /* Source SVG fill-opacity is 0.375; 0.18 × 0.375 ≈ 6.8% effective */
+  opacity: 0.18;
+}
+
+.thx-scan-band {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 6%;
+  right: 6%;
+  height: 1px;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--green, #7a9a7e) 55%, #8a949a) 22%,
+    color-mix(in srgb, var(--green, #7a9a7e) 55%, #8a949a) 78%,
+    transparent
+  );
+  opacity: 0.12;
+  will-change: transform;
+  contain: layout style;
+  animation: thx-scan-band 14s linear infinite;
+}
+
+.thx-reg-mark {
+  position: absolute;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
   opacity: 0.22;
-  vector-effect: non-scaling-stroke;
+  pointer-events: none;
 }
 
-.thx-rib {
-  stroke: #7d868c;
-  stroke-width: 0.5;
-  opacity: 0.15;
-  vector-effect: non-scaling-stroke;
+.thx-reg-mark::before,
+.thx-reg-mark::after {
+  content: '';
+  position: absolute;
+  background: #8a949a;
+}
+
+.thx-reg-mark::before {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.thx-reg-mark::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+.thx-reg-a {
+  top: 12%;
+  left: 10%;
+}
+
+.thx-reg-b {
+  bottom: 18%;
+  left: 14%;
+}
+
+.thx-bridge {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  top: 38%;
+  right: 0;
+  width: min(18%, 72px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #6d787f 40%, #6d787f);
+  opacity: 0.18;
+  pointer-events: none;
 }
 
 .thx-vessel {
   stroke: #8a7a76;
   stroke-width: 0.55;
   opacity: 0.14;
-  vector-effect: non-scaling-stroke;
-}
-
-.thx-focus-field {
-  fill: var(--om-cardiac);
-  stroke: none;
-  opacity: 0.035;
-}
-
-.thx-heart-fill {
-  fill: var(--om-cardiac);
-  stroke: none;
-  opacity: 0.045;
 }
 
 .thx-heart-outline {
   stroke: #c2bdb1;
-  stroke-width: 1.15;
+  stroke-width: 1.2;
   stroke-linejoin: round;
   fill: none;
   opacity: 0.72;
+  vector-effect: non-scaling-stroke;
 }
 
 .thx-heart-aorta {
   stroke: #8d969c;
-  stroke-width: 0.7;
+  stroke-width: 0.85;
   fill: none;
-  opacity: 0.22;
+  opacity: 0.14;
+  vector-effect: non-scaling-stroke;
 }
 
 .thx-heart-lv {
   stroke: var(--om-cardiac);
-  stroke-width: 1.05;
+  stroke-width: 1.1;
   fill: none;
   opacity: 0.38;
+  vector-effect: non-scaling-stroke;
 }
 
 .thx-pulse {
   fill: none;
   stroke: var(--om-cardiac);
-  stroke-width: 1.1;
+  stroke-width: 1.15;
   stroke-dasharray: 14 110;
   opacity: 0.1;
   animation: enc-travel calc(var(--beat) * 3.2) linear infinite;
+  vector-effect: non-scaling-stroke;
 }
 
 .thx-lock {
   stroke: #8a949a;
-  stroke-width: 0.7;
+  stroke-width: 1.2;
   fill: none;
-  opacity: 0.14;
-  transform-box: fill-box;
-  transform-origin: center;
+  opacity: 0.05;
   vector-effect: non-scaling-stroke;
 }
 
 .thx-crosshair {
   stroke: #8a949a;
-  stroke-width: 0.55;
+  stroke-width: 1;
   opacity: 0.28;
   vector-effect: non-scaling-stroke;
 }
@@ -1274,6 +1384,7 @@
   fill: #c2bdb1;
   stroke: none;
   opacity: 0.08;
+  vector-effect: non-scaling-stroke;
 }
 
 .thx-node.fault {
@@ -1281,16 +1392,10 @@
   opacity: 0;
 }
 
-.thx-drift {
-  fill: #c8c3b6;
-  stroke: none;
-  opacity: 0.05;
-  animation: enc-drift 22s ease-in-out infinite;
-}
-
 .thx-caliper,
 .thx-tick,
-.thx-span {
+.thx-span,
+.thx-reg {
   stroke: #6d787f;
   stroke-width: 0.65;
   opacity: 0.18;
@@ -1334,8 +1439,8 @@
 
 .thx-dim {
   position: absolute;
-  left: 18px;
-  top: 11%;
+  left: 14px;
+  top: 10%;
   z-index: 2;
   font-family: var(--font-mono);
   font-size: 10px;
@@ -1345,19 +1450,14 @@
 }
 
 .thx-cluster {
-  position: absolute;
-  top: 18%;
-  right: 16px;
-  width: 92px;
-  z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   font-family: var(--font-mono);
 }
 
 .thx-note {
-  margin: 0 0 1px;
+  margin: 0 0 2px;
   font-size: 10px;
   letter-spacing: 0.14em;
   color: #8a949a;
@@ -1383,50 +1483,64 @@
   opacity: 0.62;
 }
 
-.thx-inset {
-  position: absolute;
-  left: 18px;
-  bottom: 32px;
-  width: 104px;
-  height: 86px;
-  overflow: visible;
-  z-index: 2;
+/* Wide: centered anatomy + telemetry composition */
+@container (min-width: 920px) {
+  .thx-visual-composition {
+    width: min(100%, 1120px);
+    height: 100%;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 210px;
+    gap: clamp(24px, 3vw, 48px);
+    align-items: stretch;
+    padding-block: 2%;
+    box-sizing: border-box;
+  }
+
+  .thx-anatomy-column {
+    min-height: 0;
+  }
+
+  .anatomy-zone {
+    /* Prefer height occupancy; keep a modest right inset so the rail sits ~24–48px from the torso */
+    inset: 3% 1% 4% 2%;
+  }
+
+  .thx-telemetry-rail {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: auto;
+    height: 100%;
+    justify-content: center;
+    gap: 28px;
+    padding-block: 8%;
+    box-sizing: border-box;
+  }
+
+  .thx-telemetry-rail .om-bpm-row strong {
+    font-size: 40px;
+  }
+
+  .thx-bridge {
+    display: block;
+    right: -12px;
+    width: 28px;
+  }
 }
 
-.thx-inset-frame {
-  fill: none;
-  stroke: var(--om-line);
-  stroke-width: 0.4;
-  opacity: 0.16;
+@container (min-width: 1100px) {
+  .anatomy-zone {
+    inset: 2% 0.5% 3% 1.5%;
+  }
+
+  .thx-telemetry-rail {
+    gap: 32px;
+  }
 }
 
-.thx-inset-kicker {
-  fill: #7d868c;
-  font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.12em;
-}
-
-.thx-inset-metric {
-  fill: #5c666c;
-  font-family: var(--font-mono);
-  font-size: 6px;
-  letter-spacing: 0.12em;
-}
-
-.thx-inset-lv {
-  fill: none;
-  stroke: var(--om-cardiac);
-  stroke-width: 1;
-  opacity: 0.48;
-}
-
-.heart-monitor[data-view="thoracic"][data-cardiac="elevated"] .thx-focus-field {
-  opacity: 0.07;
-}
-
-.heart-monitor[data-view="thoracic"][data-cardiac="elevated"] .thx-heart-fill {
-  opacity: 0.07;
+.heart-monitor[data-view="thoracic"][data-cardiac="elevated"] .thx-heart-lv {
+  opacity: 0.5;
 }
 
 .heart-monitor[data-view="thoracic"][data-cardiac="elevated"] .thx-heart-lv,
@@ -1440,7 +1554,7 @@
 }
 
 .heart-monitor[data-view="thoracic"][data-cardiac="elevated"] .thx-lock {
-  opacity: 0.28;
+  opacity: 0.05;
 }
 
 .heart-monitor[data-view="thoracic"][data-cardiac="elevated"] .thx-node {
@@ -1472,8 +1586,7 @@
 }
 
 .heart-monitor[data-view="thoracic"][data-cardiac="irregular"] .thx-lock {
-  opacity: 0.34;
-  animation: hf-fault 2.2s ease-in-out infinite;
+  opacity: 0.05;
 }
 
 .heart-monitor[data-view="thoracic"][data-cardiac="irregular"] .thx-note {
@@ -1484,20 +1597,8 @@
   background: var(--om-cardiac-hot);
 }
 
-.heart-monitor[data-view="thoracic"][data-cardiac="intervention"] .thx-torso > * {
+.heart-monitor[data-view="thoracic"][data-cardiac="intervention"] .thx-body-fill {
   opacity: 0.12;
-}
-
-.heart-monitor[data-view="thoracic"][data-cardiac="intervention"] .thx-outline {
-  opacity: 0.32;
-}
-
-.heart-monitor[data-view="thoracic"][data-cardiac="intervention"] .thx-focus-field {
-  opacity: 0.055;
-}
-
-.heart-monitor[data-view="thoracic"][data-cardiac="intervention"] .thx-heart-fill {
-  opacity: 0.03;
 }
 
 .heart-monitor[data-view="thoracic"][data-cardiac="intervention"] .thx-heart-outline {
@@ -1518,7 +1619,7 @@
 
 .heart-monitor[data-view="thoracic"][data-cardiac="intervention"] .thx-lock {
   stroke: var(--om-cardiac-hot);
-  animation: hf-lock 1.8s ease-out infinite;
+  opacity: 0.06;
 }
 
 .heart-monitor[data-view="thoracic"][data-cardiac="intervention"] .thx-node {
@@ -1528,11 +1629,6 @@
 
 .heart-monitor[data-view="thoracic"][data-cardiac="intervention"] .thx-fill {
   background: var(--om-cardiac-hot);
-}
-
-.heart-monitor[data-view="thoracic"][data-cardiac="recovered"] .thx-focus-field,
-.heart-monitor[data-view="thoracic"][data-cardiac="recovered"] .thx-heart-fill {
-  opacity: 0.03;
 }
 
 .heart-monitor[data-view="thoracic"][data-cardiac="recovered"] .thx-pulse {
@@ -1546,45 +1642,75 @@
 
 @keyframes thx-plane {
   from {
-    transform: translateY(40px);
+    transform: translateY(50px);
   }
   to {
-    transform: translateY(250px);
+    transform: translateY(380px);
+  }
+}
+
+@keyframes thx-scan-band {
+  from {
+    transform: translate3d(0, 10cqh, 0);
+  }
+  to {
+    transform: translate3d(0, 72cqh, 0);
   }
 }
 
 @container (max-width: 500px) {
-  .thx-cluster {
-    top: 10px;
-    right: 10px;
-    width: 86px;
+  .thx-telemetry-rail {
+    width: 132px;
+    right: 8px;
+    top: 10%;
+    gap: 14px;
   }
 
-  .thx-inset {
-    width: 86px;
-    height: 72px;
-    left: 10px;
-    bottom: 26px;
+  .thx-telemetry-rail .om-bpm-row strong {
+    font-size: 28px;
   }
 
   .thx-lead,
   .thx-anchor,
-  .thx-span {
+  .thx-span,
+  .thx-bridge {
+    opacity: 0.08;
+  }
+
+  .thx-scan-band,
+  .thx-reg-mark {
     opacity: 0.08;
   }
 }
 
 @container (max-width: 440px) {
-  .thx-cluster {
-    width: 78px;
+  .thx-telemetry-rail {
+    width: 120px;
   }
 
-  .thx-inset {
-    width: 70px;
-    height: 58px;
+  .anatomy-zone {
+    inset: 4% 6% 10% 4%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app[data-motion='auto'] .thx-plane,
+  .app[data-motion='auto'] .thx-plane-b,
+  .app[data-motion='auto'] .thx-scan-band {
+    animation: none;
   }
 
-  .thx-inset-metric {
-    opacity: 0;
+  .app[data-motion='auto'] .thx-scan-band {
+    transform: translate3d(0, 36cqh, 0);
   }
+}
+
+.app[data-motion='reduce'] .thx-plane,
+.app[data-motion='reduce'] .thx-plane-b,
+.app[data-motion='reduce'] .thx-scan-band {
+  animation: none;
+}
+
+.app[data-motion='reduce'] .thx-scan-band {
+  transform: translate3d(0, 36cqh, 0);
 }

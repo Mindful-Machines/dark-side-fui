@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Panel } from './Panel'
 import { useScene } from '../context/SceneContext'
+import { useWhenVisibleInterval } from '../hooks/useWhenVisibleInterval'
 import type { Scene } from '../types'
 
 function stamp(date: Date) {
@@ -21,14 +22,11 @@ export function SignalLog() {
   const scroller = useRef<HTMLUListElement>(null)
   const index = useRef(0)
 
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      const msg = scene.logPool[index.current % scene.logPool.length]
-      index.current += 1
-      setLines((prev) => [...prev.slice(-40), `${stamp(new Date())}  ${msg}`])
-    }, 1700)
-    return () => window.clearInterval(id)
-  }, [scene.logPool])
+  useWhenVisibleInterval(() => {
+    const msg = scene.logPool[index.current % scene.logPool.length]
+    index.current += 1
+    setLines((prev) => [...prev.slice(-40), `${stamp(new Date())}  ${msg}`])
+  }, 1700, [scene.logPool])
 
   useEffect(() => {
     const el = scroller.current

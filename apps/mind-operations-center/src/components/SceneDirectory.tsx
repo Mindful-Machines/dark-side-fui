@@ -15,15 +15,20 @@ function StatusMark({ status }: { status: ViewMeta['status'] }) {
   return <span className={`dir-status is-${cls}`}>{status}</span>
 }
 
-function viewUrl(id: SceneId, mode: string) {
+function viewUrl(id: SceneId, mode: string, motion: string) {
   const url = new URL(window.location.href)
   url.searchParams.set('scene', id)
   url.searchParams.set('mode', mode)
+  if (motion === 'auto') {
+    url.searchParams.delete('motion')
+  } else {
+    url.searchParams.set('motion', motion)
+  }
   return url.toString()
 }
 
 function ViewRow({ meta, active }: { meta: ViewMeta; active: boolean }) {
-  const { goTo, mode } = useScene()
+  const { goTo, mode, motion } = useScene()
   const [copied, setCopied] = useState(false)
   const launchable = canLaunch(meta) && meta.id !== 'directory'
   const isDirectory = meta.id === 'directory'
@@ -37,7 +42,7 @@ function ViewRow({ meta, active }: { meta: ViewMeta; active: boolean }) {
   }
 
   const copyUrl = async () => {
-    const text = viewUrl(meta.id, mode)
+    const text = viewUrl(meta.id, mode, motion)
     try {
       await navigator.clipboard.writeText(text)
       setCopied(true)
@@ -115,9 +120,15 @@ function ViewRow({ meta, active }: { meta: ViewMeta; active: boolean }) {
 }
 
 export function SceneDirectory() {
-  const { sceneId, mode, setMode } = useScene()
+  const { sceneId, mode, motion, setMode, setMotion } = useScene()
+
+  const enterCinematicDisplay = () => {
+    setMotion('full')
+    setMode('display')
+  }
 
   const requestFullscreen = () => {
+    setMotion('full')
     const el = document.documentElement
     if (!document.fullscreenElement) {
       void el.requestFullscreen?.()
@@ -145,9 +156,32 @@ export function SceneDirectory() {
             <button
               type="button"
               className={mode === 'display' ? 'is-active' : undefined}
-              onClick={() => setMode('display')}
+              onClick={enterCinematicDisplay}
             >
               Display
+            </button>
+          </div>
+          <div className="dir-mode" role="group" aria-label="Motion mode">
+            <button
+              type="button"
+              className={motion === 'auto' ? 'is-active' : undefined}
+              onClick={() => setMotion('auto')}
+            >
+              Motion Auto
+            </button>
+            <button
+              type="button"
+              className={motion === 'full' ? 'is-active' : undefined}
+              onClick={() => setMotion('full')}
+            >
+              Motion Full
+            </button>
+            <button
+              type="button"
+              className={motion === 'reduce' ? 'is-active' : undefined}
+              onClick={() => setMotion('reduce')}
+            >
+              Motion Reduced
             </button>
           </div>
           <button type="button" className="dir-fs" onClick={requestFullscreen}>
@@ -205,7 +239,7 @@ export function SceneDirectory() {
           <kbd>←</kbd>
           <kbd>→</kbd> within section
         </span>
-        <span>no key chords · URL copies current mode</span>
+        <span>no key chords · URL copies current mode + motion</span>
         <span className="dir-legend-meta">{VIEW_REGISTRY.directory.indexLabel}</span>
       </footer>
     </section>

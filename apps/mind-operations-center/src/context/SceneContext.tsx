@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react'
@@ -25,14 +26,19 @@ import type { Scene, SceneId } from '../types'
 
 type HistoryMode = 'push' | 'replace'
 
+/** App motion policy. `auto` follows OS prefers-reduced-motion. */
+export type MotionMode = 'auto' | 'full' | 'reduce'
+
 interface SceneContextValue {
   sceneId: SceneId
   scene: Scene
   mode: AppMode
+  motion: MotionMode
   /** Active nav section — inferred from the current scene (including direct URLs). */
   section: ViewGroup
   setSceneId: (id: SceneId) => void
   setMode: (mode: AppMode) => void
+  setMotion: (motion: MotionMode) => void
   toggleMode: () => void
   goTo: (id: SceneId, mode?: AppMode, history?: HistoryMode) => void
 }
@@ -63,10 +69,25 @@ function readModeParam(): AppMode {
   return isAppMode(param) ? param : 'review'
 }
 
-function buildAppUrl(id: SceneId, mode: AppMode) {
+function isMotionMode(value: string | null): value is MotionMode {
+  return value === 'auto' || value === 'full' || value === 'reduce'
+}
+
+function readMotionParam(): MotionMode {
+  const param = new URLSearchParams(window.location.search).get('motion')
+  if (param === null || param === '') return 'auto'
+  return isMotionMode(param) ? param : 'auto'
+}
+
+function buildAppUrl(id: SceneId, mode: AppMode, motion: MotionMode) {
   const url = new URL(window.location.href)
   url.searchParams.set('scene', id)
   url.searchParams.set('mode', mode)
+  if (motion === 'auto') {
+    url.searchParams.delete('motion')
+  } else {
+    url.searchParams.set('motion', motion)
+  }
   return url
 }
 
@@ -74,8 +95,8 @@ function urlKey(url: URL) {
   return `${url.pathname}?${url.searchParams.toString()}`
 }
 
-function writeUrlParams(id: SceneId, mode: AppMode, history: HistoryMode) {
-  const url = buildAppUrl(id, mode)
+function writeUrlParams(id: SceneId, mode: AppMode, motion: MotionMode, history: HistoryMode) {
+  const url = buildAppUrl(id, mode, motion)
   const next = urlKey(url)
   const current = urlKey(new URL(window.location.href))
   if (next === current) return
@@ -101,16 +122,34 @@ function isTypingTarget(target: EventTarget | null) {
 export function SceneProvider({ children }: { children: ReactNode }) {
   const [sceneId, setSceneIdState] = useState<SceneId>(readSceneParam)
   const [mode, setModeState] = useState<AppMode>(readModeParam)
+  const [motion, setMotionState] = useState<MotionMode>(readMotionParam)
   const section = sectionOf(sceneId)
+  const sceneIdRef = useRef(sceneId)
+  const modeRef = useRef(mode)
+  const motionRef = useRef(motion)
+  sceneIdRef.current = sceneId
+  modeRef.current = mode
+  motionRef.current = motion
 
-  const goTo = useCallback((id: SceneId, nextMode?: AppMode, history: HistoryMode = 'replace') => {
-    setSceneIdState(id)
-    setModeState((prev) => {
-      const resolved = nextMode ?? prev
-      writeUrlParams(id, resolved, history)
-      return resolved
-    })
-  }, [])
+  const commit = useCallback(
+    (id: SceneId, nextMode: AppMode, nextMotion: MotionMode, history: HistoryMode) => {
+      sceneIdRef.current = id
+      modeRef.current = nextMode
+      motionRef.current = nextMotion
+      setSceneIdState(id)
+      setModeState(nextMode)
+      setMotionState(nextMotion)
+      writeUrlParams(id, nextMode, nextMotion, history)
+    },
+    [],
+  )
+
+  const goTo = useCallback(
+    (id: SceneId, nextMode?: AppMode, history: HistoryMode = 'replace') => {
+      commit(id, nextMode ?? modeRef.current, motionRef.current, history)
+    },
+    [commit],
+  )
 
   const setSceneId = useCallback(
     (id: SceneId) => {
@@ -119,27 +158,27 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     [goTo],
   )
 
-  const setMode = useCallback((next: AppMode) => {
-    setModeState(next)
-    setSceneIdState((id) => {
-      writeUrlParams(id, next, 'replace')
-      return id
-    })
-  }, [])
+  const setMode = useCallback(
+    (next: AppMode) => {
+      commit(sceneIdRef.current, next, motionRef.current, 'replace')
+    },
+    [commit],
+  )
+
+  const setMotion = useCallback(
+    (next: MotionMode) => {
+      commit(sceneIdRef.current, modeRef.current, next, 'replace')
+    },
+    [commit],
+  )
 
   const toggleMode = useCallback(() => {
-    setModeState((prev) => {
-      const next = prev === 'review' ? 'display' : 'review'
-      setSceneIdState((id) => {
-        writeUrlParams(id, next, 'replace')
-        return id
-      })
-      return next
-    })
-  }, [])
+    const next = modeRef.current === 'review' ? 'display' : 'review'
+    commit(sceneIdRef.current, next, motionRef.current, 'replace')
+  }, [commit])
 
   useEffect(() => {
-    writeUrlParams(sceneId, mode, 'replace')
+    writeUrlParams(sceneId, mode, motion, 'replace')
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount sync only
   }, [])
 
@@ -147,6 +186,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     const onPopState = () => {
       setSceneIdState(readSceneParam())
       setModeState(readModeParam())
+      setMotionState(readMotionParam())
     }
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
@@ -225,13 +265,15 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       sceneId,
       scene: SCENES[sceneId],
       mode,
+      motion,
       section,
       setSceneId,
       setMode,
+      setMotion,
       toggleMode,
       goTo,
     }),
-    [sceneId, mode, section, setSceneId, setMode, toggleMode, goTo],
+    [sceneId, mode, motion, section, setSceneId, setMode, setMotion, toggleMode, goTo],
   )
 
   return <SceneContext.Provider value={value}>{children}</SceneContext.Provider>

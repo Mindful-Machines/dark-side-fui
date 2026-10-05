@@ -1,36 +1,37 @@
+import { useId } from 'react'
 import { FIELD } from '../heart/field'
 import { AORTA_PATHS, CHAMBER_PATHS, SILHOUETTE_PATHS } from '../heart/source/paths'
 
+/** Registration nodes in heart source space. */
 const NODES = [
-  [128, 124],
-  [142, 142],
-  [116, 148],
-  [134, 162],
+  [170, 200],
+  [230, 250],
+  [150, 270],
+  [210, 310],
 ] as const
 
-const DRIFT = [
-  [108, 118],
-  [150, 122],
-  [112, 138],
-  [146, 154],
-  [100, 144],
-  [158, 136],
-  [124, 168],
-  [138, 112],
-]
+/**
+ * Fixed placement in the shared thoracic silhouette coordinate system
+ * (viewBox 0 0 970 1180). Do not change per viewport or mode.
+ *
+ * Center ≈ (548, 600): chest, viewer’s right of midline (x=485).
+ * Scale 0.34 → heart width ≈ 135 ≈ 22–25% of chest width.
+ */
+export const THORACIC_HEART_TRANSFORM = 'translate(548 600) scale(0.34) translate(-198 -244)' as const
 
+/** Existing heart paths as a <g> for ThoracicAnatomyStage — not a nested <svg>. */
 export function CardiacFocusRegion() {
+  const clipId = useId().replace(/:/g, '')
+
   return (
-    <g className="thx-focus">
-      <ellipse className="thx-focus-field" cx="130" cy="140" rx="40" ry="48" />
-      <g className="thx-heart" transform="translate(130 140) scale(0.2) translate(-198 -244)">
+    <g className="thx-focus" transform={THORACIC_HEART_TRANSFORM}>
+      <g className="thx-heart">
         <defs>
-          <clipPath id="thx-heart-clip">
+          <clipPath id={clipId}>
             <path d={SILHOUETTE_PATHS[0]} />
           </clipPath>
         </defs>
-        <path className="thx-heart-fill" d={SILHOUETTE_PATHS[0]} />
-        <g clipPath="url(#thx-heart-clip)">
+        <g clipPath={`url(#${clipId})`}>
           {AORTA_PATHS.map((d) => (
             <path key={d} className="thx-heart-aorta" d={d} />
           ))}
@@ -41,16 +42,13 @@ export function CardiacFocusRegion() {
       </g>
       <path
         className="thx-lock"
-        d="M98 100 H108 M98 100 V110 M162 100 H152 M162 100 V110 M98 180 H108 M98 180 V170 M162 180 H152 M162 180 V170"
+        d="M48 48 H78 M48 48 V78 M348 48 H318 M348 48 V78 M48 442 H78 M48 442 V412 M348 442 H318 M348 442 V412"
       />
       <g className="thx-crosshair">
-        <path d="M130 128 V134 M130 146 V152 M122 140 H128 M132 140 H138" />
+        <path d="M198 210 V230 M198 258 V278 M178 244 H198 M198 244 H218" />
       </g>
       {NODES.map(([x, y], i) => (
-        <circle key={i} className={`thx-node${i === 1 ? ' fault' : ''}`} cx={x} cy={y} r={i === 1 ? 1.8 : 1.3} />
-      ))}
-      {DRIFT.map(([x, y], i) => (
-        <circle key={`d${i}`} className="thx-drift" cx={x} cy={y} r="0.7" />
+        <circle key={i} className={`thx-node${i === 1 ? ' fault' : ''}`} cx={x} cy={y} r={i === 1 ? 5 : 3.5} />
       ))}
     </g>
   )

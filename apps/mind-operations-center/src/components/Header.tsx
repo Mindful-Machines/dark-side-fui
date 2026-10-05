@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SceneSwitcher } from './SceneSwitcher'
 import { useScene } from '../context/SceneContext'
+import { useWhenVisibleInterval } from '../hooks/useWhenVisibleInterval'
 
 function useClock() {
   const [now, setNow] = useState(() => new Date())
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(new Date()), 1000)
-    return () => window.clearInterval(id)
-  }, [])
+  useWhenVisibleInterval(() => setNow(new Date()), 1000)
   return now
 }
 

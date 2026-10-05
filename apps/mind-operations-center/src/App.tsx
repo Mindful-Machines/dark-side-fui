@@ -12,7 +12,7 @@ import { isDirectoryScene } from './data/registry'
 import { isPhoneScene } from './data/scenes'
 
 function Shell() {
-  const { scene, mode } = useScene()
+  const { scene, mode, motion } = useScene()
   const directory = isDirectoryScene(scene.id)
   const phone = isPhoneScene(scene.id)
 
@@ -22,6 +22,7 @@ function Shell() {
       data-scene={scene.id}
       data-tone={scene.tone}
       data-mode={mode}
+      data-motion={motion}
     >
       {phone && mode === 'display' ? null : <Header />}
       {directory ? (

@@ -37,9 +37,13 @@ export function HeartMonitorScene() {
 
       <div className="heart-monitor-body">
         <AnatomyViewport state={profile.key} beatMs={beatMs} caption={profile.caption}>
-          {thoracic ? <ThoracicScan /> : <HeartVisual />}
+          {thoracic ? (
+            <ThoracicScan bpm={scene.heartRate} metrics={scene.metrics} />
+          ) : (
+            <HeartVisual />
+          )}
         </AnatomyViewport>
-        <VitalReadout bpm={scene.heartRate} metrics={scene.metrics} />
+        {thoracic ? null : <VitalReadout bpm={scene.heartRate} metrics={scene.metrics} />}
       </div>
 
       <ECGStrip

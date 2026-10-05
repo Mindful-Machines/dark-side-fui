@@ -27,8 +27,27 @@ export function CogitoScriptStage({ scene }: { scene: Scene }) {
   const [tick, setTick] = useState(0)
 
   useEffect(() => {
-    const id = window.setInterval(() => setTick((n) => n + 1), 1200)
-    return () => window.clearInterval(id)
+    let id = 0
+    const tick = () => setTick((n) => n + 1)
+    const start = () => {
+      if (id !== 0) return
+      id = window.setInterval(tick, 1200)
+    }
+    const stop = () => {
+      if (id === 0) return
+      window.clearInterval(id)
+      id = 0
+    }
+    const onVis = () => {
+      if (document.hidden) stop()
+      else start()
+    }
+    if (!document.hidden) start()
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      stop()
+      document.removeEventListener('visibilitychange', onVis)
+    }
   }, [])
 
   const clock = useMemo(() => {

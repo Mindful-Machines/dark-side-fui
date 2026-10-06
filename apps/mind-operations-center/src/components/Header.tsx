@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { SceneSwitcher } from './SceneSwitcher'
+import { CAPTURE } from '../capture/config'
+import { frozenClock } from '../capture/runtime'
 import { useScene } from '../context/SceneContext'
 import { useWhenVisibleInterval } from '../hooks/useWhenVisibleInterval'
 
 function useClock() {
-  const [now, setNow] = useState(() => new Date())
-  useWhenVisibleInterval(() => setNow(new Date()), 1000)
+  const [now, setNow] = useState(() => (CAPTURE.enabled ? frozenClock() : new Date()))
+  useWhenVisibleInterval(() => setNow(new Date()), CAPTURE.enabled ? null : 1000)
   return now
 }
 

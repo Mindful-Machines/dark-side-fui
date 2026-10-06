@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { CAPTURE } from '../capture/config'
 
 /**
  * Runs `setInterval` only while the document is visible.
@@ -10,7 +11,7 @@ export function useWhenVisibleInterval(
   deps: unknown[] = [],
 ) {
   useEffect(() => {
-    if (ms === null) return
+    if (ms === null || CAPTURE.enabled) return
 
     let id = 0
     const tick = () => {

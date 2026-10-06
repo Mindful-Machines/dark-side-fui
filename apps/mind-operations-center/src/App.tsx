@@ -1,4 +1,5 @@
 import { SceneProvider, useScene } from './context/SceneContext'
+import { CaptureHost } from './capture/CaptureHost'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { VitalsPanel } from './components/VitalsPanel'
@@ -60,7 +61,9 @@ function Shell() {
 export default function App() {
   return (
     <SceneProvider>
-      <Shell />
+      <CaptureHost>
+        <Shell />
+      </CaptureHost>
     </SceneProvider>
   )
 }

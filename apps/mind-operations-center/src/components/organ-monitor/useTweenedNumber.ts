@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
+import { CAPTURE } from '../../capture/config'
 
 export function useTweenedNumber(target: number, ms = 720) {
   const [value, setValue] = useState(target)
   const current = useRef(target)
 
   useEffect(() => {
+    if (CAPTURE.enabled) {
+      current.current = target
+      setValue(target)
+      return
+    }
     const from = current.current
     const t0 = performance.now()
     let id = 0

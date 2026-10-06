@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import heartStill from '../../../assets/lab/cardiac-3d-lab/cardiac-3d-heart-recognition.png'
 import heartMotion from '../../../assets/lab/cardiac-3d-lab/heart-motion-preview-v4.mp4'
+import { CAPTURE } from '../../../capture/config'
 import { useScene } from '../../../context/SceneContext'
 import './cardiac-3d-lab.css'
 
@@ -35,7 +36,7 @@ export function CardiacTomographyLab() {
     const video = videoRef.current
     if (!video) return
     const sync = () => {
-      if (!playMotion || document.hidden) {
+      if (CAPTURE.enabled || !playMotion || document.hidden) {
         video.pause()
         return
       }
@@ -56,7 +57,7 @@ export function CardiacTomographyLab() {
           poster={heartStill}
           width={640}
           height={360}
-          autoPlay
+          autoPlay={!CAPTURE.enabled}
           muted
           loop
           playsInline

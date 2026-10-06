@@ -1,0 +1,30 @@
+html[data-capture],
+html[data-capture] * {
+  cursor: none !important;
+}
+
+.app[data-capture] {
+  cursor: none !important;
+  --beat: 0.882352941s;
+}
+
+.app[data-capture] * {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+.app[data-capture] .review-controls,
+.app[data-capture] .scene-switcher,
+.app[data-capture] .om-controls,
+.app[data-capture] .wip-badge,
+.app[data-capture] .footer-wip,
+.app[data-capture] .phone-review-meta,
+.app[data-capture] .dir-head-actions,
+.app[data-capture] .dir-legend {
+  display: none !important;
+}
+
+.app[data-capture] .ct-lab-source,
+.app[data-capture][data-scene="cardiac-3d-lab"] .anatomy-caption {
+  display: none !important;
+}

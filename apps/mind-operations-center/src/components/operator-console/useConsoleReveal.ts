@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react'
+import { CAPTURE } from '../../capture/config'
 
 export function useTypedText(text: string, active: boolean, ms = 18) {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
+    if (CAPTURE.enabled) return
     setCount(0)
     if (!active || !text) return
   }, [text, active])
 
   useEffect(() => {
+    if (CAPTURE.enabled) {
+      setCount(text.length)
+      return
+    }
     if (!active) return
     if (count >= text.length) return
     const id = window.setTimeout(() => setCount((n) => n + 1), ms)
@@ -25,10 +31,15 @@ export function useRevealLines(lines: string[], active: boolean, delayMs = 90) {
   const [shown, setShown] = useState(0)
 
   useEffect(() => {
+    if (CAPTURE.enabled) return
     setShown(0)
   }, [lines, active])
 
   useEffect(() => {
+    if (CAPTURE.enabled) {
+      setShown(lines.length)
+      return
+    }
     if (!active) return
     if (shown >= lines.length) return
     const id = window.setTimeout(() => setShown((n) => n + 1), delayMs)

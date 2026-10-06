@@ -1,4 +1,7 @@
 import { memo, useEffect, useMemo, useRef } from 'react'
+import { CAPTURE } from '../capture/config'
+import { captureWavePoints } from '../capture/signal'
+import { useCaptureTime } from '../capture/useCaptureTime'
 import type { Tone } from '../types'
 
 interface WaveformProps {
@@ -64,7 +67,7 @@ function buildPath(points: number[], height: number) {
     .map((p, i) => {
       const x = i * step
       const y = mid - p * amp
-      return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`
+      return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`
     })
     .join(' ')
 }
@@ -79,19 +82,34 @@ function WaveformInner({
   irregular = false,
   className,
 }: WaveformProps) {
+  const captureTime = useCaptureTime()
   const pathRef = useRef<SVGPathElement>(null)
   const pointsRef = useRef<number[]>(
     Array.from({ length: POINT_COUNT }, (_, i) => sample(i * 0.05, bpm, noise, mode, irregular)),
   )
   const initialD = useMemo(
-    () => buildPath(pointsRef.current, height),
+    () =>
+      buildPath(
+        CAPTURE.enabled
+          ? captureWavePoints(0, { noise, mode, irregular })
+          : pointsRef.current,
+        height,
+      ),
     // Initial paint only — live updates mutate the path attribute directly.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   )
 
   useEffect(() => {
-    if (paused) return
+    if (captureTime === null) return
+    const pts = captureWavePoints(paused ? 0 : captureTime, { noise, mode, irregular })
+    pointsRef.current = pts
+    const el = pathRef.current
+    if (el) el.setAttribute('d', buildPath(pts, height))
+  }, [captureTime, noise, paused, mode, irregular, height])
+
+  useEffect(() => {
+    if (CAPTURE.enabled || paused) return
 
     let t = 7
     let id = 0
@@ -125,7 +143,7 @@ function WaveformInner({
       stop()
       document.removeEventListener('visibilitychange', onVis)
     }
-  }, [bpm, noise, paused, mode, irregular, height])
+  }, [bpm, noise, paused, mode, irregular, height, captureTime])
 
   return (
     <svg

@@ -4,6 +4,9 @@ import { ProgressBar } from './ProgressBar'
 import { Waveform } from './Waveform'
 import { HeartMonitorScene } from './organ-monitor/heart/HeartMonitorScene'
 import { OperatorConsole } from './operator-console/OperatorConsole'
+import { CAPTURE } from '../capture/config'
+import { wrapLoop } from '../capture/runtime'
+import { useCaptureTime } from '../capture/useCaptureTime'
 import { useScene } from '../context/SceneContext'
 import { isHeartScene, isOperatorScene, isResearchScene } from '../data/scenes'
 import { ResearchTerminal } from './research-terminal/ResearchTerminal'
@@ -83,6 +86,11 @@ function ThoughtStage({ scene }: { scene: Scene }) {
   }, [])
 
   useEffect(() => {
+    if (CAPTURE.enabled) {
+      setShown(Math.max(0, thoughts.length - 1))
+      setTyped(thoughts[thoughts.length - 1]?.length ?? 0)
+      return
+    }
     if (!visible) return
     const current = thoughts[shown]
     if (current === undefined) return
@@ -122,10 +130,16 @@ function ThoughtStage({ scene }: { scene: Scene }) {
 
 function ScriptStage({ scene }: { scene: Scene }) {
   const isExecuting = scene.id === 'executing'
+  const captureTime = useCaptureTime()
   const [line, setLine] = useState(scene.executingLine ?? 1)
 
   useEffect(() => {
-    if (!isExecuting) return
+    if (captureTime === null || !isExecuting) return
+    setLine(1 + Math.floor(wrapLoop(captureTime) / 1800) % 8)
+  }, [captureTime, isExecuting])
+
+  useEffect(() => {
+    if (CAPTURE.enabled || !isExecuting) return
     let id = 0
     const tick = () => setLine((prev) => (prev >= 8 ? 1 : prev + 1))
     const start = () => {
@@ -184,10 +198,18 @@ function ScriptStage({ scene }: { scene: Scene }) {
 
 function UploadStage({ scene }: { scene: Scene }) {
   const isLive = scene.id === 'uploading'
+  const captureTime = useCaptureTime()
   const [progress, setProgress] = useState(scene.uploadProgress ?? 0)
 
   useEffect(() => {
-    if (!isLive) return
+    if (captureTime === null || !isLive) return
+    const cycle = wrapLoop(captureTime) % 15000
+    const stepped = 0.14 + (cycle / 180) * 0.012
+    setProgress(0.14 + ((stepped - 0.14) % 0.83))
+  }, [captureTime, isLive])
+
+  useEffect(() => {
+    if (CAPTURE.enabled || !isLive) return
     let id = 0
     const tick = () => {
       setProgress((prev) => {

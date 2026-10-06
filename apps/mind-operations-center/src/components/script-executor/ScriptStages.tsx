@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
+import { CAPTURE } from '../../capture/config'
+import { wrapLoop } from '../../capture/runtime'
+import { useCaptureTime } from '../../capture/useCaptureTime'
 import type { Scene, ScriptLine } from '../../types'
 
 function LineList({ lines, heroN }: { lines: ScriptLine[]; heroN?: number }) {
@@ -24,9 +27,16 @@ function LineList({ lines, heroN }: { lines: ScriptLine[]; heroN?: number }) {
 
 /** Scene 26 — active execution of the spoken line. */
 export function CogitoScriptStage({ scene }: { scene: Scene }) {
+  const captureTime = useCaptureTime()
   const [tick, setTick] = useState(0)
 
   useEffect(() => {
+    if (captureTime === null) return
+    setTick(Math.floor(wrapLoop(captureTime) / 1200))
+  }, [captureTime])
+
+  useEffect(() => {
+    if (CAPTURE.enabled) return
     let id = 0
     const tick = () => setTick((n) => n + 1)
     const start = () => {
@@ -79,10 +89,11 @@ type EditPhase = 'select' | 'delete' | 'insert' | 'ready'
 
 /** Scene 39 — revision / play-armed edit state. */
 export function TowerCranesEditStage({ scene }: { scene: Scene }) {
-  const [phase, setPhase] = useState<EditPhase>('select')
+  const [phase, setPhase] = useState<EditPhase>(CAPTURE.enabled ? 'ready' : 'select')
   const [armed, setArmed] = useState(false)
 
   useEffect(() => {
+    if (CAPTURE.enabled) return
     const order: EditPhase[] = ['select', 'delete', 'insert', 'ready']
     let i = 0
     const id = window.setInterval(() => {

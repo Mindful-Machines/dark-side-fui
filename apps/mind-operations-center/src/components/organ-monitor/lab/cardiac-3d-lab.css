@@ -1,0 +1,145 @@
+/* Hidden `cardiac-3d-lab` scene only. Mirrors the `.app[data-scene^="heart"]` accents. */
+.app[data-scene="cardiac-3d-lab"] {
+  --status: #c47a72;
+}
+
+.app[data-scene="cardiac-3d-lab"] .col-left .waveform path {
+  stroke: #c47a72;
+}
+
+.ct-lab {
+  /* Rendered still height; the heart spans 74% of it, centred 43.5% down, 47% of it wide. */
+  --ct-h: min(84cqh, 140cqw, 640px);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  container-type: size;
+}
+
+.ct-lab-still {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - var(--ct-h) * 0.435);
+  height: var(--ct-h);
+  width: auto;
+  max-width: none;
+  aspect-ratio: 16 / 9;
+  transform: translateX(-50%);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.ct-lab-video {
+  background: #080a0b;
+  object-fit: contain;
+}
+
+.ct-lab-title,
+.ct-lab-marks,
+.ct-lab-status,
+.ct-lab-source {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.ct-lab-title {
+  left: 22px;
+  top: 20px;
+  display: grid;
+  gap: 4px;
+}
+
+.ct-lab-dim,
+.ct-lab-source {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: #7d868c;
+  opacity: 0.6;
+}
+
+.ct-lab-source {
+  right: 22px;
+  top: 20px;
+}
+
+.ct-lab-marks {
+  inset: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.ct-lab-marks li {
+  position: absolute;
+  left: calc(50% + var(--ct-x) * var(--ct-h));
+  right: 20px;
+  top: calc(50% + (var(--ct-y) - 0.435) * var(--ct-h));
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+
+.ct-lab-marks li::before {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 1px;
+  background: var(--om-line);
+  opacity: 0.4;
+}
+
+.ct-lab-marks li.is-focus {
+  color: var(--om-cardiac);
+}
+
+.ct-lab-marks li.is-focus::before {
+  background: var(--om-cardiac);
+  opacity: 0.6;
+}
+
+.ct-lab-status {
+  right: 22px;
+  bottom: 18px;
+  display: grid;
+  gap: 6px;
+  text-align: right;
+}
+
+.ct-lab-status div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.ct-lab-status dt {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-faint);
+}
+
+.ct-lab-status dd {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #cfcab8;
+}
+
+.app[data-capture] .ct-lab-source,
+.app[data-capture][data-scene="cardiac-3d-lab"] .anatomy-caption {
+  display: none;
+}
+
+@container (max-width: 560px) {
+  .ct-lab-source {
+    display: none;
+  }
+}

@@ -488,6 +488,23 @@ export const VIEW_REGISTRY: Record<SceneId, ViewMeta> = {
     group: 'thoracic',
     hidden: true,
   },
+  'cardiac-3d-lab': {
+    id: 'cardiac-3d-lab',
+    indexLabel: 'CX',
+    name: 'Cardiac · Tomography lab',
+    scene: null,
+    surface: null,
+    importance: null,
+    device: 'monitor',
+    status: 'IN PROGRESS',
+    cue: 'Lab · Blender volumetric heart · URL only',
+    format: 'landscape',
+    shortcut: '—',
+    sectionKey: '2',
+    letterKey: null,
+    group: 'cardiac',
+    hidden: true,
+  },
 
   'research-pending': {
     id: 'research-pending',

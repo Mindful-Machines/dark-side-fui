@@ -77,8 +77,13 @@ export function isThoracicScene(id: SceneId): boolean {
   return THORACIC_SCENE_ORDER.includes(id) || id === 'thoracic-scan'
 }
 
+/** Hidden, URL-only experiment: Blender tomography still in the cardiac shell. */
+export function isCardiacLabScene(id: SceneId): boolean {
+  return id === 'cardiac-3d-lab'
+}
+
 export function isHeartScene(id: SceneId): boolean {
-  return HEART_SCENE_ORDER.includes(id) || isThoracicScene(id)
+  return HEART_SCENE_ORDER.includes(id) || isThoracicScene(id) || isCardiacLabScene(id)
 }
 
 export function isOperatorScene(id: SceneId): boolean {
@@ -710,6 +715,50 @@ export const SCENES: Record<SceneId, Scene> = {
       'CH-3   quiet',
       'UPLINK rtt 39ms',
       'CORE   no drive',
+    ],
+  },
+
+  'cardiac-3d-lab': {
+    id: 'cardiac-3d-lab',
+    label: 'Cardiac · Tomography lab',
+    shortLabel: 'Cardiac lab',
+    status: 'SINUS',
+    tone: 'nominal',
+    heartRate: 68,
+    neuralLoad: 0.22,
+    coherence: 0.961,
+    latencyMs: 39,
+    uplink: 'STABLE',
+    scriptName: 'AURORA-7',
+    scriptStatus: 'STANDBY',
+    scriptHash: 'a7f3.c19e.04',
+    uploadProgress: null,
+    executingLine: null,
+    contaminationLine: null,
+    waveformNoise: 0.035,
+    waveformPaused: false,
+    thoughts: [],
+    scriptLines: script(Array(8).fill('ok')),
+    channels: CHANNELS_IDLE,
+    metrics: [
+      { label: 'MAP', value: '86', hint: 'mmHg' },
+      { label: 'SpO₂', value: '98%', hint: 'stable' },
+      { label: 'QT', value: '392', hint: 'ms' },
+      { label: 'Temp', value: '36.7', hint: '°C' },
+    ],
+    initialLog: [
+      'CARDIAC sinus 68',
+      'TOMO   volumetric lock',
+      'TOMO   tracking engaged',
+      'LEAD   II clean',
+    ],
+    logPool: [
+      'TOMO   volumetric lock',
+      'TOMO   aortic arch in view',
+      'CARDIAC rr regular',
+      'LEAD   II clean',
+      'VITAL  sinus 68',
+      'UPLINK rtt 39ms',
     ],
   },
 

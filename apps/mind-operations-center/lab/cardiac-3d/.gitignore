@@ -1,0 +1,22 @@
+# Downloaded third-party model files (see ATTRIBUTION.md for provenance)
+source/*
+!source/.gitkeep
+
+# Blender working files
+*.blend
+*.blend1
+
+# Rendered output
+renders/stills/*.png
+renders/frames/*.png
+renders/motion-storyboard/*.png
+renders/motion-preview/*
+renders/motion-preview-v2/*
+renders/motion-preview-v3/*
+renders/motion-preview-v4/*
+
+# Video exports
+exports/*.mp4
+exports/*.mov
+exports/*.webm
+exports/*.mkv

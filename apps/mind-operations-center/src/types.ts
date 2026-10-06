@@ -22,6 +22,7 @@ export type SceneId =
   | 'thoracic-intervention'
   | 'thoracic-recovered'
   | 'thoracic-scan'
+  | 'cardiac-3d-lab'
   | 'research-pending'
   | 'research-approved'
   | 'operator-console'

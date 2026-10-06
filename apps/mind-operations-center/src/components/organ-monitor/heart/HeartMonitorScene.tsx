@@ -7,18 +7,24 @@ import { ThoracicScan } from '../thoracic/ThoracicScan'
 import { isThoracicStateId, THORACIC_PROFILES } from '../thoracic/profile'
 import { HeartVisual } from './HeartVisual'
 import { HEART_PROFILES, isHeartStateId } from './states'
+import { CardiacTomographyLab } from '../lab/CardiacTomographyLab'
+import { CARDIAC_LAB_PROFILE } from '../lab/profile'
 import { useScene } from '../../../context/SceneContext'
+import { isCardiacLabScene } from '../../../data/scenes'
 import '../organ-monitor.css'
 
 export function HeartMonitorScene() {
   const { scene } = useScene()
   let thoracic = false
+  const lab = isCardiacLabScene(scene.id)
   let profile
   if (isThoracicStateId(scene.id)) {
     thoracic = true
     profile = THORACIC_PROFILES[scene.id]
   } else if (isHeartStateId(scene.id)) {
     profile = HEART_PROFILES[scene.id]
+  } else if (lab) {
+    profile = CARDIAC_LAB_PROFILE
   } else {
     return null
   }
@@ -39,6 +45,8 @@ export function HeartMonitorScene() {
         <AnatomyViewport state={profile.key} beatMs={beatMs} caption={profile.caption}>
           {thoracic ? (
             <ThoracicScan bpm={scene.heartRate} metrics={scene.metrics} />
+          ) : lab ? (
+            <CardiacTomographyLab />
           ) : (
             <HeartVisual />
           )}

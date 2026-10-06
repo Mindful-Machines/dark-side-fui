@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "defaults": {
     "mode": "display",
     "motion": "full",
@@ -8,21 +8,16 @@
     "fps": 30,
     "seed": 1
   },
-  "profiles": {
-    "preview": {
-      "landscape-ui": { "width": 960, "height": 540 },
-      "phone-screen": { "width": 390, "height": 844 }
-    },
-    "final": {
-      "landscape-ui": { "width": 1920, "height": 1080 },
-      "phone-screen": { "width": 390, "height": 844 }
-    }
-  },
   "phoneNative": {
-    "width": 390,
-    "height": 844,
+    "cssWidth": 390,
+    "cssHeight": 844,
+    "deviceScaleFactor": 3,
+    "captureWidth": 1170,
+    "captureHeight": 2532,
+    "previewWidth": 390,
+    "previewHeight": 844,
     "aspect": "390:844",
-    "notes": "Existing phone display is 390×844, not 9:16. Final device resolution remains pending Chad's phone model. Do not distort."
+    "notes": "Phone CSS layout is 390×844, captured at deviceScaleFactor 3 as 1170×2532. Do not crop, stretch, or convert to 9:16."
   },
   "entries": [
     {
@@ -30,291 +25,177 @@
       "enabled": false,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "directory.mp4",
-      "notes": "Scene index. Landscape UI."
+      "notes": "Excluded from Chad MOC V1."
     },
     {
       "scene": "idle",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "idle.mp4",
       "notes": "Operations idle / system overview."
     },
     {
       "scene": "elevated",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "elevated.mp4",
       "notes": "Elevated heart rate."
     },
     {
       "scene": "thoughts",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "thoughts.mp4",
-      "notes": "Subconscious thought stream. Capture freezes typed thoughts for loop safety."
+      "notes": "Completed thought-stream hold with ambient motion."
     },
     {
       "scene": "executing",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "executing.mp4",
-      "notes": "Script executing. Line index is derived from capture time."
+      "notes": "Script executing. Eight highlight steps loop over 15s."
     },
     {
       "scene": "paused",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "paused.mp4",
-      "notes": "Contamination pause."
+      "notes": "Contamination pause hold."
     },
     {
       "scene": "uploading",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "uploading.mp4",
-      "notes": "Inbound script transfer. Progress is derived from capture time."
+      "notes": "Deterministic 15s progress triangle that returns to start."
     },
     {
       "scene": "partial",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "partial.mp4",
-      "notes": "82% partial upload."
+      "notes": "82% partial upload hold."
     },
     {
       "scene": "script-cogito",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "script-cogito.mp4",
-      "notes": "I think, therefore I am. Line clock is derived from capture time."
+      "notes": "Ten timing steps loop over 15s on the completed cogito plate."
     },
     {
       "scene": "script-tower-cranes",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "script-tower-cranes.mp4",
-      "notes": "Script edit. Capture freezes the ready-to-play state."
+      "notes": "Completed ready-to-play hold."
     },
     {
       "scene": "heart-idle",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "heart-idle.mp4",
       "notes": "Cardiac idle / sinus."
     },
     {
       "scene": "heart-elevated",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "heart-elevated.mp4",
       "notes": "Cardiac elevated."
     },
     {
       "scene": "heart-irregular",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "heart-irregular.mp4",
-      "notes": "Cardiac irregular. PVC markers are static; waveform uses seeded noise."
+      "notes": "Cardiac irregular. PVC pattern is periodic over 17 beats."
     },
     {
       "scene": "heart-intervention",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "heart-intervention.mp4",
       "notes": "Cardiac intervention."
     },
     {
       "scene": "heart-recovered",
-      "enabled": false,
-      "category": "landscape-ui",
-      "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
-      "captureTarget": "viewport",
-      "output": "heart-recovered.mp4",
-      "notes": "Cardiac recovered."
-    },
-    {
-      "scene": "cardiac-3d-lab",
       "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
-      "output": "cardiac-3d-lab.mp4",
-      "notes": "Hidden 3D tomography lab. Uses approved V4 heart MP4. SRC / lab-build labels hidden in capture."
+      "output": "heart-recovered.mp4",
+      "notes": "Cardiac recovered."
     },
     {
       "scene": "thoracic-idle",
       "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "thoracic-idle.mp4",
-      "notes": "Thoracic idle / sinus. WIP labels hidden in capture."
+      "notes": "Thoracic idle / sinus."
     },
     {
       "scene": "thoracic-elevated",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "thoracic-elevated.mp4",
       "notes": "Thoracic elevated."
     },
     {
       "scene": "thoracic-irregular",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "thoracic-irregular.mp4",
       "notes": "Thoracic irregular."
     },
     {
       "scene": "thoracic-intervention",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "thoracic-intervention.mp4",
       "notes": "Thoracic intervention."
     },
     {
       "scene": "thoracic-recovered",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "thoracic-recovered.mp4",
       "notes": "Thoracic recovered."
@@ -324,70 +205,54 @@
       "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "research-pending.mp4",
       "notes": "Research terminal authorization pending."
     },
     {
       "scene": "research-approved",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "research-approved.mp4",
-      "notes": "Research terminal autonomous approved."
+      "notes": "Approved / confirmed hold. Confirm flash is not replayed."
     },
     {
       "scene": "operator-console",
-      "enabled": false,
+      "enabled": true,
       "category": "landscape-ui",
       "mode": "display",
-      "width": 960,
-      "height": 540,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": "viewport",
       "output": "operator-console.mp4",
-      "notes": "Operator console idle. Key-driven command reveal is not time-seeking."
+      "notes": "Fully revealed operator console hold."
     },
     {
       "scene": "phone-story-status",
       "enabled": true,
       "category": "phone-screen",
       "mode": "display",
-      "width": 390,
-      "height": 844,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": ".phone-screen",
       "output": "phone-story-status.mp4",
-      "notes": "Crop .phone-screen at native 390:844. Do not force 9:16."
+      "notes": "390×844 CSS at deviceScaleFactor 3 → 1170×2532. Do not force 9:16."
     },
     {
       "scene": "phone-map",
       "enabled": true,
       "category": "phone-screen",
       "mode": "display",
-      "width": 390,
-      "height": 844,
-      "fps": 30,
-      "duration": 15,
-      "seed": 1,
       "captureTarget": ".phone-screen",
       "output": "phone-map.mp4",
-      "notes": "Crop .phone-screen at native 390:844. Do not force 9:16."
+      "notes": "390×844 CSS at deviceScaleFactor 3 → 1170×2532. Do not force 9:16."
+    },
+    {
+      "scene": "cardiac-3d-lab",
+      "enabled": true,
+      "category": "landscape-ui",
+      "mode": "display",
+      "captureTarget": "viewport",
+      "output": "cardiac-3d-lab.mp4",
+      "notes": "Hidden 3D tomography lab. Approved V4 heart. SRC / lab-build labels hidden in capture."
     }
   ]
 }

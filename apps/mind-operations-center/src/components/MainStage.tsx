@@ -135,7 +135,8 @@ function ScriptStage({ scene }: { scene: Scene }) {
 
   useEffect(() => {
     if (captureTime === null || !isExecuting) return
-    setLine(1 + Math.floor(wrapLoop(captureTime) / 1800) % 8)
+    const step = (CAPTURE.duration * 1000) / 8
+    setLine(1 + (Math.floor(wrapLoop(captureTime) / step) % 8))
   }, [captureTime, isExecuting])
 
   useEffect(() => {
@@ -203,9 +204,9 @@ function UploadStage({ scene }: { scene: Scene }) {
 
   useEffect(() => {
     if (captureTime === null || !isLive) return
-    const cycle = wrapLoop(captureTime) % 15000
-    const stepped = 0.14 + (cycle / 180) * 0.012
-    setProgress(0.14 + ((stepped - 0.14) % 0.83))
+    const p = wrapLoop(captureTime) / (CAPTURE.duration * 1000)
+    const tri = p <= 0.5 ? p * 2 : (1 - p) * 2
+    setProgress(0.14 + tri * 0.83)
   }, [captureTime, isLive])
 
   useEffect(() => {

@@ -32,7 +32,8 @@ export function CogitoScriptStage({ scene }: { scene: Scene }) {
 
   useEffect(() => {
     if (captureTime === null) return
-    setTick(Math.floor(wrapLoop(captureTime) / 1200))
+    const step = (CAPTURE.duration * 1000) / 10
+    setTick(Math.floor(wrapLoop(captureTime) / step))
   }, [captureTime])
 
   useEffect(() => {

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { CAPTURE } from '../../capture/config'
 import { useScene } from '../../context/SceneContext'
 import './research-terminal.css'
 
@@ -33,7 +34,7 @@ export function ResearchTerminal() {
   }, [pending, goTo])
 
   useEffect(() => {
-    if (!approved || !flashRef.current) return
+    if (!approved || !flashRef.current || CAPTURE.enabled) return
     flashRef.current.classList.remove('is-confirm')
     // Retrigger CSS animation on each entry into approved.
     void flashRef.current.offsetWidth

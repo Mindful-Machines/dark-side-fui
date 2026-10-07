@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import heartStill from '../../../assets/lab/cardiac-3d-lab/cardiac-3d-heart-recognition.png'
-import heartMotion from '../../../assets/lab/cardiac-3d-lab/heart-motion-v6.mp4'
+import heartStill from '../../../assets/lab/cardiac-3d-lab/cardiac-3d-heart-v11.png'
+import heartMotion from '../../../assets/lab/cardiac-3d-lab/heart-motion-v1-1.mp4'
 import { CAPTURE } from '../../../capture/config'
 import { useScene } from '../../../context/SceneContext'
 import './cardiac-3d-lab.css'

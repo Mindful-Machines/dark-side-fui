@@ -32,8 +32,8 @@
 }
 
 .ct-lab-video {
-  background: #080a0b;
-  object-fit: contain;
+  background: #0d0f0d;
+  object-fit: cover;
 }
 
 .ct-lab-title,

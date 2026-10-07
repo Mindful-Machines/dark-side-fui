@@ -65,6 +65,8 @@ function parseArgs(argv) {
     intros: false,
     introsV2: false,
     finals: false,
+    v11Review: false,
+    v11Finals: false,
   }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
@@ -77,9 +79,21 @@ function parseArgs(argv) {
     else if (a === '--intros') out.intros = true
     else if (a === '--intros-v2') out.introsV2 = true
     else if (a === '--finals') out.finals = true
+    else if (a === '--v11-review') out.v11Review = true
+    else if (a === '--v11-finals') out.v11Finals = true
   }
   return out
 }
+
+const V11_REVIEW_SCENES = [
+  'cardiac-3d-lab',
+  'thoughts',
+  'script-cogito',
+  'script-tower-cranes',
+  'paused',
+  'partial',
+]
+const V11_SHEET_FRAMES = [0, 112, 225, 338, 450]
 
 function sceneIds(value) {
   return value
@@ -1195,13 +1209,212 @@ async function runFinals({ browser, origin, ffmpeg, blender, defaults, sceneFilt
   return report
 }
 
+function sampleCardiacMatte(captureDir) {
+  const script = join(ROOT, 'sample-cardiac-matte.py')
+  const r = spawnSync('python3', [script, captureDir, '0', '112', '225', '338', '449'], {
+    encoding: 'utf8',
+  })
+  if (r.status !== 0) {
+    console.warn('[v11] cardiac matte sample failed', r.stderr || r.stdout)
+    return { error: r.stderr || r.stdout }
+  }
+  try {
+    return JSON.parse(r.stdout.trim().split('\n').at(-1))
+  } catch (err) {
+    return { error: String(err), stdout: r.stdout }
+  }
+}
+
+async function runV11Review({ browser, origin, ffmpeg, blender, defaults, sceneFilter }) {
+  const outRoot = join(APP, 'exports', 'chad-moc-v1-1-review')
+  await mkdir(outRoot, { recursive: true })
+  const report = []
+  const context = await browser.newContext({
+    deviceScaleFactor: 1,
+    colorScheme: 'dark',
+    reducedMotion: 'no-preference',
+  })
+
+  const manifest = JSON.parse(await readFile(MANIFEST_PATH, 'utf8'))
+  const wantedIds = sceneFilter?.length ? sceneFilter : V11_REVIEW_SCENES
+  const wanted = new Set(wantedIds)
+  const entries = manifest.entries.filter((e) => wanted.has(e.scene))
+  if (entries.length !== wanted.size) {
+    throw new Error(`v11 review missing scenes: ${[...wanted].filter((id) => !entries.some((e) => e.scene === id))}`)
+  }
+
+  for (const id of wantedIds) {
+    const entry = entries.find((e) => e.scene === id)
+    const layout = resolveLayout(entry)
+    const tmp = join(outRoot, '.tmp', entry.scene)
+    const captureDir = join(tmp, 'full')
+    const previewDir = join(tmp, 'preview')
+    const mp4 = join(outRoot, `${entry.scene}_v1-1_preview.mp4`)
+    const sheet = join(outRoot, `${entry.scene}_v1-1_contact.png`)
+    console.log(`[v11] ${entry.scene} 1920x1080 -> 960x540`)
+    const page = await context.newPage()
+    const started = Date.now()
+    try {
+      await rm(tmp, { recursive: true, force: true })
+      const captured = await captureFrames(page, origin, entry, defaults, layout, captureDir)
+      if (captured.firstSize.width !== 1920 || captured.firstSize.height !== 1080) {
+        throw new Error(`capture size ${captured.firstSize.width}x${captured.firstSize.height} != 1920x1080`)
+      }
+      const loopMetrics = await pngDiff(page, join(captureDir, frameName(0)), join(captureDir, frameName(captured.loop)))
+      const loopFail =
+        Boolean(loopMetrics.error) ||
+        loopMetrics.changedPct > LOOP_MAX_CHANGED_PCT ||
+        loopMetrics.meanAbs > LOOP_MAX_MEAN_ABS
+      await downscaleSequence(captureDir, previewDir, captured.total, 960, 540)
+      encodeFrames(ffmpeg, blender, previewDir, mp4, captured.fps, captured.last)
+      const sheetFrames = V11_SHEET_FRAMES.map((i) => join(previewDir, frameName(i)))
+      await contactSheet(context, sheetFrames, sheet)
+      let cardiacMatte = null
+      if (entry.scene === 'cardiac-3d-lab') {
+        cardiacMatte = sampleCardiacMatte(captureDir)
+        console.log('[v11] cardiac matte', JSON.stringify(cardiacMatte))
+      }
+      const info = await stat(mp4)
+      const row = {
+        scene: entry.scene,
+        mp4,
+        contactSheet: sheet,
+        bytes: info.size,
+        overflow: captured.overflow,
+        loop: loopMetrics,
+        loopFail,
+        cardiacMatte,
+        renderSeconds: (Date.now() - started) / 1000,
+      }
+      report.push(row)
+      if (loopFail) {
+        console.error(`[v11] ${entry.scene} LOOP FAIL changed=${loopMetrics.changedPct} mean=${loopMetrics.meanAbs}`)
+      } else {
+        console.log(
+          `[v11] ${entry.scene} ok overflow=${captured.overflow.overflow} loop changed=${loopMetrics.changedPct?.toFixed?.(3)}% mean=${loopMetrics.meanAbs?.toFixed?.(3)} ${row.renderSeconds.toFixed(1)}s`,
+        )
+      }
+    } catch (err) {
+      console.error(`[v11] ${entry.scene} failed:`, err)
+      report.push({ scene: entry.scene, error: String(err) })
+    } finally {
+      await page.close()
+      await rm(tmp, { recursive: true, force: true })
+    }
+  }
+
+  await context.close()
+  const reportPath = join(outRoot, 'review-report.json')
+  await writeFile(reportPath, JSON.stringify({ generatedAt: new Date().toISOString(), scenes: report }, null, 2))
+  console.log(`[v11] report ${reportPath}`)
+  return report
+}
+
+async function runV11Finals({ browser, origin, ffmpeg, blender, defaults, sceneFilter }) {
+  const ids = sceneFilter?.length ? sceneFilter : V11_REVIEW_SCENES
+  const outRoot = join(APP, 'exports', 'chad-moc-v1-1')
+  const finalDir = join(outRoot, 'finals', 'landscape')
+  const valDir = join(outRoot, 'validation')
+  await mkdir(finalDir, { recursive: true })
+  await mkdir(valDir, { recursive: true })
+  const report = []
+  const context = await browser.newContext({
+    deviceScaleFactor: 1,
+    colorScheme: 'dark',
+    reducedMotion: 'no-preference',
+  })
+  const manifest = JSON.parse(await readFile(MANIFEST_PATH, 'utf8'))
+  const entries = manifest.entries.filter((e) => ids.includes(e.scene))
+  if (entries.length !== ids.length) {
+    throw new Error(`v11 finals missing scenes: ${ids.filter((id) => !entries.some((e) => e.scene === id))}`)
+  }
+
+  for (const id of ids) {
+    const entry = entries.find((e) => e.scene === id)
+    const layout = resolveLayout(entry)
+    const tmp = join(outRoot, '.tmp', entry.scene)
+    const captureDir = join(tmp, 'full')
+    const mp4 = join(finalDir, entry.output)
+    console.log(`[v11-final] ${entry.scene} 1920x1080`)
+    const page = await context.newPage()
+    const started = Date.now()
+    try {
+      await rm(tmp, { recursive: true, force: true })
+      const captured = await captureFrames(page, origin, entry, defaults, layout, captureDir)
+      if (captured.firstSize.width !== 1920 || captured.firstSize.height !== 1080) {
+        throw new Error(`capture size ${captured.firstSize.width}x${captured.firstSize.height} != 1920x1080`)
+      }
+      const loopMetrics = await pngDiff(page, join(captureDir, frameName(0)), join(captureDir, frameName(captured.loop)))
+      const loopFail =
+        Boolean(loopMetrics.error) ||
+        loopMetrics.changedPct > LOOP_MAX_CHANGED_PCT ||
+        loopMetrics.meanAbs > LOOP_MAX_MEAN_ABS
+      await copyFile(join(captureDir, frameName(0)), join(valDir, `${entry.scene}-0000.png`))
+      await copyFile(join(captureDir, frameName(captured.loop)), join(valDir, `${entry.scene}-0450.png`))
+      encodeFrames(ffmpeg, blender, captureDir, mp4, captured.fps, captured.last)
+      let cardiacMatte = null
+      if (entry.scene === 'cardiac-3d-lab') {
+        cardiacMatte = sampleCardiacMatte(captureDir)
+        console.log('[v11-final] cardiac matte', JSON.stringify(cardiacMatte))
+        const previewDir = join(APP, 'exports', 'chad-moc-v1-1-review')
+        await mkdir(previewDir, { recursive: true })
+        const previewFrames = join(tmp, 'preview')
+        await downscaleSequence(captureDir, previewFrames, captured.total, 960, 540)
+        const previewMp4 = join(previewDir, 'cardiac-3d-lab_v1-1_preview.mp4')
+        encodeFrames(ffmpeg, blender, previewFrames, previewMp4, captured.fps, captured.last)
+        const sheetFrames = V11_SHEET_FRAMES.map((i) => join(previewFrames, frameName(i)))
+        await contactSheet(context, sheetFrames, join(previewDir, 'cardiac-3d-lab_v1-1_contact.png'))
+      }
+      const info = await stat(mp4)
+      report.push({
+        scene: entry.scene,
+        mp4,
+        bytes: info.size,
+        overflow: captured.overflow,
+        loop: loopMetrics,
+        loopFail,
+        cardiacMatte,
+        renderSeconds: (Date.now() - started) / 1000,
+      })
+      if (loopFail || captured.overflow.overflow) {
+        console.error(`[v11-final] ${entry.scene} FAIL overflow=${captured.overflow.overflow} loop=${loopMetrics.changedPct}`)
+      } else {
+        console.log(
+          `[v11-final] ${entry.scene} ok overflow=false loop changed=${loopMetrics.changedPct?.toFixed?.(3)}% mean=${loopMetrics.meanAbs?.toFixed?.(3)} ${((Date.now() - started) / 1000).toFixed(1)}s`,
+        )
+      }
+    } catch (err) {
+      console.error(`[v11-final] ${entry.scene} failed:`, err)
+      report.push({ scene: entry.scene, error: String(err) })
+    } finally {
+      await page.close()
+      await rm(tmp, { recursive: true, force: true })
+    }
+  }
+
+  await context.close()
+  const reportPath = join(outRoot, 'finals-report.json')
+  await writeFile(reportPath, JSON.stringify({ generatedAt: new Date().toISOString(), scenes: report }, null, 2))
+  console.log(`[v11-final] report ${reportPath}`)
+  return report
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2))
   const packaging = Boolean(args.packageName)
   if (packaging && args.packageName !== PACKAGE_NAME) {
     throw new Error(`unknown package ${args.packageName}`)
   }
-  if (!args.intros && !args.introsV2 && !args.finals && !packaging && args.profile !== 'preview' && args.profile !== 'final') {
+  if (
+    !args.v11Review &&
+    !args.v11Finals &&
+    !args.intros &&
+    !args.introsV2 &&
+    !args.finals &&
+    !packaging &&
+    args.profile !== 'preview' &&
+    args.profile !== 'final'
+  ) {
     throw new Error(`unknown profile ${args.profile}`)
   }
 
@@ -1218,7 +1431,16 @@ async function main() {
   } else {
     entries = entries.filter((e) => e.enabled)
   }
-  if (!args.intros && !args.introsV2 && !args.finals && entries.length === 0) throw new Error('no scenes selected')
+  if (
+    !args.v11Review &&
+    !args.v11Finals &&
+    !args.intros &&
+    !args.introsV2 &&
+    !args.finals &&
+    entries.length === 0
+  ) {
+    throw new Error('no scenes selected')
+  }
 
   const ffmpeg = findFfmpeg()
   const ffprobe = findFfprobe()
@@ -1257,7 +1479,27 @@ async function main() {
       })
     }
 
-    if (args.finals) {
+    if (args.v11Review) {
+      const report = await runV11Review({
+        browser,
+        origin,
+        ffmpeg,
+        blender,
+        defaults,
+        sceneFilter: args.scene ? sceneIds(args.scene) : null,
+      })
+      if (report.some((row) => row.error || row.loopFail)) failed = true
+    } else if (args.v11Finals) {
+      const report = await runV11Finals({
+        browser,
+        origin,
+        ffmpeg,
+        blender,
+        defaults,
+        sceneFilter: args.scene ? sceneIds(args.scene) : null,
+      })
+      if (report.some((row) => row.error || row.loopFail || row.overflow?.overflow)) failed = true
+    } else if (args.finals) {
       await runFinals({
         browser,
         origin,

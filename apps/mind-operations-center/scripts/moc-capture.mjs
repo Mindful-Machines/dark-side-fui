@@ -67,6 +67,7 @@ function parseArgs(argv) {
     finals: false,
     v11Review: false,
     v11Finals: false,
+    operatorCommands: false,
   }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
@@ -81,6 +82,7 @@ function parseArgs(argv) {
     else if (a === '--finals') out.finals = true
     else if (a === '--v11-review') out.v11Review = true
     else if (a === '--v11-finals') out.v11Finals = true
+    else if (a === '--operator-commands') out.operatorCommands = true
   }
   return out
 }
@@ -218,6 +220,7 @@ function captureUrl(origin, entry, defaults) {
   u.searchParams.set('fps', String(entry.fps ?? defaults.fps))
   u.searchParams.set('seed', String(entry.seed ?? defaults.seed))
   if (entry.hold) u.searchParams.set('hold', entry.hold)
+  if (entry.command) u.searchParams.set('command', entry.command)
   return u.toString()
 }
 
@@ -1399,6 +1402,190 @@ async function runV11Finals({ browser, origin, ffmpeg, blender, defaults, sceneF
   return report
 }
 
+const OPERATOR_COMMAND_CLIPS = [
+  {
+    key: 'q',
+    file: 'Q_status-subject-04__then_operator-console-status_hold.mp4',
+    label: 'STATUS SUBJECT-04',
+    destination: 'operator-console',
+    continuation: '04_OPERATOR_ALTERNATES/operator-console-status_hold.mp4',
+  },
+  {
+    key: 'w',
+    file: 'W_exec-aurora-7__then-executing_loop.mp4',
+    label: 'EXEC AURORA-7',
+    destination: 'executing',
+    continuation: '01_CONTINUOUS_LOOPS/executing.mp4',
+  },
+  {
+    key: 'e',
+    file: 'E_pause-subject-04__then-paused_loop.mp4',
+    label: 'PAUSE SUBJECT-04',
+    destination: 'paused',
+    continuation: '01_CONTINUOUS_LOOPS/paused.mp4',
+  },
+  {
+    key: 'r',
+    file: 'R_load-aurora-8__then-uploading_loop.mp4',
+    label: 'LOAD AURORA-8',
+    destination: 'uploading',
+    continuation: '01_CONTINUOUS_LOOPS/uploading.mp4',
+  },
+  {
+    key: 't',
+    file: 'T_scan-cardiac__then-cardiac-3d-lab_loop.mp4',
+    label: 'SCAN CARDIAC',
+    destination: 'cardiac-3d-lab',
+    continuation: '01_CONTINUOUS_LOOPS/cardiac-3d-lab.mp4',
+  },
+]
+
+async function readCaptureState(page) {
+  return page.evaluate(() => {
+    const app = document.querySelector('[data-scene]')
+    const idle = document.querySelector('.oc-idle')
+    const typed = document.querySelector('.oc-typed')
+    return {
+      scene: app?.getAttribute('data-scene') ?? '',
+      tone: app?.getAttribute('data-tone') ?? '',
+      status: document.querySelector('.operator-console')?.getAttribute('data-status') ?? '',
+      idle: idle?.textContent?.replace(/\s+/g, ' ').trim() ?? '',
+      typed: typed?.textContent?.replace(/\s+/g, ' ').trim() ?? '',
+      hasHeartVideo: Boolean(document.querySelector('.ct-lab-video')),
+    }
+  })
+}
+
+async function runOperatorCommands({ browser, origin, ffmpeg, blender, defaults, sceneFilter }) {
+  const clips = sceneFilter
+    ? OPERATOR_COMMAND_CLIPS.filter((c) => sceneFilter.includes(c.key) || sceneFilter.includes(c.destination))
+    : OPERATOR_COMMAND_CLIPS
+  if (clips.length === 0) throw new Error('no operator command clips selected')
+
+  const outRoot = join(APP, 'exports', 'chad-moc-v1-1', 'operator-commands')
+  const contactDir = join(outRoot, 'contact')
+  const valDir = join(outRoot, 'validation')
+  await mkdir(contactDir, { recursive: true })
+  await mkdir(valDir, { recursive: true })
+  const report = []
+
+  for (const clip of clips) {
+    const started = Date.now()
+    const tmp = join(outRoot, '.tmp', clip.key)
+    const captureDir = join(tmp, 'full')
+    const mp4 = join(outRoot, clip.file)
+    const sheet = join(contactDir, `${clip.key}.png`)
+    await rm(tmp, { recursive: true, force: true })
+    await mkdir(captureDir, { recursive: true })
+
+    const url = captureUrl(
+      origin,
+      { scene: 'operator-console', mode: 'display', fps: 30, seed: defaults.seed, command: clip.key },
+      { ...defaults, capture: 'intro', duration: 30 },
+    )
+    const context = await browser.newContext({
+      deviceScaleFactor: 1,
+      colorScheme: 'dark',
+      reducedMotion: 'no-preference',
+      viewport: { width: 1920, height: 1080 },
+    })
+    const page = await context.newPage()
+    try {
+      await page.setViewportSize({ width: 1920, height: 1080 })
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 })
+      const api = await waitReady(page)
+      const duration = api.duration
+      const fps = api.fps || 30
+      const total = Math.round(duration * fps)
+      const last = total - 1
+      const overflow = await measureOverflow(page)
+      console.log(`[cmd] ${clip.key} ${clip.label} ${total} frames ${duration.toFixed(3)}s overflow=${overflow.overflow}`)
+
+      let firstState = null
+      let lastState = null
+      const destFromMs = duration * 1000 - 2000
+      for (let i = 0; i < total; i++) {
+        const ms = (i / fps) * 1000
+        await seek(page, ms)
+        if (clip.destination !== 'operator-console' && ms + 1 >= destFromMs) {
+          await page.waitForFunction(
+            (dest) => document.querySelector('[data-scene]')?.getAttribute('data-scene') === dest,
+            clip.destination,
+            { timeout: 5000 },
+          )
+          await seek(page, ms)
+        }
+        await page.screenshot({
+          path: join(captureDir, frameName(i)),
+          type: 'png',
+          animations: 'allow',
+          caret: 'hide',
+        })
+        if (i === 0) firstState = await readCaptureState(page)
+        if (i === last) lastState = await readCaptureState(page)
+        if (i === 0 || i === last || i % 50 === 0) {
+          const state = i === 0 ? firstState : i === last ? lastState : await readCaptureState(page)
+          console.log(
+            `  frame ${i}/${last} t=${ms.toFixed(0)}ms scene=${state.scene} status=${state.status} idle=${JSON.stringify(state.idle)} typed=${JSON.stringify(state.typed)}`,
+          )
+        }
+      }
+
+      const idleOk = Boolean(
+        firstState?.scene === 'operator-console' && firstState.idle.includes('CHANNEL OPEN · AWAITING DIRECTIVE'),
+      )
+      const destOk = lastState?.scene === clip.destination
+      const heartOk = clip.key !== 't' || Boolean(lastState?.hasHeartVideo)
+      encodeFrames(ffmpeg, blender, captureDir, mp4, fps, last)
+      await copyFile(join(captureDir, frameName(0)), join(valDir, `${clip.key}-first.png`))
+      await copyFile(join(captureDir, frameName(last)), join(valDir, `${clip.key}-last.png`))
+      const revealEnd = Math.max(0, last - Math.round(2 * fps))
+      const sheetFrames = [0, Math.round(revealEnd * 0.35), revealEnd, last].map((i) =>
+        join(captureDir, frameName(Math.min(last, i))),
+      )
+      await contactSheet(context, sheetFrames, sheet)
+      const info = await stat(mp4)
+      const fail = overflow.overflow || !idleOk || !destOk || !heartOk
+      const row = {
+        key: clip.key,
+        label: clip.label,
+        file: mp4,
+        destination: clip.destination,
+        continuation: clip.continuation,
+        capture: '1920x1080',
+        duration,
+        fps,
+        frames: total,
+        bytes: info.size,
+        overflow: overflow.overflow,
+        idleOk,
+        destOk,
+        heartOk,
+        firstState,
+        lastState,
+        fail,
+        seconds: (Date.now() - started) / 1000,
+      }
+      report.push(row)
+      console.log(
+        `[cmd] ${clip.key} ${fail ? 'FAIL' : 'ok'} idle=${idleOk} dest=${destOk} heart=${heartOk} overflow=${overflow.overflow} ${row.seconds.toFixed(1)}s`,
+      )
+    } catch (err) {
+      console.error(`[cmd] ${clip.key} failed:`, err)
+      report.push({ key: clip.key, error: String(err) })
+    } finally {
+      await page.close()
+      await context.close()
+      await rm(tmp, { recursive: true, force: true })
+    }
+  }
+
+  const reportPath = join(outRoot, 'report.json')
+  await writeFile(reportPath, JSON.stringify({ generatedAt: new Date().toISOString(), clips: report }, null, 2))
+  console.log(`[cmd] report ${reportPath}`)
+  return report
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2))
   const packaging = Boolean(args.packageName)
@@ -1411,6 +1598,7 @@ async function main() {
     !args.intros &&
     !args.introsV2 &&
     !args.finals &&
+    !args.operatorCommands &&
     !packaging &&
     args.profile !== 'preview' &&
     args.profile !== 'final'
@@ -1424,7 +1612,9 @@ async function main() {
   if (args.scene) {
     const ids = sceneIds(args.scene)
     entries = entries.filter((e) => ids.includes(e.scene))
-    if (entries.length === 0) throw new Error(`scene not in manifest: ${args.scene}`)
+    if (entries.length === 0 && !args.operatorCommands) {
+      throw new Error(`scene not in manifest: ${args.scene}`)
+    }
   } else if (packaging) {
     entries = entries.filter((e) => e.enabled)
     entries.sort((a, b) => INVENTORY.indexOf(a.scene) - INVENTORY.indexOf(b.scene))
@@ -1437,6 +1627,7 @@ async function main() {
     !args.intros &&
     !args.introsV2 &&
     !args.finals &&
+    !args.operatorCommands &&
     entries.length === 0
   ) {
     throw new Error('no scenes selected')
@@ -1479,7 +1670,17 @@ async function main() {
       })
     }
 
-    if (args.v11Review) {
+    if (args.operatorCommands) {
+      const report = await runOperatorCommands({
+        browser,
+        origin,
+        ffmpeg,
+        blender,
+        defaults,
+        sceneFilter: args.scene ? sceneIds(args.scene) : null,
+      })
+      if (report.some((row) => row.error || row.fail)) failed = true
+    } else if (args.v11Review) {
       const report = await runV11Review({
         browser,
         origin,

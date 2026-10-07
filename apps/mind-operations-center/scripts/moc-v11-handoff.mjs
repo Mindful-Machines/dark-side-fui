@@ -17,6 +17,7 @@ const ZIP = join(EXPORTS, `${NAME}.zip`)
 const V1_FINAL = join(EXPORTS, 'chad-moc-v1', 'finals')
 const V11_FINAL = join(EXPORTS, 'chad-moc-v1-1', 'finals', 'landscape')
 const INTROS = join(EXPORTS, 'chad-moc-v1-review', 'narrative-finals')
+const COMMANDS = join(EXPORTS, 'chad-moc-v1-1', 'operator-commands')
 const V11_SCENES = new Set([
   'cardiac-3d-lab',
   'thoughts',
@@ -82,6 +83,43 @@ const INTRO_MAP = [
     dest: 'uploading_intro__then_partial_loop.mp4',
     scene: 'uploading',
     then: '01_CONTINUOUS_LOOPS/partial.mp4',
+  },
+]
+const COMMAND_MAP = [
+  {
+    file: 'Q_status-subject-04__then_operator-console-status_hold.mp4',
+    key: 'Q',
+    label: 'STATUS SUBJECT-04',
+    scene: 'operator-console',
+    then: '04_OPERATOR_ALTERNATES/operator-console-status_hold.mp4',
+  },
+  {
+    file: 'W_exec-aurora-7__then-executing_loop.mp4',
+    key: 'W',
+    label: 'EXEC AURORA-7',
+    scene: 'executing',
+    then: '01_CONTINUOUS_LOOPS/executing.mp4',
+  },
+  {
+    file: 'E_pause-subject-04__then-paused_loop.mp4',
+    key: 'E',
+    label: 'PAUSE SUBJECT-04',
+    scene: 'paused',
+    then: '01_CONTINUOUS_LOOPS/paused.mp4',
+  },
+  {
+    file: 'R_load-aurora-8__then-uploading_loop.mp4',
+    key: 'R',
+    label: 'LOAD AURORA-8',
+    scene: 'uploading',
+    then: '01_CONTINUOUS_LOOPS/uploading.mp4',
+  },
+  {
+    file: 'T_scan-cardiac__then-cardiac-3d-lab_loop.mp4',
+    key: 'T',
+    label: 'SCAN CARDIAC',
+    scene: 'cardiac-3d-lab',
+    then: '01_CONTINUOUS_LOOPS/cardiac-3d-lab.mp4',
   },
 ]
 
@@ -153,15 +191,29 @@ phone files to 9:16.
   01_CONTINUOUS_LOOPS/cardiac-3d-lab.mp4 (3D volumetric scan). Do not
   treat these five 2D files as the primary cardiac shot.
 
+06_OPERATOR_QUICK_COMMANDS
+  Optional play-once Operator Console transitions. Each clip starts on
+  the idle console (CHANNEL OPEN · AWAITING DIRECTIVE), runs one Q–T
+  quick command, then holds the destination for about two seconds.
+  Play the command clip once, then cut to the loop named after
+  "__then-" / "__then_" in its filename.
+
+  Q  STATUS SUBJECT-04  ->  04_OPERATOR_ALTERNATES/operator-console-status_hold.mp4
+  W  EXEC AURORA-7      ->  01_CONTINUOUS_LOOPS/executing.mp4
+  E  PAUSE SUBJECT-04   ->  01_CONTINUOUS_LOOPS/paused.mp4
+  R  LOAD AURORA-8      ->  01_CONTINUOUS_LOOPS/uploading.mp4
+  T  SCAN CARDIAC       ->  01_CONTINUOUS_LOOPS/cardiac-3d-lab.mp4
+                             (preferred V1.1 3D cardiac plate, not a 2D heart)
+
 V1.1 replacements (new 1920x1080 captures):
   cardiac-3d-lab, thoughts, script-cogito, script-tower-cranes,
-  paused, partial.
+  paused, partial, plus the five operator quick-command clips.
 
 All other loops, intros, phone plates, and operator holds are the
 validated V1 files, copied unchanged.
 
 See MANIFEST.csv for filename, folder, scene ID, resolution, duration,
-fps, and role (loop / intro / hold / phone / optional).
+fps, role, command key, displayed command, and continuation loop.
 `
 
 async function copyTo(src, dest) {
@@ -178,10 +230,11 @@ async function main() {
     '03_PHONE_LOOPS',
     '04_OPERATOR_ALTERNATES',
     '05_OPTIONAL_LEGACY_2D_HEARTS',
+    '06_OPERATOR_QUICK_COMMANDS',
   ]
   for (const d of dirs) await mkdir(join(OUT, d), { recursive: true })
 
-  const rows = [['filename', 'folder', 'scene_id', 'resolution', 'duration', 'fps', 'role']]
+  const rows = [['filename', 'folder', 'scene_id', 'resolution', 'duration', 'fps', 'role', 'command_key', 'displayed_command', 'continuation']]
 
   for (const scene of LOOPS_01) {
     const src = V11_SCENES.has(scene)
@@ -190,21 +243,21 @@ async function main() {
     const dest = join(OUT, '01_CONTINUOUS_LOOPS', `${scene}.mp4`)
     await copyTo(src, dest)
     const info = probeMp4(dest)
-    rows.push([`${scene}.mp4`, '01_CONTINUOUS_LOOPS', scene, `${info.width}x${info.height}`, info.duration, 30, 'loop'])
+    rows.push([`${scene}.mp4`, '01_CONTINUOUS_LOOPS', scene, `${info.width}x${info.height}`, info.duration, 30, 'loop', '', '', ''])
   }
 
   for (const spec of INTRO_MAP) {
     const dest = join(OUT, '02_PLAY_ONCE_INTROS', spec.dest)
     await copyTo(join(INTROS, spec.src), dest)
     const info = probeMp4(dest)
-    rows.push([spec.dest, '02_PLAY_ONCE_INTROS', spec.scene, `${info.width}x${info.height}`, info.duration, 30, 'intro'])
+    rows.push([spec.dest, '02_PLAY_ONCE_INTROS', spec.scene, `${info.width}x${info.height}`, info.duration, 30, 'intro', '', '', spec.then])
   }
 
   for (const scene of ['phone-story-status', 'phone-map']) {
     const dest = join(OUT, '03_PHONE_LOOPS', `${scene}.mp4`)
     await copyTo(join(V1_FINAL, 'phone', `${scene}.mp4`), dest)
     const info = probeMp4(dest)
-    rows.push([`${scene}.mp4`, '03_PHONE_LOOPS', scene, `${info.width}x${info.height}`, info.duration, 30, 'phone'])
+    rows.push([`${scene}.mp4`, '03_PHONE_LOOPS', scene, `${info.width}x${info.height}`, info.duration, 30, 'phone', '', '', ''])
   }
 
   const holds = [
@@ -215,14 +268,32 @@ async function main() {
     const dest = join(OUT, '04_OPERATOR_ALTERNATES', destName)
     await copyTo(join(INTROS, srcName), dest)
     const info = probeMp4(dest)
-    rows.push([destName, '04_OPERATOR_ALTERNATES', scene, `${info.width}x${info.height}`, info.duration, 30, 'hold'])
+    rows.push([destName, '04_OPERATOR_ALTERNATES', scene, `${info.width}x${info.height}`, info.duration, 30, 'hold', '', '', ''])
   }
 
   for (const scene of HEARTS) {
     const dest = join(OUT, '05_OPTIONAL_LEGACY_2D_HEARTS', `${scene}.mp4`)
     await copyTo(join(V1_FINAL, 'landscape', `${scene}.mp4`), dest)
     const info = probeMp4(dest)
-    rows.push([`${scene}.mp4`, '05_OPTIONAL_LEGACY_2D_HEARTS', scene, `${info.width}x${info.height}`, info.duration, 30, 'optional'])
+    rows.push([`${scene}.mp4`, '05_OPTIONAL_LEGACY_2D_HEARTS', scene, `${info.width}x${info.height}`, info.duration, 30, 'optional', '', '', ''])
+  }
+
+  for (const spec of COMMAND_MAP) {
+    const dest = join(OUT, '06_OPERATOR_QUICK_COMMANDS', spec.file)
+    await copyTo(join(COMMANDS, spec.file), dest)
+    const info = probeMp4(dest)
+    rows.push([
+      spec.file,
+      '06_OPERATOR_QUICK_COMMANDS',
+      spec.scene,
+      `${info.width}x${info.height}`,
+      info.duration,
+      30,
+      'operator-command',
+      spec.key,
+      spec.label,
+      spec.then,
+    ])
   }
 
   await writeFile(join(OUT, 'START_HERE_README.txt'), README)
@@ -248,7 +319,16 @@ async function main() {
   }
   await walk(OUT, `${NAME}/`)
   const zipList = spawnSync('zipinfo', ['-1', ZIP], { encoding: 'utf8' })
-  const zipNames = zipList.stdout.split('\n').map((s) => s.replace(/\/$/, '')).filter((s) => s && !s.endsWith('.DS_Store'))
+  const zipNames = zipList.stdout
+    .split('\n')
+    .filter((s) => s && !s.endsWith('/') && !s.endsWith('.DS_Store') && !s.includes('__MACOSX'))
+  const listedSet = new Set(listed)
+  const zipSet = new Set(zipNames)
+  const onlyFolder = listed.filter((n) => !zipSet.has(n))
+  const onlyZip = zipNames.filter((n) => !listedSet.has(n))
+  if (onlyFolder.length || onlyZip.length) {
+    throw new Error(`zip mismatch folder=${onlyFolder.join(',')} zip=${onlyZip.join(',')}`)
+  }
   console.log(JSON.stringify({
     folder: OUT,
     zip: ZIP,

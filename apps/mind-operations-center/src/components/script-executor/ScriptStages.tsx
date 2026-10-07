@@ -43,18 +43,23 @@ function LineList({ lines, heroN }: { lines: ScriptLine[]; heroN?: number }) {
 export function CogitoScriptStage({ scene }: { scene: Scene }) {
   const captureTime = useCaptureTime()
   const [tick, setTick] = useState(0)
+  const [holdLine, setHoldLine] = useState(5)
   const [heroCount, setHeroCount] = useState(CAPTURE.isIntro ? 0 : COGITO_HERO.length)
 
   useEffect(() => {
     if (captureTime === null) return
     if (CAPTURE.isIntro) {
       setTick(0)
+      setHoldLine(5)
       setHeroCount(cogitoHeroCount(captureTime))
       return
     }
+    const t = wrapLoop(captureTime)
     const step = (CAPTURE.duration * 1000) / 10
-    setTick(Math.floor(wrapLoop(captureTime) / step))
+    setTick(Math.floor(t / step))
     setHeroCount(COGITO_HERO.length)
+    const lineStep = (CAPTURE.duration * 1000) / 8
+    setHoldLine(1 + (Math.floor(t / lineStep) % 8))
   }, [captureTime])
 
   useEffect(() => {
@@ -91,18 +96,21 @@ export function CogitoScriptStage({ scene }: { scene: Scene }) {
   const pulsing = CAPTURE.isIntro && captureTime !== null && cogitoPulsing(captureTime)
   const lines = useMemo(
     () =>
-      scene.scriptLines.map((entry) =>
-        entry.n === 5 ? { ...entry, state: confirmed ? ('current' as const) : ('ok' as const) } : entry,
-      ),
-    [scene.scriptLines, confirmed],
+      scene.scriptLines.map((entry) => {
+        if (CAPTURE.isIntro) {
+          return entry.n === 5 ? { ...entry, state: confirmed ? ('current' as const) : ('ok' as const) } : entry
+        }
+        return { ...entry, state: entry.n === holdLine ? ('current' as const) : ('ok' as const) }
+      }),
+    [scene.scriptLines, confirmed, holdLine],
   )
 
   return (
     <div className="script-stage is-cogito">
-      <div className="script-exec-banner">
+      <div className="script-exec-banner is-live-hold">
         <span>CURRENT SCRIPT: EXECUTING</span>
         <span className="script-meta-inline">
-          LINE 05 · {clock} · AURORA-7
+          LINE {String(CAPTURE.isIntro ? 5 : holdLine).padStart(2, '0')} · {clock} · AURORA-7
         </span>
       </div>
 
@@ -118,14 +126,22 @@ export function CogitoScriptStage({ scene }: { scene: Scene }) {
 }
 
 /** Scene 39 — revision / play-armed edit state. */
+const TOWER_HOLD_LINES = [3, 5, 6, 8]
+
 export function TowerCranesEditStage({ scene }: { scene: Scene }) {
   const captureTime = useCaptureTime()
   const [phase, setPhase] = useState<EditPhase>(CAPTURE.isLoop ? 'ready' : 'select')
   const [armed, setArmed] = useState(false)
+  const [holdLine, setHoldLine] = useState(TOWER_HOLD_LINES[0])
 
   useEffect(() => {
-    if (captureTime === null || !CAPTURE.isIntro) return
-    setPhase(towerPhaseAt(captureTime))
+    if (captureTime === null) return
+    if (CAPTURE.isIntro) {
+      setPhase(towerPhaseAt(captureTime))
+      return
+    }
+    const step = (CAPTURE.duration * 1000) / TOWER_HOLD_LINES.length
+    setHoldLine(TOWER_HOLD_LINES[Math.floor(wrapLoop(captureTime) / step) % TOWER_HOLD_LINES.length])
   }, [captureTime])
 
   useEffect(() => {
@@ -153,6 +169,12 @@ export function TowerCranesEditStage({ scene }: { scene: Scene }) {
 
   const lines = useMemo(() => {
     return scene.scriptLines.map((entry) => {
+      if (CAPTURE.isLoop) {
+        if (entry.n === 4) return { ...entry, state: 'deleted' as const }
+        if (entry.n === holdLine) return { ...entry, state: 'current' as const }
+        if (entry.n === 5) return { ...entry, state: 'inserted' as const }
+        return { ...entry, state: 'ok' as const }
+      }
       if (entry.n === 4) {
         if (phase === 'select') return { ...entry, state: 'selected' as const, code: 'LINE.PRIOR             [selected]' }
         return { ...entry, state: 'deleted' as const }
@@ -169,10 +191,11 @@ export function TowerCranesEditStage({ scene }: { scene: Scene }) {
       if (entry.n === 6 && advancing) return { ...entry, state: 'current' as const }
       return entry
     })
-  }, [scene.scriptLines, phase, hero.text, advancing])
+  }, [scene.scriptLines, phase, hero.text, advancing, holdLine])
 
-  const statusLabel =
-    phase === 'select'
+  const statusLabel = CAPTURE.isLoop
+    ? `VERIFY LINE ${String(holdLine).padStart(2, '0')}`
+    : phase === 'select'
       ? 'LINE SELECTED'
       : phase === 'delete'
         ? 'PRIOR CLEARED'
@@ -184,7 +207,7 @@ export function TowerCranesEditStage({ scene }: { scene: Scene }) {
 
   return (
     <div className="script-stage is-edit">
-      <div className="script-exec-banner is-edit">
+      <div className="script-exec-banner is-edit is-live-hold">
         <span>SCRIPT EDITOR · REVISION 39</span>
         <span className="script-meta-inline">{statusLabel}</span>
       </div>

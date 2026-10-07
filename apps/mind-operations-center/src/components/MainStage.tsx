@@ -74,11 +74,25 @@ function HeartRateStage({ scene }: { scene: Scene }) {
   )
 }
 
+function thoughtHoldAt(count: number, tMs: number) {
+  const n = Math.max(count, 1)
+  const step = (CAPTURE.duration * 1000) / n
+  const t = wrapLoop(tMs)
+  const active = Math.floor(t / step) % n
+  const local = t % step
+  const murmur = ' …'
+  if (local < 400 || local > step - 400) return { active, frag: '' }
+  const chars = Math.min(murmur.length, Math.floor((local - 400) / 90))
+  return { active, frag: murmur.slice(0, chars) }
+}
+
 function ThoughtStage({ scene }: { scene: Scene }) {
   const thoughts = scene.thoughts
   const captureTime = useCaptureTime()
   const [shown, setShown] = useState(0)
   const [typed, setTyped] = useState(0)
+  const [active, setActive] = useState(0)
+  const [frag, setFrag] = useState('')
   const [visible, setVisible] = useState(() => typeof document !== 'undefined' && !document.hidden)
 
   useEffect(() => {
@@ -89,16 +103,24 @@ function ThoughtStage({ scene }: { scene: Scene }) {
 
   useEffect(() => {
     if (CAPTURE.isLoop) {
-      setShown(Math.max(0, thoughts.length - 1))
-      setTyped(thoughts[thoughts.length - 1]?.length ?? 0)
+      const last = Math.max(0, thoughts.length - 1)
+      setShown(last)
+      setTyped(thoughts[last]?.length ?? 0)
+      if (captureTime === null) return
+      const hold = thoughtHoldAt(thoughts.length, captureTime)
+      setActive(hold.active)
+      setFrag(hold.frag)
       return
     }
+    setFrag('')
     if (CAPTURE.isIntro && captureTime !== null) {
       const cursor = thoughtsAt(thoughts, captureTime)
       setShown(cursor.shown)
       setTyped(cursor.typed)
+      setActive(cursor.shown)
       return
     }
+    setActive(shown)
     if (CAPTURE.enabled) return
     if (!visible) return
     const current = thoughts[shown]
@@ -123,11 +145,11 @@ function ThoughtStage({ scene }: { scene: Scene }) {
       <p className="thought-kicker">CH-7 · subconscious · observe only</p>
       <ul className="thought-list">
         {thoughts.slice(0, shown + 1).map((thought, i) => {
-          const isCurrent = i === shown
-          const text = isCurrent ? thought.slice(0, typed) : thought
+          const isCurrent = i === active
+          const text = isCurrent && !CAPTURE.isLoop ? thought.slice(0, typed) : thought
           return (
             <li key={`${thought}-${i}`} className={isCurrent ? 'is-current' : 'is-past'}>
-              <span>{text || '\u00a0'}</span>
+              <span>{`${text || '\u00a0'}${isCurrent ? frag : ''}`}</span>
               {isCurrent ? <span className="cursor" aria-hidden="true" /> : null}
             </li>
           )
@@ -189,8 +211,8 @@ function ScriptStage({ scene }: { scene: Scene }) {
   return (
     <div className="script-stage">
       {scene.id === 'paused' ? (
-        <div className="banner critical" role="alert">
-          <span>Contamination detected</span>
+        <div className="banner critical is-hold-pulse" role="alert">
+          <span>PAUSED · HOLD</span>
           <span>Node kitchen_window · integrity 0.41 · script halted at 04</span>
         </div>
       ) : null}
@@ -264,9 +286,9 @@ function UploadStage({ scene }: { scene: Scene }) {
   return (
     <div className="upload-stage">
       {scene.id === 'partial' ? (
-        <div className="banner warning" role="status">
-          <span>Partial payload</span>
-          <span>Ending sequence not received · do not execute</span>
+        <div className="banner warning is-hold-pulse" role="status">
+          <span>Partial payload · 82%</span>
+          <span>MISSING ENDING · do not execute</span>
         </div>
       ) : null}
 
@@ -274,6 +296,7 @@ function UploadStage({ scene }: { scene: Scene }) {
         value={progress}
         label={isLive ? 'Inbound AURORA-8' : 'Stalled AURORA-8'}
         animated={isLive}
+        shimmer={scene.id === 'partial'}
         tone={scene.id === 'partial' ? 'warning' : 'nominal'}
       />
 

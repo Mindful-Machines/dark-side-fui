@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import { CAPTURE } from '../../capture/config'
-import { OPERATOR_BOOT_MS, OPERATOR_CHAR_MS, OPERATOR_LABEL, OPERATOR_LINE_MS } from '../../capture/intro'
+import {
+  OPERATOR_BOOT_MS,
+  OPERATOR_CHAR_MS,
+  OPERATOR_LABEL,
+  OPERATOR_LINE_MS,
+  operatorCommandExecuteMs,
+  operatorQuickCommand,
+} from '../../capture/intro'
 import { useCaptureTime } from '../../capture/useCaptureTime'
 
 export function useTypedText(text: string, active: boolean, ms = 18) {
@@ -17,7 +24,8 @@ export function useTypedText(text: string, active: boolean, ms = 18) {
         setCount(0)
         return
       }
-      const t = Math.max(0, captureTime - OPERATOR_BOOT_MS)
+      const start = CAPTURE.command ? operatorCommandExecuteMs() : OPERATOR_BOOT_MS
+      const t = Math.max(0, captureTime - start)
       setCount(Math.min(text.length, Math.floor(t / OPERATOR_CHAR_MS)))
       return
     }
@@ -53,8 +61,10 @@ export function useRevealLines(lines: string[], active: boolean, delayMs = 90) {
         setShown(0)
         return
       }
-      const typedMs = OPERATOR_LABEL.length * OPERATOR_CHAR_MS
-      const t = Math.max(0, captureTime - OPERATOR_BOOT_MS - typedMs)
+      const start = CAPTURE.command ? operatorCommandExecuteMs() : OPERATOR_BOOT_MS
+      const labelLen = operatorQuickCommand(CAPTURE.command)?.label.length ?? OPERATOR_LABEL.length
+      const typedMs = labelLen * OPERATOR_CHAR_MS
+      const t = Math.max(0, captureTime - start - typedMs)
       setShown(Math.min(lines.length, Math.floor(t / OPERATOR_LINE_MS)))
       return
     }

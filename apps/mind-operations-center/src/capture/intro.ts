@@ -1,3 +1,4 @@
+import { OPERATOR_COMMANDS } from '../components/operator-console/commands'
 import type { SceneId } from '../types'
 
 export const INTRO_HOLD_MS = 2000
@@ -23,6 +24,15 @@ export const OPERATOR_LABEL = 'STATUS SUBJECT-04'
 export const OPERATOR_LINE_COUNT = 6
 export const OPERATOR_CHAR_MS = OPERATOR_TYPE_MS / OPERATOR_LABEL.length
 export const OPERATOR_LINE_MS = OPERATOR_LINES_MS / OPERATOR_LINE_COUNT
+export const OPERATOR_COMMAND_IDLE_MS = 800
+export const OPERATOR_COMMAND_SELECT_MS = 400
+export const OPERATOR_COMMAND_DESTINATIONS: SceneId[] = [
+  'operator-console',
+  'executing',
+  'paused',
+  'uploading',
+  'cardiac-3d-lab',
+]
 export const UPLOAD_END = 0.82
 export const UPLOAD_RAMP_MS = 7500
 export const UPLOAD_STALL_MS = 8000
@@ -98,7 +108,51 @@ export function operatorBooting(tMs: number) {
   return tMs < OPERATOR_BOOT_MS
 }
 
-export function introSceneAt(captureScene: string, tMs: number): SceneId | null {
+export type OperatorQuickCommand = {
+  key: string
+  index: number
+  label: string
+  lineCount: number
+  destination: SceneId
+}
+
+export function operatorQuickCommand(key: string): OperatorQuickCommand | null {
+  const index = 'qwert'.indexOf(key.toLowerCase())
+  if (index < 0) return null
+  const command = OPERATOR_COMMANDS[index]
+  return {
+    key: 'qwert'[index],
+    index,
+    label: command.label,
+    lineCount: command.response.length,
+    destination: OPERATOR_COMMAND_DESTINATIONS[index],
+  }
+}
+
+export function operatorCommandExecuteMs() {
+  return OPERATOR_COMMAND_IDLE_MS + OPERATOR_COMMAND_SELECT_MS
+}
+
+export function operatorCommandRevealEndMs(quick: OperatorQuickCommand) {
+  return (
+    operatorCommandExecuteMs() +
+    quick.label.length * OPERATOR_CHAR_MS +
+    quick.lineCount * OPERATOR_LINE_MS
+  )
+}
+
+export function operatorCommandDurationMs(quick: OperatorQuickCommand) {
+  return operatorCommandRevealEndMs(quick) + INTRO_HOLD_MS
+}
+
+export function introSceneAt(captureScene: string, tMs: number, command = ''): SceneId | null {
+  const quick = operatorQuickCommand(command)
+  if (quick) {
+    if (tMs >= operatorCommandRevealEndMs(quick) && quick.destination !== 'operator-console') {
+      return quick.destination
+    }
+    return null
+  }
   if (captureScene === 'research-approved') {
     return tMs < RESEARCH_PENDING_MS ? 'research-pending' : 'research-approved'
   }
@@ -108,7 +162,8 @@ export function introSceneAt(captureScene: string, tMs: number): SceneId | null 
   return null
 }
 
-export function introCssMs(captureScene: string, tMs: number) {
+export function introCssMs(captureScene: string, tMs: number, command = '') {
+  if (operatorQuickCommand(command)) return 0
   if (captureScene === 'research-approved') {
     if (tMs < RESEARCH_PENDING_MS) return tMs
     if (tMs < RESEARCH_PENDING_MS + RESEARCH_FLASH_MS) return tMs - RESEARCH_PENDING_MS
@@ -116,6 +171,14 @@ export function introCssMs(captureScene: string, tMs: number) {
   }
   if (captureScene === 'script-cogito' && cogitoPulsing(tMs)) return tMs - COGITO_TYPE_MS
   return 0
+}
+
+export function introVideoMs(_captureScene: string, tMs: number, command = '') {
+  const quick = operatorQuickCommand(command)
+  if (quick && tMs >= operatorCommandRevealEndMs(quick) && quick.destination !== 'operator-console') {
+    return 0
+  }
+  return tMs
 }
 
 export function introDurationMs(sceneId: string, thoughts: string[] = []) {

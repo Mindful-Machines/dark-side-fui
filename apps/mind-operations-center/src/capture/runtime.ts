@@ -1,5 +1,5 @@
 import { CAPTURE, captureOrigin } from './config'
-import { introCssMs } from './intro'
+import { introCssMs, introVideoMs } from './intro'
 
 const DIVISORS = [15 / 17, 1, 1.5, 2.5, 3, 3.75, 5, 7.5, 15]
 
@@ -74,8 +74,24 @@ function waitSeeked(video: HTMLVideoElement) {
   })
 }
 
+function waitReady(video: HTMLVideoElement) {
+  if (video.readyState >= 2) return Promise.resolve()
+  return new Promise<void>((resolve) => {
+    const done = () => {
+      video.removeEventListener('loadeddata', done)
+      video.removeEventListener('error', done)
+      window.clearTimeout(timeout)
+      resolve()
+    }
+    const timeout = window.setTimeout(done, 4000)
+    video.addEventListener('loadeddata', done)
+    video.addEventListener('error', done)
+  })
+}
+
 function targetTime(video: HTMLVideoElement) {
-  const t = wrapLoop(timeMs) / 1000
+  const raw = CAPTURE.isIntro ? introVideoMs(CAPTURE.scene, timeMs, CAPTURE.command) : timeMs
+  const t = wrapLoop(raw) / 1000
   const dur = video.duration
   if (!Number.isFinite(dur) || dur <= 0) return t
   let ct = t % dur
@@ -89,6 +105,7 @@ async function seekVideos() {
     videos.map(async (video) => {
       video.pause()
       video.muted = true
+      await waitReady(video)
       const ct = targetTime(video)
       const close = Math.abs(video.currentTime - ct) <= 1 / Math.max(CAPTURE.fps, 1)
       if (close) {
@@ -108,7 +125,12 @@ async function seekVideos() {
 export async function seekCapture(ms: number) {
   timeMs = CAPTURE.isIntro ? Math.max(0, ms) : wrapLoop(ms)
   notify()
-  const cssMs = CAPTURE.isIntro ? introCssMs(CAPTURE.scene, timeMs) : timeMs
+  if (CAPTURE.isIntro && CAPTURE.command) {
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+    })
+  }
+  const cssMs = CAPTURE.isIntro ? introCssMs(CAPTURE.scene, timeMs, CAPTURE.command) : timeMs
   applyCssCaptureTime(cssMs)
   await seekVideos()
   await new Promise<void>((resolve) => {

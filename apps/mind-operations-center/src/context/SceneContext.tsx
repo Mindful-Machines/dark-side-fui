@@ -127,12 +127,12 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<AppMode>(readModeParam)
   const [motion, setMotionState] = useState<MotionMode>(readMotionParam)
   const [introScene, setIntroScene] = useState<SceneId | null>(() =>
-    CAPTURE.isIntro ? introSceneAt(CAPTURE.scene, getCaptureTimeMs()) : null,
+    CAPTURE.isIntro ? introSceneAt(CAPTURE.scene, getCaptureTimeMs(), CAPTURE.command) : null,
   )
   useEffect(() => {
     if (!CAPTURE.isIntro) return
     return subscribeCapture(() => {
-      setIntroScene(introSceneAt(CAPTURE.scene, getCaptureTimeMs()))
+      setIntroScene(introSceneAt(CAPTURE.scene, getCaptureTimeMs(), CAPTURE.command))
     })
   }, [])
   const displayId = introScene ?? sceneId

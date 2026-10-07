@@ -7,6 +7,7 @@ export type CaptureConfig = {
   isIntro: boolean
   scene: string
   hold: string
+  command: string
   duration: number
   fps: number
   seed: number
@@ -28,6 +29,7 @@ export function readCaptureConfig(): CaptureConfig {
     isIntro: mode === 'intro',
     scene: params.get('scene') ?? '',
     hold: params.get('hold') ?? '',
+    command: (params.get('command') ?? '').toLowerCase(),
     duration: num(params.get('duration'), 15),
     fps: num(params.get('fps'), 30),
     seed: Math.max(0, Math.floor(num(params.get('seed'), 1))),

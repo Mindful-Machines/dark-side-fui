@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react'
 import { CAPTURE } from './config'
-import { introDurationMs } from './intro'
+import { introDurationMs, operatorCommandDurationMs, operatorQuickCommand } from './intro'
 import { applyCssCaptureTime, seekCapture, waitCaptureAssets } from './runtime'
 import { SCENES } from '../data/scenes'
 import type { SceneId } from '../types'
@@ -15,9 +15,12 @@ export function CaptureHost({ children }: { children: ReactNode }) {
     }
 
     const scene = SCENES[CAPTURE.scene as SceneId]
-    const duration = CAPTURE.isIntro
-      ? introDurationMs(CAPTURE.scene, scene?.thoughts ?? []) / 1000
-      : CAPTURE.duration
+    const quick = operatorQuickCommand(CAPTURE.command)
+    const duration = quick
+      ? operatorCommandDurationMs(quick) / 1000
+      : CAPTURE.isIntro
+        ? introDurationMs(CAPTURE.scene, scene?.thoughts ?? []) / 1000
+        : CAPTURE.duration
 
     const api: MocCaptureApi = {
       ready: false,

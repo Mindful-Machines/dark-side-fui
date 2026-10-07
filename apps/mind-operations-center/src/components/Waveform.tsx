@@ -102,7 +102,11 @@ function WaveformInner({
 
   useEffect(() => {
     if (captureTime === null) return
-    const pts = captureWavePoints(paused ? 0 : captureTime, { noise, mode, irregular })
+    const pts = captureWavePoints(paused || CAPTURE.isIntro ? 0 : captureTime, {
+      noise,
+      mode,
+      irregular,
+    })
     pointsRef.current = pts
     const el = pathRef.current
     if (el) el.setAttribute('d', buildPath(pts, height))

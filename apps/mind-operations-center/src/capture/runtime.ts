@@ -1,4 +1,5 @@
 import { CAPTURE, captureOrigin } from './config'
+import { introCssMs } from './intro'
 
 const DIVISORS = [15 / 17, 1, 1.5, 2.5, 3, 3.75, 5, 7.5, 15]
 
@@ -105,9 +106,10 @@ async function seekVideos() {
 }
 
 export async function seekCapture(ms: number) {
-  timeMs = wrapLoop(ms)
+  timeMs = CAPTURE.isIntro ? Math.max(0, ms) : wrapLoop(ms)
   notify()
-  applyCssCaptureTime(timeMs)
+  const cssMs = CAPTURE.isIntro ? introCssMs(CAPTURE.scene, timeMs) : timeMs
+  applyCssCaptureTime(cssMs)
   await seekVideos()
   await new Promise<void>((resolve) => {
     requestAnimationFrame(() => requestAnimationFrame(() => resolve()))

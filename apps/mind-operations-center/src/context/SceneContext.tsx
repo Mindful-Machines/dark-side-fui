@@ -8,6 +8,9 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { CAPTURE } from '../capture/config'
+import { introSceneAt } from '../capture/intro'
+import { getCaptureTimeMs, subscribeCapture } from '../capture/runtime'
 import { SCENES } from '../data/scenes'
 import {
   LETTER_MAP,
@@ -123,7 +126,17 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [sceneId, setSceneIdState] = useState<SceneId>(readSceneParam)
   const [mode, setModeState] = useState<AppMode>(readModeParam)
   const [motion, setMotionState] = useState<MotionMode>(readMotionParam)
-  const section = sectionOf(sceneId)
+  const [introScene, setIntroScene] = useState<SceneId | null>(() =>
+    CAPTURE.isIntro ? introSceneAt(CAPTURE.scene, getCaptureTimeMs()) : null,
+  )
+  useEffect(() => {
+    if (!CAPTURE.isIntro) return
+    return subscribeCapture(() => {
+      setIntroScene(introSceneAt(CAPTURE.scene, getCaptureTimeMs()))
+    })
+  }, [])
+  const displayId = introScene ?? sceneId
+  const section = sectionOf(displayId)
   const sceneIdRef = useRef(sceneId)
   const modeRef = useRef(mode)
   const motionRef = useRef(motion)
@@ -262,8 +275,8 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
-      sceneId,
-      scene: SCENES[sceneId],
+      sceneId: displayId,
+      scene: SCENES[displayId],
       mode,
       motion,
       section,
@@ -273,7 +286,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       toggleMode,
       goTo,
     }),
-    [sceneId, mode, motion, section, setSceneId, setMode, setMotion, toggleMode, goTo],
+    [displayId, mode, motion, section, setSceneId, setMode, setMotion, toggleMode, goTo],
   )
 
   return <SceneContext.Provider value={value}>{children}</SceneContext.Provider>

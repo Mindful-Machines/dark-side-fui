@@ -1,20 +1,32 @@
 import { useEffect, useState } from 'react'
 import { CAPTURE } from '../../capture/config'
+import { OPERATOR_BOOT_MS, OPERATOR_CHAR_MS, OPERATOR_LABEL, OPERATOR_LINE_MS } from '../../capture/intro'
+import { useCaptureTime } from '../../capture/useCaptureTime'
 
 export function useTypedText(text: string, active: boolean, ms = 18) {
+  const captureTime = useCaptureTime()
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    if (CAPTURE.enabled) return
-    setCount(0)
-    if (!active || !text) return
-  }, [text, active])
-
-  useEffect(() => {
-    if (CAPTURE.enabled) {
+    if (CAPTURE.isLoop) {
       setCount(text.length)
       return
     }
+    if (CAPTURE.isIntro) {
+      if (!active || captureTime === null) {
+        setCount(0)
+        return
+      }
+      const t = Math.max(0, captureTime - OPERATOR_BOOT_MS)
+      setCount(Math.min(text.length, Math.floor(t / OPERATOR_CHAR_MS)))
+      return
+    }
+    setCount(0)
+    if (!active || !text) return
+  }, [text, active, captureTime, ms])
+
+  useEffect(() => {
+    if (CAPTURE.enabled) return
     if (!active) return
     if (count >= text.length) return
     const id = window.setTimeout(() => setCount((n) => n + 1), ms)
@@ -28,18 +40,29 @@ export function useTypedText(text: string, active: boolean, ms = 18) {
 }
 
 export function useRevealLines(lines: string[], active: boolean, delayMs = 90) {
+  const captureTime = useCaptureTime()
   const [shown, setShown] = useState(0)
 
   useEffect(() => {
-    if (CAPTURE.enabled) return
-    setShown(0)
-  }, [lines, active])
-
-  useEffect(() => {
-    if (CAPTURE.enabled) {
+    if (CAPTURE.isLoop) {
       setShown(lines.length)
       return
     }
+    if (CAPTURE.isIntro) {
+      if (!active || captureTime === null) {
+        setShown(0)
+        return
+      }
+      const typedMs = OPERATOR_LABEL.length * OPERATOR_CHAR_MS
+      const t = Math.max(0, captureTime - OPERATOR_BOOT_MS - typedMs)
+      setShown(Math.min(lines.length, Math.floor(t / OPERATOR_LINE_MS)))
+      return
+    }
+    setShown(0)
+  }, [lines, active, captureTime, delayMs])
+
+  useEffect(() => {
+    if (CAPTURE.enabled) return
     if (!active) return
     if (shown >= lines.length) return
     const id = window.setTimeout(() => setShown((n) => n + 1), delayMs)

@@ -14,6 +14,9 @@ renders/motion-preview/*
 renders/motion-preview-v2/*
 renders/motion-preview-v3/*
 renders/motion-preview-v4/*
+renders/motion-preview-v6/*
+renders/motion-storyboard-v5/*
+renders/motion-storyboard-v6/*
 
 # Video exports
 exports/*.mp4

@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
+import { CAPTURE } from '../../capture/config'
+import { operatorBooting } from '../../capture/intro'
+import { useCaptureTime } from '../../capture/useCaptureTime'
 import { CommandPalette } from './CommandPalette'
 import { ConsoleTerminal } from './ConsoleTerminal'
 import { OPERATOR_COMMANDS } from './commands'
@@ -6,6 +9,7 @@ import { OperatorStatusCard } from './OperatorStatusCard'
 import './operator-console.css'
 
 export function OperatorConsole() {
+  const captureTime = useCaptureTime()
   const [selected, setSelected] = useState(0)
   const [active, setActive] = useState<number | null>(null)
   const [runId, setRunId] = useState(0)
@@ -15,6 +19,26 @@ export function OperatorConsole() {
     setActive(index)
     setRunId((n) => n + 1)
   }, [])
+
+  useEffect(() => {
+    if (CAPTURE.isLoop && CAPTURE.hold === 'status') {
+      setSelected(0)
+      setActive(0)
+      setRunId(1)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!CAPTURE.isIntro || captureTime === null) return
+    if (operatorBooting(captureTime)) {
+      setActive(null)
+      setRunId(0)
+      return
+    }
+    setSelected(0)
+    setActive(0)
+    setRunId(1)
+  }, [captureTime])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -77,7 +101,11 @@ export function OperatorConsole() {
             onSelect={setSelected}
             onExecute={execute}
           />
-          <ConsoleTerminal command={activeCmd} runId={runId} />
+          <ConsoleTerminal
+            command={activeCmd}
+            runId={runId}
+            booting={CAPTURE.isIntro && captureTime !== null && operatorBooting(captureTime)}
+          />
         </div>
         <OperatorStatusCard selected={selectedCmd} last={activeCmd} status={status} />
       </div>

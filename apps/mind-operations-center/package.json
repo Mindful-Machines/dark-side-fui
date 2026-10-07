@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "on-set": "tsc -b && vite build --base / && vite preview --host 0.0.0.0 --port 5191 --strictPort",
     "capture:moc": "node ./scripts/moc-capture.mjs",
-    "capture:moc:v1": "node ./scripts/moc-capture.mjs --package chad-moc-v1"
+    "capture:moc:v1": "node ./scripts/moc-capture.mjs --package chad-moc-v1",
+    "capture:moc:intros": "node ./scripts/moc-capture.mjs --intros",
+    "capture:moc:intros-v2": "node ./scripts/moc-capture.mjs --intros-v2"
   },
   "dependencies": {
     "react": "^19.2.8",

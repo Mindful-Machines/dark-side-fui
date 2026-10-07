@@ -4,9 +4,11 @@ import { useRevealLines, useTypedText } from './useConsoleReveal'
 export function ConsoleTerminal({
   command,
   runId,
+  booting = false,
 }: {
   command: OperatorCommand | null
   runId: number
+  booting?: boolean
 }) {
   const label = command?.label ?? ''
   const { typed, done: typedDone } = useTypedText(label, Boolean(command) && runId > 0, 16)
@@ -33,8 +35,8 @@ export function ConsoleTerminal({
         </div>
       ) : (
         <div className="oc-idle">
-          <p>CHANNEL OPEN · AWAITING DIRECTIVE</p>
-          <p className="oc-hint">Select a command or press Q–T, then Enter.</p>
+          <p>{booting ? 'CONSOLE INITIALIZING' : 'CHANNEL OPEN · AWAITING DIRECTIVE'}</p>
+          {booting ? null : <p className="oc-hint">Select a command or press Q–T, then Enter.</p>}
         </div>
       )}
     </div>

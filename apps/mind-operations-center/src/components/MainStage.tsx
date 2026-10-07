@@ -5,6 +5,7 @@ import { Waveform } from './Waveform'
 import { HeartMonitorScene } from './organ-monitor/heart/HeartMonitorScene'
 import { OperatorConsole } from './operator-console/OperatorConsole'
 import { CAPTURE } from '../capture/config'
+import { thoughtsAt, uploadProgressAt } from '../capture/intro'
 import { wrapLoop } from '../capture/runtime'
 import { useCaptureTime } from '../capture/useCaptureTime'
 import { useScene } from '../context/SceneContext'
@@ -75,6 +76,7 @@ function HeartRateStage({ scene }: { scene: Scene }) {
 
 function ThoughtStage({ scene }: { scene: Scene }) {
   const thoughts = scene.thoughts
+  const captureTime = useCaptureTime()
   const [shown, setShown] = useState(0)
   const [typed, setTyped] = useState(0)
   const [visible, setVisible] = useState(() => typeof document !== 'undefined' && !document.hidden)
@@ -86,11 +88,18 @@ function ThoughtStage({ scene }: { scene: Scene }) {
   }, [])
 
   useEffect(() => {
-    if (CAPTURE.enabled) {
+    if (CAPTURE.isLoop) {
       setShown(Math.max(0, thoughts.length - 1))
       setTyped(thoughts[thoughts.length - 1]?.length ?? 0)
       return
     }
+    if (CAPTURE.isIntro && captureTime !== null) {
+      const cursor = thoughtsAt(thoughts, captureTime)
+      setShown(cursor.shown)
+      setTyped(cursor.typed)
+      return
+    }
+    if (CAPTURE.enabled) return
     if (!visible) return
     const current = thoughts[shown]
     if (current === undefined) return
@@ -107,7 +116,7 @@ function ThoughtStage({ scene }: { scene: Scene }) {
       }
     }, 1500)
     return () => window.clearTimeout(id)
-  }, [thoughts, shown, typed, visible])
+  }, [thoughts, shown, typed, visible, captureTime])
 
   return (
     <div className="thought-stage">
@@ -200,14 +209,27 @@ function ScriptStage({ scene }: { scene: Scene }) {
 function UploadStage({ scene }: { scene: Scene }) {
   const isLive = scene.id === 'uploading'
   const captureTime = useCaptureTime()
-  const [progress, setProgress] = useState(scene.uploadProgress ?? 0)
+  const [progress, setProgress] = useState(() => {
+    if (CAPTURE.isIntro) return 0
+    if (CAPTURE.isLoop && scene.id === 'uploading') return 0.14
+    return scene.uploadProgress ?? 0
+  })
 
   useEffect(() => {
-    if (captureTime === null || !isLive) return
+    if (captureTime === null) return
+    if (CAPTURE.isIntro && scene.id === 'uploading') {
+      setProgress(uploadProgressAt(captureTime))
+      return
+    }
+    if (CAPTURE.isIntro && scene.id === 'partial') {
+      setProgress(scene.uploadProgress ?? 0.82)
+      return
+    }
+    if (!isLive) return
     const p = wrapLoop(captureTime) / (CAPTURE.duration * 1000)
     const tri = p <= 0.5 ? p * 2 : (1 - p) * 2
     setProgress(0.14 + tri * 0.83)
-  }, [captureTime, isLive])
+  }, [captureTime, isLive, scene.id, scene.uploadProgress])
 
   useEffect(() => {
     if (CAPTURE.enabled || !isLive) return

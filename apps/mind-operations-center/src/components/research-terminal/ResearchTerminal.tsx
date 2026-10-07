@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { CAPTURE } from '../../capture/config'
+import { RESEARCH_FLASH_MS, RESEARCH_PENDING_MS } from '../../capture/intro'
+import { useCaptureTime } from '../../capture/useCaptureTime'
 import { useScene } from '../../context/SceneContext'
 import './research-terminal.css'
 
 export function ResearchTerminal() {
   const { sceneId, goTo } = useScene()
+  const captureTime = useCaptureTime()
   const pending = sceneId === 'research-pending'
   const approved = sceneId === 'research-approved'
   const flashRef = useRef<HTMLDivElement>(null)
@@ -34,12 +37,21 @@ export function ResearchTerminal() {
   }, [pending, goTo])
 
   useEffect(() => {
-    if (!approved || !flashRef.current || CAPTURE.enabled) return
+    if (!approved || !flashRef.current) return
+    if (CAPTURE.isLoop) return
+    if (CAPTURE.isIntro) {
+      const on =
+        captureTime !== null &&
+        captureTime >= RESEARCH_PENDING_MS &&
+        captureTime < RESEARCH_PENDING_MS + RESEARCH_FLASH_MS
+      flashRef.current.classList.toggle('is-confirm', on)
+      return
+    }
     flashRef.current.classList.remove('is-confirm')
     // Retrigger CSS animation on each entry into approved.
     void flashRef.current.offsetWidth
     flashRef.current.classList.add('is-confirm')
-  }, [approved, sceneId])
+  }, [approved, sceneId, captureTime])
 
   if (pending) {
     return (

@@ -1,6 +1,9 @@
 import { useEffect, type ReactNode } from 'react'
 import { CAPTURE } from './config'
+import { introDurationMs } from './intro'
 import { applyCssCaptureTime, seekCapture, waitCaptureAssets } from './runtime'
+import { SCENES } from '../data/scenes'
+import type { SceneId } from '../types'
 import type { MocCaptureApi } from './api'
 import './capture.css'
 
@@ -11,16 +14,21 @@ export function CaptureHost({ children }: { children: ReactNode }) {
       return
     }
 
+    const scene = SCENES[CAPTURE.scene as SceneId]
+    const duration = CAPTURE.isIntro
+      ? introDurationMs(CAPTURE.scene, scene?.thoughts ?? []) / 1000
+      : CAPTURE.duration
+
     const api: MocCaptureApi = {
       ready: false,
-      duration: CAPTURE.duration,
+      duration,
       fps: CAPTURE.fps,
       seed: CAPTURE.seed,
       seek: seekCapture,
     }
     window.__MOC_CAPTURE__ = api
 
-    document.documentElement.dataset.capture = 'loop'
+    document.documentElement.dataset.capture = CAPTURE.mode
     document.documentElement.style.cursor = 'none'
 
     let cancelled = false

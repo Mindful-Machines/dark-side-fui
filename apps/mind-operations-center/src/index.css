@@ -752,6 +752,27 @@ select {
   color: var(--text);
 }
 
+.script-hero-line.is-confirm {
+  border-color: color-mix(in srgb, var(--green) 55%, var(--border));
+  background: var(--green-dim);
+  animation: script-confirm 0.7s ease-out;
+}
+
+@keyframes script-confirm {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.script-hero-line.is-cleared p {
+  text-decoration: line-through;
+  color: var(--text-faint);
+  opacity: 0.6;
+}
+
 .script-cursor {
   display: inline-block;
   width: 7px;

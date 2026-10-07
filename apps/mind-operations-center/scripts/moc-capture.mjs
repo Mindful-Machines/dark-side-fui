@@ -62,6 +62,9 @@ function parseArgs(argv) {
     port: PORT,
     packageName: null,
     force: false,
+    intros: false,
+    introsV2: false,
+    finals: false,
   }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
@@ -71,6 +74,9 @@ function parseArgs(argv) {
     else if (a === '--port') out.port = Number(argv[++i])
     else if (a === '--package') out.packageName = argv[++i]
     else if (a === '--force') out.force = true
+    else if (a === '--intros') out.intros = true
+    else if (a === '--intros-v2') out.introsV2 = true
+    else if (a === '--finals') out.finals = true
   }
   return out
 }
@@ -197,6 +203,7 @@ function captureUrl(origin, entry, defaults) {
   u.searchParams.set('duration', String(entry.duration ?? defaults.duration))
   u.searchParams.set('fps', String(entry.fps ?? defaults.fps))
   u.searchParams.set('seed', String(entry.seed ?? defaults.seed))
+  if (entry.hold) u.searchParams.set('hold', entry.hold)
   return u.toString()
 }
 
@@ -782,13 +789,419 @@ async function packageEntry({
   return result
 }
 
+const INTRO_SCENES = [
+  'thoughts',
+  'script-cogito',
+  'script-tower-cranes',
+  'research-approved',
+  'operator-console',
+  'uploading',
+]
+
+async function runIntros({ browser, origin, ffmpeg, blender, ffprobe, defaults, sceneFilter }) {
+  const scenes = sceneFilter ? INTRO_SCENES.filter((s) => sceneFilter.includes(s)) : INTRO_SCENES
+  const outRoot = join(APP, 'exports', 'chad-moc-v1-review', 'narrative-intros')
+  const contactDir = join(outRoot, 'contact')
+  const holdDir = join(APP, 'exports', 'chad-moc-v1', 'validation')
+  await mkdir(contactDir, { recursive: true })
+  const report = []
+
+  for (const scene of scenes) {
+    const started = Date.now()
+    const tmp = join(outRoot, '.tmp', scene)
+    const captureDir = join(tmp, 'full')
+    const previewDir = join(tmp, 'preview')
+    const mp4 = join(outRoot, `${scene}_intro.mp4`)
+    const sheet = join(contactDir, `${scene}_intro.png`)
+    await rm(tmp, { recursive: true, force: true })
+    await mkdir(captureDir, { recursive: true })
+
+    const url = captureUrl(origin, { scene, mode: 'display', duration: 30, fps: 30, seed: defaults.seed }, {
+      ...defaults,
+      capture: 'intro',
+      duration: 30,
+    })
+    const context = await browser.newContext({
+      deviceScaleFactor: 1,
+      colorScheme: 'dark',
+      reducedMotion: 'no-preference',
+      viewport: { width: 1920, height: 1080 },
+    })
+    const page = await context.newPage()
+    let duration
+    let fps
+    let last
+    let overflow
+    try {
+      await page.setViewportSize({ width: 1920, height: 1080 })
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 })
+      const api = await waitReady(page)
+      duration = api.duration
+      fps = api.fps || 30
+      const total = Math.round(duration * fps)
+      last = total - 1
+      overflow = await measureOverflow(page)
+      console.log(`[intro] ${scene} ${total} frames ${duration.toFixed(3)}s overflow=${overflow.overflow}`)
+      for (let i = 0; i < total; i++) {
+        const ms = (i / fps) * 1000
+        await seek(page, ms)
+        await page.screenshot({
+          path: join(captureDir, frameName(i)),
+          type: 'png',
+          animations: 'allow',
+          caret: 'hide',
+        })
+        if (i % 50 === 0 || i === last) console.log(`  frame ${i}/${last} t=${ms.toFixed(0)}ms`)
+      }
+      const holdPath = join(holdDir, `${scene}-0000.png`)
+      const lastPath = join(captureDir, frameName(last))
+      let match = { error: 'hold frame missing' }
+      if (await exists(holdPath)) {
+        match = await pngDiff(page, lastPath, holdPath)
+      }
+      await downscaleSequence(captureDir, previewDir, total, 960, 540)
+      encodeFrames(ffmpeg, blender, previewDir, mp4, fps, last)
+      const revealEnd = Math.max(0, last - Math.round(2 * fps))
+      const sheetFrames = [0, Math.round(revealEnd * 0.5), revealEnd, last].map((i) =>
+        join(previewDir, frameName(Math.min(last, i))),
+      )
+      await contactSheet(context, sheetFrames, sheet)
+      const info = await stat(mp4)
+      const row = {
+        scene,
+        file: mp4,
+        contactSheet: sheet,
+        capture: '1920x1080',
+        encode: '960x540',
+        duration,
+        fps,
+        frames: total,
+        bytes: info.size,
+        overflow: overflow.overflow,
+        holdMatch: match,
+        seconds: (Date.now() - started) / 1000,
+      }
+      report.push(row)
+      console.log(
+        `[intro] ${scene} ok loop-match-vs-hold0 changed=${match.changedPct?.toFixed?.(3)}% mean=${match.meanAbs?.toFixed?.(3)} max=${match.maxDiff} ${row.seconds.toFixed(1)}s`,
+      )
+    } catch (err) {
+      console.error(`[intro] ${scene} failed:`, err)
+      report.push({ scene, error: String(err) })
+    } finally {
+      await page.close()
+      await context.close()
+      await rm(tmp, { recursive: true, force: true })
+    }
+  }
+
+  const reportPath = join(outRoot, 'report.json')
+  await writeFile(reportPath, JSON.stringify({ generatedAt: new Date().toISOString(), scenes: report }, null, 2))
+  console.log(`[intro] report ${reportPath}`)
+  return report
+}
+
+const INTRO_V2_SCENES = [
+  { scene: 'script-cogito', hold: 'exports/chad-moc-v1/validation/script-cogito-0000.png' },
+  { scene: 'script-tower-cranes', hold: 'exports/chad-moc-v1/validation/script-tower-cranes-0000.png' },
+  { scene: 'research-approved', hold: 'exports/chad-moc-v1/validation/research-approved-0000.png' },
+  { scene: 'operator-console', hold: 'exports/chad-moc-v1-review/narrative-intros-v2/validation/operator-console-status-0000.png' },
+  { scene: 'uploading', hold: 'exports/chad-moc-v1/validation/partial-0000.png' },
+]
+
+async function capturePreviewLoop({ browser, origin, ffmpeg, blender, defaults, outMp4, valPng, scene, hold, duration = 15, encodeFull = false }) {
+  const started = Date.now()
+  const fps = 30
+  const { last, loop } = frameTimes(duration, fps)
+  const tmp = join(dirname(outMp4), '.tmp', `${scene}-${hold || 'loop'}`)
+  const captureDir = join(tmp, 'full')
+  const previewDir = join(tmp, 'preview')
+  await rm(tmp, { recursive: true, force: true })
+  await mkdir(captureDir, { recursive: true })
+  const entry = { scene, mode: 'display', duration, fps, hold }
+  const url = captureUrl(origin, entry, { ...defaults, capture: 'loop' })
+  const context = await browser.newContext({
+    deviceScaleFactor: 1,
+    colorScheme: 'dark',
+    reducedMotion: 'no-preference',
+    viewport: { width: 1920, height: 1080 },
+  })
+  const page = await context.newPage()
+  try {
+    await page.setViewportSize({ width: 1920, height: 1080 })
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 })
+    const api = await waitReady(page)
+    console.log(`[hold] ${scene} hold=${hold || 'idle'} ${loop + 1} frames`)
+    for (let i = 0; i <= loop; i++) {
+      await seek(page, (i / fps) * 1000)
+      await page.screenshot({
+        path: join(captureDir, frameName(i)),
+        type: 'png',
+        animations: 'allow',
+        caret: 'hide',
+      })
+      if (i % 50 === 0 || i === loop) console.log(`  frame ${i}/${loop}`)
+    }
+    await mkdir(dirname(valPng), { recursive: true })
+    await copyFile(join(captureDir, frameName(0)), valPng)
+    if (encodeFull) {
+      encodeFrames(ffmpeg, blender, captureDir, outMp4, api.fps || fps, last)
+    } else {
+      await downscaleSequence(captureDir, previewDir, last + 1, 960, 540)
+      encodeFrames(ffmpeg, blender, previewDir, outMp4, api.fps || fps, last)
+    }
+    console.log(`[hold] ${scene} ok ${(Date.now() - started) / 1000}s -> ${outMp4}`)
+  } finally {
+    await page.close()
+    await context.close()
+    await rm(tmp, { recursive: true, force: true })
+  }
+}
+
+async function runIntrosV2({ browser, origin, ffmpeg, blender, defaults, sceneFilter }) {
+  const scenes = sceneFilter ? INTRO_V2_SCENES.filter((s) => sceneFilter.includes(s.scene)) : INTRO_V2_SCENES
+  const outRoot = join(APP, 'exports', 'chad-moc-v1-review', 'narrative-intros-v2')
+  const contactDir = join(outRoot, 'contact')
+  const valDir = join(outRoot, 'validation')
+  await mkdir(contactDir, { recursive: true })
+  await mkdir(valDir, { recursive: true })
+
+  const idleSrc = join(APP, 'exports', 'chad-moc-v1', 'previews', 'landscape', 'operator-console.mp4')
+  const idleDest = join(outRoot, 'operator-console-idle_hold-loop.mp4')
+  if (await exists(idleSrc)) {
+    await copyFile(idleSrc, idleDest)
+    console.log(`[v2] copied idle hold ${idleDest}`)
+  }
+
+  const statusMp4 = join(outRoot, 'operator-console-status_hold-loop.mp4')
+  const statusVal = join(valDir, 'operator-console-status-0000.png')
+  if (!(await exists(statusMp4)) || !(await exists(statusVal))) {
+    await capturePreviewLoop({
+      browser,
+      origin,
+      ffmpeg,
+      blender,
+      defaults,
+      outMp4: statusMp4,
+      valPng: statusVal,
+      scene: 'operator-console',
+      hold: 'status',
+    })
+  } else {
+    console.log('[v2] status hold already present')
+  }
+
+  const report = []
+  for (const spec of scenes) {
+    const started = Date.now()
+    const scene = spec.scene
+    const tmp = join(outRoot, '.tmp', scene)
+    const captureDir = join(tmp, 'full')
+    const previewDir = join(tmp, 'preview')
+    const mp4 = join(outRoot, `${scene}_intro.mp4`)
+    const sheet = join(contactDir, `${scene}_intro.png`)
+    await rm(tmp, { recursive: true, force: true })
+    await mkdir(captureDir, { recursive: true })
+    const url = captureUrl(origin, { scene, mode: 'display', duration: 30, fps: 30 }, {
+      ...defaults,
+      capture: 'intro',
+    })
+    const context = await browser.newContext({
+      deviceScaleFactor: 1,
+      colorScheme: 'dark',
+      reducedMotion: 'no-preference',
+      viewport: { width: 1920, height: 1080 },
+    })
+    const page = await context.newPage()
+    try {
+      await page.setViewportSize({ width: 1920, height: 1080 })
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 })
+      const api = await waitReady(page)
+      const duration = api.duration
+      const fps = api.fps || 30
+      const total = Math.round(duration * fps)
+      const last = total - 1
+      const overflow = await measureOverflow(page)
+      console.log(`[v2] ${scene} ${total} frames ${duration.toFixed(3)}s overflow=${overflow.overflow}`)
+      for (let i = 0; i < total; i++) {
+        const ms = (i / fps) * 1000
+        await seek(page, ms)
+        await page.screenshot({
+          path: join(captureDir, frameName(i)),
+          type: 'png',
+          animations: 'allow',
+          caret: 'hide',
+        })
+        if (i % 50 === 0 || i === last) console.log(`  frame ${i}/${last} t=${ms.toFixed(0)}ms`)
+      }
+      const holdPath = join(APP, spec.hold)
+      const lastPath = join(captureDir, frameName(last))
+      const match = (await exists(holdPath)) ? await pngDiff(page, lastPath, holdPath) : { error: 'hold frame missing' }
+      await downscaleSequence(captureDir, previewDir, total, 960, 540)
+      encodeFrames(ffmpeg, blender, previewDir, mp4, fps, last)
+      const revealEnd = Math.max(0, last - Math.round(2 * fps))
+      const sheetFrames = [0, Math.round(revealEnd * 0.5), revealEnd, last].map((i) =>
+        join(previewDir, frameName(Math.min(last, i))),
+      )
+      await contactSheet(context, sheetFrames, sheet)
+      const info = await stat(mp4)
+      const row = {
+        scene,
+        file: mp4,
+        contactSheet: sheet,
+        capture: '1920x1080',
+        encode: '960x540',
+        duration,
+        fps,
+        frames: total,
+        bytes: info.size,
+        overflow: overflow.overflow,
+        holdFile: holdPath,
+        holdMatch: match,
+        seconds: (Date.now() - started) / 1000,
+      }
+      report.push(row)
+      console.log(
+        `[v2] ${scene} ok hold-match changed=${match.changedPct?.toFixed?.(3)}% mean=${match.meanAbs?.toFixed?.(3)} max=${match.maxDiff} ${row.seconds.toFixed(1)}s`,
+      )
+    } catch (err) {
+      console.error(`[v2] ${scene} failed:`, err)
+      report.push({ scene, error: String(err) })
+    } finally {
+      await page.close()
+      await context.close()
+      await rm(tmp, { recursive: true, force: true })
+    }
+  }
+
+  const reportPath = join(outRoot, 'report.json')
+  await writeFile(reportPath, JSON.stringify({ generatedAt: new Date().toISOString(), scenes: report }, null, 2))
+  console.log(`[v2] report ${reportPath}`)
+  return report
+}
+
+const FINAL_INTROS = [
+  { scene: 'thoughts', hold: 'exports/chad-moc-v1/validation/thoughts-0000.png' },
+  { scene: 'script-cogito', hold: 'exports/chad-moc-v1/validation/script-cogito-0000.png' },
+  { scene: 'script-tower-cranes', hold: 'exports/chad-moc-v1/validation/script-tower-cranes-0000.png' },
+  { scene: 'research-approved', hold: 'exports/chad-moc-v1/validation/research-approved-0000.png' },
+  { scene: 'operator-console', hold: 'exports/chad-moc-v1-review/narrative-finals/validation/operator-console-status-0000.png' },
+  { scene: 'uploading', hold: 'exports/chad-moc-v1/validation/partial-0000.png' },
+]
+
+async function runFinals({ browser, origin, ffmpeg, blender, defaults, sceneFilter }) {
+  const scenes = sceneFilter ? FINAL_INTROS.filter((s) => sceneFilter.includes(s.scene)) : FINAL_INTROS
+  const outRoot = join(APP, 'exports', 'chad-moc-v1-review', 'narrative-finals')
+  const valDir = join(outRoot, 'validation')
+  await mkdir(outRoot, { recursive: true })
+  await mkdir(valDir, { recursive: true })
+
+  const idleSrc = join(APP, 'exports', 'chad-moc-v1', 'finals', 'landscape', 'operator-console.mp4')
+  const idleDest = join(outRoot, 'operator-console-idle_hold-loop.mp4')
+  if (await exists(idleSrc)) {
+    await copyFile(idleSrc, idleDest)
+    console.log(`[final] copied idle hold ${idleDest}`)
+  }
+
+  const statusMp4 = join(outRoot, 'operator-console-status_hold-loop.mp4')
+  const statusVal = join(valDir, 'operator-console-status-0000.png')
+  await capturePreviewLoop({
+    browser,
+    origin,
+    ffmpeg,
+    blender,
+    defaults,
+    outMp4: statusMp4,
+    valPng: statusVal,
+    scene: 'operator-console',
+    hold: 'status',
+    encodeFull: true,
+  })
+
+  const report = []
+  for (const spec of scenes) {
+    const started = Date.now()
+    const scene = spec.scene
+    const tmp = join(outRoot, '.tmp', scene)
+    const captureDir = join(tmp, 'full')
+    const mp4 = join(outRoot, `${scene}_intro.mp4`)
+    await rm(tmp, { recursive: true, force: true })
+    await mkdir(captureDir, { recursive: true })
+    const url = captureUrl(origin, { scene, mode: 'display', duration: 30, fps: 30 }, {
+      ...defaults,
+      capture: 'intro',
+    })
+    const context = await browser.newContext({
+      deviceScaleFactor: 1,
+      colorScheme: 'dark',
+      reducedMotion: 'no-preference',
+      viewport: { width: 1920, height: 1080 },
+    })
+    const page = await context.newPage()
+    try {
+      await page.setViewportSize({ width: 1920, height: 1080 })
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 })
+      const api = await waitReady(page)
+      const duration = api.duration
+      const fps = api.fps || 30
+      const total = Math.round(duration * fps)
+      const last = total - 1
+      console.log(`[final] ${scene} ${total} frames ${duration.toFixed(3)}s`)
+      for (let i = 0; i < total; i++) {
+        await seek(page, (i / fps) * 1000)
+        await page.screenshot({
+          path: join(captureDir, frameName(i)),
+          type: 'png',
+          animations: 'allow',
+          caret: 'hide',
+        })
+        if (i % 50 === 0 || i === last) console.log(`  frame ${i}/${last}`)
+      }
+      const holdPath = join(APP, spec.hold)
+      const match = (await exists(holdPath))
+        ? await pngDiff(page, join(captureDir, frameName(last)), holdPath)
+        : { error: 'hold frame missing' }
+      encodeFrames(ffmpeg, blender, captureDir, mp4, fps, last)
+      const info = await stat(mp4)
+      report.push({
+        scene,
+        file: mp4,
+        capture: '1920x1080',
+        encode: '1920x1080',
+        duration,
+        fps,
+        frames: total,
+        bytes: info.size,
+        holdFile: holdPath,
+        holdMatch: match,
+        seconds: (Date.now() - started) / 1000,
+      })
+      console.log(
+        `[final] ${scene} ok hold-match changed=${match.changedPct?.toFixed?.(3)}% ${((Date.now() - started) / 1000).toFixed(1)}s`,
+      )
+    } catch (err) {
+      console.error(`[final] ${scene} failed:`, err)
+      report.push({ scene, error: String(err) })
+    } finally {
+      await page.close()
+      await context.close()
+      await rm(tmp, { recursive: true, force: true })
+    }
+  }
+
+  const reportPath = join(outRoot, 'report.json')
+  await writeFile(reportPath, JSON.stringify({ generatedAt: new Date().toISOString(), scenes: report }, null, 2))
+  console.log(`[final] report ${reportPath}`)
+  return report
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2))
   const packaging = Boolean(args.packageName)
   if (packaging && args.packageName !== PACKAGE_NAME) {
     throw new Error(`unknown package ${args.packageName}`)
   }
-  if (!packaging && args.profile !== 'preview' && args.profile !== 'final') {
+  if (!args.intros && !args.introsV2 && !args.finals && !packaging && args.profile !== 'preview' && args.profile !== 'final') {
     throw new Error(`unknown profile ${args.profile}`)
   }
 
@@ -805,7 +1218,7 @@ async function main() {
   } else {
     entries = entries.filter((e) => e.enabled)
   }
-  if (entries.length === 0) throw new Error('no scenes selected')
+  if (!args.intros && !args.introsV2 && !args.finals && entries.length === 0) throw new Error('no scenes selected')
 
   const ffmpeg = findFfmpeg()
   const ffprobe = findFfprobe()
@@ -844,7 +1257,35 @@ async function main() {
       })
     }
 
-    if (packaging) {
+    if (args.finals) {
+      await runFinals({
+        browser,
+        origin,
+        ffmpeg,
+        blender,
+        defaults,
+        sceneFilter: args.scene ? sceneIds(args.scene) : null,
+      })
+    } else if (args.introsV2) {
+      await runIntrosV2({
+        browser,
+        origin,
+        ffmpeg,
+        blender,
+        defaults,
+        sceneFilter: args.scene ? sceneIds(args.scene) : null,
+      })
+    } else if (args.intros) {
+      await runIntros({
+        browser,
+        origin,
+        ffmpeg,
+        blender,
+        ffprobe,
+        defaults: { ...defaults, capture: 'intro' },
+        sceneFilter: args.scene ? sceneIds(args.scene) : null,
+      })
+    } else if (packaging) {
       const pkgRoot = join(APP, 'exports', PACKAGE_NAME)
       await mkdir(pkgRoot, { recursive: true })
       await writeFile(join(pkgRoot, 'README.md'), packageReadme())

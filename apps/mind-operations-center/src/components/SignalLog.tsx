@@ -42,7 +42,7 @@ export function SignalLog() {
 
   useEffect(() => {
     if (captureTime === null) return
-    setLines(linesAt(scene, origin, captureTime))
+    setLines(linesAt(scene, origin, CAPTURE.isIntro ? 0 : captureTime))
   }, [captureTime, scene, origin])
 
   useWhenVisibleInterval(() => {

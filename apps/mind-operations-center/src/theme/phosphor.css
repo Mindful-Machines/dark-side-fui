@@ -1,0 +1,295 @@
+/*
+  Phosphor theme. Scoped to `.app[data-theme="phosphor"]`.
+  Original presentation stays on :root and is not modified here.
+
+  Tokens
+  --bg / --bg-panel / --bg-elevated   green-black monitor ground
+  --border / --border-strong          fine instrument rules
+  --text-faint / --text-muted / --text  dim data, secondary, active phosphor
+  --green                             bright trace
+  --amber                             warning, still inside the green family
+  --red                               rare near-white highlight for critical
+  --phosphor-glow                     bloom used on active readout only
+
+  Component treatments live in this file: directory, operator console,
+  cardiac organ monitor, research terminal, and the 2D cardiac drawing.
+  The 3D heart video is not recolored.
+*/
+
+.app[data-theme='phosphor'] {
+  --bg: #030806;
+  --bg-panel: #07110c;
+  --bg-panel-2: #0a1812;
+  --bg-elevated: #0d1f17;
+  --border: #173528;
+  --border-strong: #2f6a4a;
+  --text: #d9ffe6;
+  --text-muted: #6fbf90;
+  --text-faint: #3c6d50;
+  --green: #b8ffd0;
+  --green-dim: rgba(120, 255, 176, 0.12);
+  --amber: #c8f09a;
+  --amber-dim: rgba(170, 230, 120, 0.14);
+  --red: #f4fff6;
+  --red-dim: rgba(232, 255, 238, 0.14);
+  --phosphor-glow: 0 0 10px rgba(150, 255, 190, 0.45);
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(18, 48, 32, 0.35), transparent 62%),
+    var(--bg);
+}
+
+.app[data-theme='phosphor']::before {
+  opacity: 0.055;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 2px,
+    rgba(170, 255, 196, 0.28) 3px
+  );
+}
+
+.app[data-theme='phosphor']::after {
+  content: '';
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  background: radial-gradient(ellipse at center, transparent 48%, rgba(0, 6, 3, 0.55) 100%);
+}
+
+.app[data-theme='phosphor'] .panel,
+.app[data-theme='phosphor'] .app-header,
+.app[data-theme='phosphor'] .app-footer,
+.app[data-theme='phosphor'] .scene-directory,
+.app[data-theme='phosphor'] .operator-console,
+.app[data-theme='phosphor'] .research-terminal,
+.app[data-theme='phosphor'] .heart-monitor {
+  box-shadow:
+    inset 9px 9px 0 -8px rgba(168, 255, 198, 0.45),
+    inset -9px 9px 0 -8px rgba(168, 255, 198, 0.45),
+    inset 9px -9px 0 -8px rgba(168, 255, 198, 0.45),
+    inset -9px -9px 0 -8px rgba(168, 255, 198, 0.45);
+}
+
+.app[data-theme='phosphor'] .status-pill,
+.app[data-theme='phosphor'] .oc-badge,
+.app[data-theme='phosphor'] .om-badge,
+.app[data-theme='phosphor'] .rt-mode.is-live {
+  text-shadow: var(--phosphor-glow);
+}
+
+.app[data-theme='phosphor'] .status-dot,
+.app[data-theme='phosphor'] .oc-dot {
+  box-shadow: 0 0 8px var(--green);
+}
+
+.app[data-theme='phosphor'] .vital-block strong,
+.app[data-theme='phosphor'] .om-bpm-row strong,
+.app[data-theme='phosphor'] .oc-typed,
+.app[data-theme='phosphor'] .rt-confirm-line {
+  color: var(--text);
+  text-shadow: var(--phosphor-glow);
+}
+
+.app[data-theme='phosphor'] .waveform,
+.app[data-theme='phosphor'] .ecg-plot {
+  background: #040a07;
+}
+
+.app[data-theme='phosphor'] .waveform path {
+  filter: drop-shadow(0 0 2px rgba(150, 255, 190, 0.65));
+}
+
+/* Directory */
+
+.app[data-theme='phosphor'] .dir-table thead th,
+.app[data-theme='phosphor'] .dir-key,
+.app[data-theme='phosphor'] .dir-index {
+  color: var(--green);
+}
+
+.app[data-theme='phosphor'] .dir-table tr.is-active {
+  background: var(--green-dim);
+  box-shadow: inset 2px 0 0 var(--green);
+}
+
+.app[data-theme='phosphor'] .dir-group-row td {
+  color: var(--text-muted);
+  letter-spacing: 0.18em;
+}
+
+/* Operator console */
+
+.app[data-theme='phosphor'] .operator-console {
+  --oc-line: #1c4a34;
+  --oc-text: #d7ffe6;
+  --oc-muted: #78c498;
+  --oc-faint: #3e6e52;
+}
+
+.app[data-theme='phosphor'] .oc-terminal {
+  background:
+    linear-gradient(180deg, rgba(160, 255, 190, 0.04), transparent 28px),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 17px,
+      rgba(140, 255, 180, 0.035) 18px
+    ),
+    #040c08;
+}
+
+.app[data-theme='phosphor'] .oc-terminal::before {
+  border-color: rgba(150, 255, 190, 0.16);
+}
+
+.app[data-theme='phosphor'] .oc-palette button.is-active {
+  text-shadow: var(--phosphor-glow);
+}
+
+/* Cardiac monitor — one organ plate, not the thoracic study */
+
+.app[data-theme='phosphor'] .heart-monitor[data-view='organ'] {
+  --om-line: #8fdeb0;
+  --om-line-dim: rgba(120, 220, 160, 0.28);
+  --om-cardiac: #e9fff0;
+  --om-cardiac-soft: rgba(180, 255, 206, 0.16);
+  --om-cardiac-hot: #f7fff8;
+  color: var(--text);
+}
+
+.app[data-theme='phosphor'][data-scene^='heart'],
+.app[data-theme='phosphor'][data-scene='cardiac-3d-lab'] {
+  --status: var(--green);
+}
+
+.app[data-theme='phosphor'][data-scene^='heart'] .col-left .waveform path,
+.app[data-theme='phosphor'][data-scene='cardiac-3d-lab'] .col-left .waveform path {
+  stroke: var(--green);
+}
+
+.app[data-theme='phosphor'] .heart-monitor[data-view='organ'] .om-badge.tone-nominal,
+.app[data-theme='phosphor'] .scan-dim,
+.app[data-theme='phosphor'] .ct-lab-dim,
+.app[data-theme='phosphor'] .ct-lab-source,
+.app[data-theme='phosphor'] .ct-lab-status dd {
+  color: var(--text-muted);
+}
+
+.app[data-theme='phosphor'] .heart-monitor[data-view='organ'] .scan-target svg {
+  stroke: var(--green);
+}
+
+.app[data-theme='phosphor'] .heart-monitor[data-view='organ'] .anatomy-scan-root::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: #4ecf7a;
+  mix-blend-mode: color;
+  opacity: 0.72;
+}
+
+.app[data-theme='phosphor'] .ecg-markers {
+  animation-timing-function: ease-in-out;
+}
+
+/* 3D plate: original heart pixels. Phosphor is the frame and the labels. */
+.app[data-theme='phosphor'] .ct-lab::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 46%, transparent 46%, rgba(0, 10, 6, 0.42) 82%);
+}
+
+.app[data-theme='phosphor'] .ct-lab-title .kicker,
+.app[data-theme='phosphor'] .ct-lab-marks li.is-focus,
+.app[data-theme='phosphor'] .ct-lab-status dd {
+  color: var(--text);
+  text-shadow: var(--phosphor-glow);
+}
+
+.app[data-theme='phosphor'] .ct-lab-marks li::before,
+.app[data-theme='phosphor'] .ct-lab-marks li.is-focus::before {
+  background: var(--green);
+  box-shadow: 0 0 6px rgba(150, 255, 190, 0.65);
+  opacity: 0.85;
+}
+
+/* Research terminal */
+
+.app[data-theme='phosphor'] .research-terminal {
+  background:
+    linear-gradient(180deg, rgba(150, 255, 190, 0.04), transparent 40px),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 22px,
+      rgba(120, 255, 170, 0.03) 23px
+    ),
+    var(--bg-panel);
+}
+
+.app[data-theme='phosphor'] .rt-enter kbd {
+  animation-name: phosphor-enter-pulse;
+}
+
+.app[data-theme='phosphor'] .rt-seal {
+  animation-name: phosphor-seal-pulse;
+}
+
+.app[data-theme='phosphor'] .research-terminal.is-approved.is-confirm .rt-seal {
+  animation:
+    rt-seal 0.9s ease-out,
+    phosphor-seal-pulse 2.4s ease-in-out 0.9s infinite;
+}
+
+@keyframes phosphor-enter-pulse {
+  0%,
+  100% {
+    color: var(--text-muted);
+    border-color: var(--border-strong);
+    background: var(--bg-elevated);
+    box-shadow: inset 0 0 0 1px transparent;
+  }
+  50% {
+    color: var(--text);
+    border-color: var(--green);
+    background: var(--green-dim);
+    box-shadow:
+      inset 0 0 12px rgba(150, 255, 190, 0.28),
+      0 0 10px rgba(150, 255, 190, 0.2);
+  }
+}
+
+@keyframes phosphor-seal-pulse {
+  0%,
+  100% {
+    color: var(--text-muted);
+    border-color: var(--border-strong);
+    background: var(--bg-elevated);
+    box-shadow: inset 0 0 0 1px transparent;
+  }
+  50% {
+    color: var(--text);
+    border-color: var(--green);
+    background: color-mix(in srgb, var(--green) 22%, var(--bg-elevated));
+    box-shadow:
+      inset 0 0 16px rgba(160, 255, 196, 0.32),
+      0 0 12px rgba(160, 255, 196, 0.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app[data-theme='phosphor'][data-motion='auto'] .waveform path,
+  .app[data-theme='phosphor'][data-motion='reduce'] .waveform path {
+    filter: none;
+  }
+}
+
+.app[data-theme='phosphor'][data-motion='reduce'] .waveform path {
+  filter: none;
+}

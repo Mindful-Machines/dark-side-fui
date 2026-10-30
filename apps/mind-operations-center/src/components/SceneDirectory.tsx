@@ -1,6 +1,14 @@
 import { useState } from 'react'
-import { DIRECTORY_GROUPS, VIEW_REGISTRY, canLaunch, viewsInGroup, type ViewMeta } from '../data/registry'
+import {
+  DIRECTORY_GROUPS,
+  VIEW_REGISTRY,
+  canLaunch,
+  devDirectoryViews,
+  viewsInGroup,
+  type ViewMeta,
+} from '../data/registry'
 import { useScene } from '../context/SceneContext'
+import { ThemeSwitch } from './ThemeSwitch'
 import type { SceneId } from '../types'
 
 function StatusMark({ status }: { status: ViewMeta['status'] }) {
@@ -15,10 +23,11 @@ function StatusMark({ status }: { status: ViewMeta['status'] }) {
   return <span className={`dir-status is-${cls}`}>{status}</span>
 }
 
-function viewUrl(id: SceneId, mode: string, motion: string) {
+function viewUrl(id: SceneId, mode: string, motion: string, theme: string) {
   const url = new URL(window.location.href)
   url.searchParams.set('scene', id)
   url.searchParams.set('mode', mode)
+  url.searchParams.set('theme', theme)
   if (motion === 'auto') {
     url.searchParams.delete('motion')
   } else {
@@ -28,7 +37,7 @@ function viewUrl(id: SceneId, mode: string, motion: string) {
 }
 
 function ViewRow({ meta, active }: { meta: ViewMeta; active: boolean }) {
-  const { goTo, mode, motion } = useScene()
+  const { goTo, mode, motion, theme } = useScene()
   const [copied, setCopied] = useState(false)
   const launchable = canLaunch(meta) && meta.id !== 'directory'
   const isDirectory = meta.id === 'directory'
@@ -42,7 +51,7 @@ function ViewRow({ meta, active }: { meta: ViewMeta; active: boolean }) {
   }
 
   const copyUrl = async () => {
-    const text = viewUrl(meta.id, mode, motion)
+    const text = viewUrl(meta.id, mode, motion, theme)
     try {
       await navigator.clipboard.writeText(text)
       setCopied(true)
@@ -55,7 +64,7 @@ function ViewRow({ meta, active }: { meta: ViewMeta; active: boolean }) {
 
   return (
     <tr
-      className={`${active ? 'is-active' : ''}${launchable || isDirectory ? ' is-launchable' : ''}`}
+      className={`${active ? 'is-active' : ''}${launchable || isDirectory ? ' is-launchable' : ''}${meta.devOnly ? ' is-dev' : ''}`}
       data-status={meta.status}
       onClick={() => {
         if (isDirectory || launchable) launch(meta.id)
@@ -121,6 +130,7 @@ function ViewRow({ meta, active }: { meta: ViewMeta; active: boolean }) {
 
 export function SceneDirectory() {
   const { sceneId, mode, motion, setMode, setMotion } = useScene()
+  const devViews = mode === 'review' ? devDirectoryViews() : []
 
   const enterCinematicDisplay = () => {
     setMotion('full')
@@ -145,6 +155,7 @@ export function SceneDirectory() {
           <h2>Scene Directory</h2>
         </div>
         <div className="dir-head-actions">
+          <ThemeSwitch />
           <div className="dir-mode" role="group" aria-label="Review or display mode">
             <button
               type="button"
@@ -220,6 +231,16 @@ export function SceneDirectory() {
               </tbody>
             )
           })}
+          {devViews.length > 0 ? (
+            <tbody className="dir-group">
+              <tr className="dir-group-row">
+                <td colSpan={10}>Dev</td>
+              </tr>
+              {devViews.map((meta) => (
+                <ViewRow key={meta.id} meta={meta} active={sceneId === meta.id} />
+              ))}
+            </tbody>
+          ) : null}
         </table>
       </div>
 
@@ -239,7 +260,7 @@ export function SceneDirectory() {
           <kbd>←</kbd>
           <kbd>→</kbd> within section
         </span>
-        <span>no key chords · URL copies current mode + motion</span>
+        <span>no key chords · URL copies current mode, motion, and theme</span>
         <span className="dir-legend-meta">{VIEW_REGISTRY.directory.indexLabel}</span>
       </footer>
     </section>

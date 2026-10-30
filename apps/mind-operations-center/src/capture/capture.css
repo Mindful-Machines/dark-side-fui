@@ -15,6 +15,7 @@ html[data-capture] * {
 
 .app[data-capture] .review-controls,
 .app[data-capture] .scene-switcher,
+.app[data-capture] .theme-switch,
 .app[data-capture] .om-controls,
 .app[data-capture] .wip-badge,
 .app[data-capture] .footer-wip,

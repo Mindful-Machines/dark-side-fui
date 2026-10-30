@@ -65,6 +65,8 @@ export interface ViewMeta {
   letterKey: string | null
   group: ViewGroup
   hidden?: boolean
+  /** Review directory only. Stays off production lists and the keyboard map. */
+  devOnly?: boolean
 }
 
 /** Default / first view opened when a section number is pressed. */
@@ -491,19 +493,20 @@ export const VIEW_REGISTRY: Record<SceneId, ViewMeta> = {
   'cardiac-3d-lab': {
     id: 'cardiac-3d-lab',
     indexLabel: 'CX',
-    name: 'Cardiac · Tomography lab',
+    name: 'DEV · 3D Cardiac Organ',
     scene: null,
     surface: null,
     importance: null,
     device: 'monitor',
     status: 'IN PROGRESS',
-    cue: 'Lab · Blender volumetric heart · URL only',
+    cue: 'Review only · not on keyboard',
     format: 'landscape',
     shortcut: '—',
     sectionKey: '2',
     letterKey: null,
     group: 'cardiac',
     hidden: true,
+    devOnly: true,
   },
 
   'research-pending': {
@@ -604,6 +607,11 @@ export const DIRECTORY_VIEWS: ViewMeta[] = Object.values(VIEW_REGISTRY).filter((
 
 export function viewsInGroup(group: ViewGroup): ViewMeta[] {
   return DIRECTORY_VIEWS.filter((v) => v.group === group)
+}
+
+/** Hidden from production lists. Shown in the review directory only. */
+export function devDirectoryViews(): ViewMeta[] {
+  return Object.values(VIEW_REGISTRY).filter((v) => v.devOnly)
 }
 
 export function isDirectoryScene(id: SceneId): boolean {

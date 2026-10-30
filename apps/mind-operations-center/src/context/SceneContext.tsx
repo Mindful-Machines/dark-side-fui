@@ -32,16 +32,21 @@ type HistoryMode = 'push' | 'replace'
 /** App motion policy. `auto` follows OS prefers-reduced-motion. */
 export type MotionMode = 'auto' | 'full' | 'reduce'
 
+/** Visual theme. `original` is the default filming look. */
+export type ThemeId = 'original' | 'phosphor'
+
 interface SceneContextValue {
   sceneId: SceneId
   scene: Scene
   mode: AppMode
   motion: MotionMode
+  theme: ThemeId
   /** Active nav section — inferred from the current scene (including direct URLs). */
   section: ViewGroup
   setSceneId: (id: SceneId) => void
   setMode: (mode: AppMode) => void
   setMotion: (motion: MotionMode) => void
+  setTheme: (theme: ThemeId) => void
   toggleMode: () => void
   goTo: (id: SceneId, mode?: AppMode, history?: HistoryMode) => void
 }
@@ -82,7 +87,16 @@ function readMotionParam(): MotionMode {
   return isMotionMode(param) ? param : 'auto'
 }
 
-function buildAppUrl(id: SceneId, mode: AppMode, motion: MotionMode) {
+function isThemeId(value: string | null): value is ThemeId {
+  return value === 'original' || value === 'phosphor'
+}
+
+function readThemeParam(): ThemeId {
+  const param = new URLSearchParams(window.location.search).get('theme')
+  return isThemeId(param) ? param : 'original'
+}
+
+function buildAppUrl(id: SceneId, mode: AppMode, motion: MotionMode, theme: ThemeId) {
   const url = new URL(window.location.href)
   url.searchParams.set('scene', id)
   url.searchParams.set('mode', mode)
@@ -91,6 +105,7 @@ function buildAppUrl(id: SceneId, mode: AppMode, motion: MotionMode) {
   } else {
     url.searchParams.set('motion', motion)
   }
+  url.searchParams.set('theme', theme)
   return url
 }
 
@@ -98,8 +113,14 @@ function urlKey(url: URL) {
   return `${url.pathname}?${url.searchParams.toString()}`
 }
 
-function writeUrlParams(id: SceneId, mode: AppMode, motion: MotionMode, history: HistoryMode) {
-  const url = buildAppUrl(id, mode, motion)
+function writeUrlParams(
+  id: SceneId,
+  mode: AppMode,
+  motion: MotionMode,
+  theme: ThemeId,
+  history: HistoryMode,
+) {
+  const url = buildAppUrl(id, mode, motion, theme)
   const next = urlKey(url)
   const current = urlKey(new URL(window.location.href))
   if (next === current) return
@@ -126,6 +147,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [sceneId, setSceneIdState] = useState<SceneId>(readSceneParam)
   const [mode, setModeState] = useState<AppMode>(readModeParam)
   const [motion, setMotionState] = useState<MotionMode>(readMotionParam)
+  const [theme, setThemeState] = useState<ThemeId>(readThemeParam)
   const [introScene, setIntroScene] = useState<SceneId | null>(() =>
     CAPTURE.isIntro ? introSceneAt(CAPTURE.scene, getCaptureTimeMs(), CAPTURE.command) : null,
   )
@@ -140,9 +162,11 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const sceneIdRef = useRef(sceneId)
   const modeRef = useRef(mode)
   const motionRef = useRef(motion)
+  const themeRef = useRef(theme)
   sceneIdRef.current = sceneId
   modeRef.current = mode
   motionRef.current = motion
+  themeRef.current = theme
 
   const commit = useCallback(
     (id: SceneId, nextMode: AppMode, nextMotion: MotionMode, history: HistoryMode) => {
@@ -152,7 +176,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       setSceneIdState(id)
       setModeState(nextMode)
       setMotionState(nextMotion)
-      writeUrlParams(id, nextMode, nextMotion, history)
+      writeUrlParams(id, nextMode, nextMotion, themeRef.current, history)
     },
     [],
   )
@@ -185,13 +209,19 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     [commit],
   )
 
+  const setTheme = useCallback((next: ThemeId) => {
+    themeRef.current = next
+    setThemeState(next)
+    writeUrlParams(sceneIdRef.current, modeRef.current, motionRef.current, next, 'replace')
+  }, [])
+
   const toggleMode = useCallback(() => {
     const next = modeRef.current === 'review' ? 'display' : 'review'
     commit(sceneIdRef.current, next, motionRef.current, 'replace')
   }, [commit])
 
   useEffect(() => {
-    writeUrlParams(sceneId, mode, motion, 'replace')
+    writeUrlParams(sceneId, mode, motion, theme, 'replace')
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount sync only
   }, [])
 
@@ -200,6 +230,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       setSceneIdState(readSceneParam())
       setModeState(readModeParam())
       setMotionState(readMotionParam())
+      setThemeState(readThemeParam())
     }
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
@@ -279,14 +310,16 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       scene: SCENES[displayId],
       mode,
       motion,
+      theme,
       section,
       setSceneId,
       setMode,
       setMotion,
+      setTheme,
       toggleMode,
       goTo,
     }),
-    [displayId, mode, motion, section, setSceneId, setMode, setMotion, toggleMode, goTo],
+    [displayId, mode, motion, theme, section, setSceneId, setMode, setMotion, setTheme, toggleMode, goTo],
   )
 
   return <SceneContext.Provider value={value}>{children}</SceneContext.Provider>

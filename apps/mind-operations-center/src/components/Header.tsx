@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { SceneSwitcher } from './SceneSwitcher'
+import { ThemeSwitch } from './ThemeSwitch'
 import { CAPTURE } from '../capture/config'
 import { frozenClock } from '../capture/runtime'
 import { useScene } from '../context/SceneContext'
@@ -66,6 +67,7 @@ export function Header() {
           >
             Directory
           </button>
+          <ThemeSwitch compact />
           <div className="dir-mode compact" role="group" aria-label="Review or display mode">
             <button
               type="button"

@@ -1106,6 +1106,7 @@ select {
 
 .app[data-mode="display"] .review-controls,
 .app[data-mode="display"] .scene-switcher,
+.app[data-mode="display"] .theme-switch,
 .app[data-mode="display"] .om-controls,
 .app[data-mode="display"] .dir-head-actions,
 .app[data-mode="display"] .dir-legend {

@@ -11,13 +11,14 @@ import { SceneDirectory } from './components/SceneDirectory'
 import { PhoneStage } from './components/phone/PhoneStage'
 import { isDirectoryScene } from './data/registry'
 import { isPhoneScene } from './data/scenes'
+import './theme/phosphor.css'
 
 function readCaptureParam() {
   return new URLSearchParams(window.location.search).get('capture')
 }
 
 function Shell() {
-  const { scene, mode, motion } = useScene()
+  const { scene, mode, motion, theme } = useScene()
   const directory = isDirectoryScene(scene.id)
   const phone = isPhoneScene(scene.id)
   const capture = readCaptureParam()
@@ -29,6 +30,7 @@ function Shell() {
       data-tone={scene.tone}
       data-mode={mode}
       data-motion={motion}
+      data-theme={theme}
       data-capture={capture ?? undefined}
     >
       {phone && mode === 'display' ? null : <Header />}

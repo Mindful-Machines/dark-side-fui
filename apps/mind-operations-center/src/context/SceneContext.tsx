@@ -276,8 +276,8 @@ export function SceneProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      // Section digits 0–6 (global).
-      if (event.key >= '0' && event.key <= '6') {
+      // Section digits 0–7 (global).
+      if (event.key >= '0' && event.key <= '7') {
         const group = SECTION_BY_DIGIT[event.key]
         if (!group) return
         event.preventDefault()

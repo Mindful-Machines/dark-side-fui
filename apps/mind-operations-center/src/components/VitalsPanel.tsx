@@ -43,6 +43,7 @@ export function VitalsPanel() {
             <strong
               className={
                 scene.id === 'elevated' ||
+                scene.id === 'heart-monitor-elevated' ||
                 scene.id === 'heart-elevated' ||
                 scene.id === 'heart-intervention' ||
                 scene.id === 'thoracic-elevated' ||

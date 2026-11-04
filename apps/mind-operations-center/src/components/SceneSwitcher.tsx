@@ -1,10 +1,8 @@
-import { viewsInGroup } from '../data/registry'
+import { viewsInGroup, type ViewGroup } from '../data/registry'
 import { useScene } from '../context/SceneContext'
 import type { SceneId } from '../types'
 
-function options(
-  group: 'operations' | 'cardiac' | 'thoracic' | 'research' | 'operator' | 'phone',
-) {
+function options(group: Exclude<ViewGroup, 'directory'>) {
   return viewsInGroup(group)
     .filter((meta) => meta.status === 'READY' || meta.status === 'IN PROGRESS')
     .map((meta) => (
@@ -35,6 +33,7 @@ export function SceneSwitcher() {
         <optgroup label="Research">{options('research')}</optgroup>
         <optgroup label="Operator">{options('operator')}</optgroup>
         <optgroup label="Phone">{options('phone')}</optgroup>
+        <optgroup label="Episode One">{options('episode')}</optgroup>
       </select>
     </div>
   )

@@ -1,6 +1,7 @@
 import type { SceneId } from '../types'
 import {
   CORE_SCENE_ORDER,
+  EPISODE_SCENE_ORDER,
   HEART_SCENE_ORDER,
   OPERATOR_SCENE_ORDER,
   PHONE_SCENE_ORDER,
@@ -39,11 +40,12 @@ export type ViewGroup =
   | 'research'
   | 'operator'
   | 'phone'
+  | 'episode'
 
 export type AppMode = 'review' | 'display'
 
 /** Sections that host letter-key views. */
-export type LetterSection = 'operations' | 'cardiac' | 'thoracic' | 'research' | 'phone'
+export type LetterSection = 'operations' | 'cardiac' | 'thoracic' | 'research' | 'phone' | 'episode'
 
 export interface ViewMeta {
   id: SceneId
@@ -77,6 +79,7 @@ export const SECTION_DEFAULT: Record<Exclude<ViewGroup, 'directory'>, SceneId> =
   research: 'research-pending',
   operator: 'operator-console',
   phone: 'phone-story-status',
+  episode: 'heart-monitor-elevated',
 }
 
 /**
@@ -91,6 +94,7 @@ export const SECTION_BY_DIGIT: Record<string, ViewGroup> = {
   '4': 'research',
   '5': 'operator',
   '6': 'phone',
+  '7': 'episode',
 }
 
 export const LETTER_MAP: Record<LetterSection, Record<string, SceneId>> = {
@@ -127,6 +131,16 @@ export const LETTER_MAP: Record<LetterSection, Record<string, SceneId>> = {
     q: 'phone-story-status',
     w: 'phone-map',
   },
+  episode: {
+    q: 'heart-monitor-elevated',
+    w: 'heart-monitor-normal',
+    e: 'subconscious-stream',
+    r: 'hope-overwhelmed',
+    t: 'script-highlight-edit',
+    y: 'overflow-detected-scapula',
+    u: 'uploading-new-script',
+    i: 'missing-ending',
+  },
 }
 
 export const SECTION_NAV_ORDER: Record<ViewGroup, SceneId[]> = {
@@ -137,6 +151,7 @@ export const SECTION_NAV_ORDER: Record<ViewGroup, SceneId[]> = {
   research: [...RESEARCH_SCENE_ORDER],
   operator: [...OPERATOR_SCENE_ORDER],
   phone: [...PHONE_SCENE_ORDER],
+  episode: [...EPISODE_SCENE_ORDER],
 }
 
 /** Sequence display — never implies simultaneous keypress. */
@@ -591,6 +606,135 @@ export const VIEW_REGISTRY: Record<SceneId, ViewMeta> = {
     letterKey: 'W',
     group: 'phone',
   },
+
+  'heart-monitor-elevated': {
+    id: 'heart-monitor-elevated',
+    indexLabel: 'E1',
+    name: 'Heart monitor · elevated',
+    scene: '12.K',
+    surface: 'CTRL-C',
+    importance: 'HERO',
+    device: 'monitor',
+    status: 'READY',
+    cue: 'Alert rhythm · warning',
+    format: 'landscape',
+    shortcut: seq('7', 'Q'),
+    sectionKey: '7',
+    letterKey: 'Q',
+    group: 'episode',
+  },
+  'heart-monitor-normal': {
+    id: 'heart-monitor-normal',
+    indexLabel: 'E2',
+    name: 'Heart monitor · normal',
+    scene: '12.KA',
+    surface: 'CTRL-C',
+    importance: 'HERO',
+    device: 'monitor',
+    status: 'READY',
+    cue: 'Same plate · sinus',
+    format: 'landscape',
+    shortcut: seq('7', 'W'),
+    sectionKey: '7',
+    letterKey: 'W',
+    group: 'episode',
+  },
+  'subconscious-stream': {
+    id: 'subconscious-stream',
+    indexLabel: 'E3',
+    name: 'Subconscious stream',
+    scene: '12.L',
+    surface: 'CTRL-C',
+    importance: 'HERO',
+    device: 'monitor',
+    status: 'READY',
+    cue: 'Thoughts rising',
+    format: 'landscape',
+    shortcut: seq('7', 'E'),
+    sectionKey: '7',
+    letterKey: 'E',
+    group: 'episode',
+  },
+  'hope-overwhelmed': {
+    id: 'hope-overwhelmed',
+    indexLabel: 'E4',
+    name: 'HOPE · overwhelmed',
+    scene: '14.D',
+    surface: 'CTRL-C',
+    importance: 'HERO',
+    device: 'monitor',
+    status: 'READY',
+    cue: 'Queue saturated',
+    format: 'landscape',
+    shortcut: seq('7', 'R'),
+    sectionKey: '7',
+    letterKey: 'R',
+    group: 'episode',
+  },
+  'script-highlight-edit': {
+    id: 'script-highlight-edit',
+    indexLabel: 'E5',
+    name: 'Script highlight edit',
+    scene: '14.I',
+    surface: 'CTRL-C',
+    importance: 'HERO',
+    device: 'monitor',
+    status: 'READY',
+    cue: 'Highlight · delete · retype',
+    format: 'landscape',
+    shortcut: seq('7', 'T'),
+    sectionKey: '7',
+    letterKey: 'T',
+    group: 'episode',
+  },
+  'overflow-detected-scapula': {
+    id: 'overflow-detected-scapula',
+    indexLabel: 'E6',
+    name: 'Overflow · right scapula',
+    scene: '39A.B',
+    surface: 'CTRL-C',
+    importance: 'HERO',
+    device: 'monitor',
+    status: 'READY',
+    cue: 'Warning modal · then diagnostic',
+    format: 'landscape',
+    shortcut: seq('7', 'Y'),
+    sectionKey: '7',
+    letterKey: 'Y',
+    group: 'episode',
+  },
+  'uploading-new-script': {
+    id: 'uploading-new-script',
+    indexLabel: 'E7',
+    name: 'Uploading new script',
+    scene: '39A.H',
+    surface: 'CTRL-C',
+    importance: 'HERO',
+    device: 'monitor',
+    status: 'READY',
+    cue: 'SHADOW USB boot',
+    format: 'landscape',
+    shortcut: seq('7', 'U'),
+    sectionKey: '7',
+    letterKey: 'U',
+    group: 'episode',
+  },
+  'missing-ending': {
+    id: 'missing-ending',
+    indexLabel: 'E8',
+    name: 'Missing ending',
+    scene: '39A.I',
+    surface: 'CTRL-C',
+    importance: 'HERO',
+    device: 'monitor',
+    status: 'READY',
+    cue: 'Frozen at 82%',
+    format: 'landscape',
+    shortcut: seq('7', 'I'),
+    sectionKey: '7',
+    letterKey: 'I',
+    group: 'episode',
+  },
 }
 
 export const DIRECTORY_GROUPS: { id: ViewGroup; label: string }[] = [
@@ -601,6 +745,7 @@ export const DIRECTORY_GROUPS: { id: ViewGroup; label: string }[] = [
   { id: 'research', label: 'Research Terminal' },
   { id: 'operator', label: 'Operator' },
   { id: 'phone', label: 'Phone' },
+  { id: 'episode', label: 'Episode One' },
 ]
 
 export const DIRECTORY_VIEWS: ViewMeta[] = Object.values(VIEW_REGISTRY).filter((v) => !v.hidden)
@@ -632,7 +777,8 @@ export function isLetterSection(group: ViewGroup): group is LetterSection {
     group === 'cardiac' ||
     group === 'thoracic' ||
     group === 'research' ||
-    group === 'phone'
+    group === 'phone' ||
+    group === 'episode'
   )
 }
 

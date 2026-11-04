@@ -26,6 +26,14 @@ export type SceneId =
   | 'research-pending'
   | 'research-approved'
   | 'operator-console'
+  | 'heart-monitor-elevated'
+  | 'heart-monitor-normal'
+  | 'subconscious-stream'
+  | 'hope-overwhelmed'
+  | 'script-highlight-edit'
+  | 'overflow-detected-scapula'
+  | 'uploading-new-script'
+  | 'missing-ending'
 
 export type Tone = 'nominal' | 'warning' | 'critical'
 

@@ -9,7 +9,8 @@ import { thoughtsAt, uploadProgressAt } from '../capture/intro'
 import { wrapLoop } from '../capture/runtime'
 import { useCaptureTime } from '../capture/useCaptureTime'
 import { useScene } from '../context/SceneContext'
-import { isHeartScene, isOperatorScene, isResearchScene } from '../data/scenes'
+import { isEpisodeScene, isHeartScene, isOperatorScene, isResearchScene } from '../data/scenes'
+import { EpisodeStage } from './episode/EpisodeStage'
 import { ResearchTerminal } from './research-terminal/ResearchTerminal'
 import { CogitoScriptStage, TowerCranesEditStage } from './script-executor/ScriptStages'
 import type { Scene } from '../types'
@@ -316,7 +317,9 @@ export function MainStage() {
   const { scene } = useScene()
 
   const title =
-    scene.id === 'script-cogito'
+    isEpisodeScene(scene.id)
+      ? scene.label
+      : scene.id === 'script-cogito'
       ? 'Script executor'
       : scene.id === 'script-tower-cranes'
         ? 'Script editor'
@@ -341,7 +344,9 @@ export function MainStage() {
                           : 'Incomplete payload'
 
   const body =
-    scene.id === 'script-cogito' ? (
+    isEpisodeScene(scene.id) ? (
+      <EpisodeStage />
+    ) : scene.id === 'script-cogito' ? (
       <CogitoScriptStage scene={scene} />
     ) : scene.id === 'script-tower-cranes' ? (
       <TowerCranesEditStage key={scene.id} scene={scene} />
@@ -367,7 +372,7 @@ export function MainStage() {
     <Panel
       title={title}
       meta={scene.shortLabel}
-      className={`main-panel${isHeartScene(scene.id) ? ' is-cardiac' : ''}${isOperatorScene(scene.id) || isResearchScene(scene.id) ? ' is-operator' : ''}`}
+      className={`main-panel${isHeartScene(scene.id) ? ' is-cardiac' : ''}${isOperatorScene(scene.id) || isResearchScene(scene.id) ? ' is-operator' : ''}${isEpisodeScene(scene.id) ? ' is-episode' : ''}`}
       tone={scene.tone === 'nominal' ? undefined : scene.tone}
     >
       {body}

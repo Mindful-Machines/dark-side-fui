@@ -1,4 +1,5 @@
 import type { Scene, SceneId, ScriptLine } from '../types'
+import { EPISODE_SCENES, EPISODE_SCENE_ORDER } from './episodeScenes'
 
 const BASE_SCRIPT: Omit<ScriptLine, 'state'>[] = [
   { n: 1, code: 'SESSION.OPEN          subject=04  site=BLACKWOOD' },
@@ -63,6 +64,8 @@ export const OPERATOR_SCENE_ORDER: SceneId[] = ['operator-console']
 
 export const PHONE_SCENE_ORDER: SceneId[] = ['phone-story-status', 'phone-map']
 
+export { EPISODE_SCENE_ORDER }
+
 export const SCENE_ORDER: SceneId[] = [
   'directory',
   ...CORE_SCENE_ORDER,
@@ -71,6 +74,7 @@ export const SCENE_ORDER: SceneId[] = [
   ...RESEARCH_SCENE_ORDER,
   ...OPERATOR_SCENE_ORDER,
   ...PHONE_SCENE_ORDER,
+  ...EPISODE_SCENE_ORDER,
 ]
 
 export function isThoracicScene(id: SceneId): boolean {
@@ -96,6 +100,10 @@ export function isResearchScene(id: SceneId): boolean {
 
 export function isPhoneScene(id: SceneId): boolean {
   return id === 'phone-story-status' || id === 'phone-map'
+}
+
+export function isEpisodeScene(id: SceneId): boolean {
+  return (EPISODE_SCENE_ORDER as readonly SceneId[]).includes(id)
 }
 
 export const SCENES: Record<SceneId, Scene> = {
@@ -1333,4 +1341,6 @@ export const SCENES: Record<SceneId, Scene> = {
       'UPLINK rtt 39ms',
     ],
   },
+
+  ...EPISODE_SCENES,
 }

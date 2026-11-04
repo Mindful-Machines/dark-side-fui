@@ -293,3 +293,7 @@
 .app[data-theme='phosphor'][data-motion='reduce'] .waveform path {
   filter: none;
 }
+
+.app[data-theme='phosphor'] .ep-plate {
+  --ep-alert: #e10600;
+}

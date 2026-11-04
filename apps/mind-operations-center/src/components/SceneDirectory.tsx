@@ -250,7 +250,7 @@ export function SceneDirectory() {
         </span>
         <span>
           <kbd>1</kbd> ops · <kbd>2</kbd> cardiac · <kbd>3</kbd> thoracic · <kbd>4</kbd> research ·{' '}
-          <kbd>5</kbd> operator · <kbd>6</kbd> phone
+          <kbd>5</kbd> operator · <kbd>6</kbd> phone · <kbd>7</kbd> episode
         </span>
         <span>
           then letter · e.g. <kbd>1</kbd> then <kbd>I</kbd> / <kbd>O</kbd> · <kbd>6</kbd> then{' '}

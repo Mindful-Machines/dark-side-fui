@@ -3,8 +3,7 @@ import { THORACIC_VIEWBOX, ThoracicAnatomyStage } from '../organ-monitor/thoraci
 
 /**
  * Same body, crop, and scan treatment as the thoracic screen.
- * The figure is front-facing: patient right is viewer-left.
- * Marker sits on that upper shoulder, in the thoracic viewBox.
+ * Read as a rear view: the patient's right scapula is on the viewer's right.
  */
 export function PosteriorBack() {
   return (
@@ -22,10 +21,10 @@ export function PosteriorBack() {
           aria-hidden="true"
         >
           <g className="ep-scapula-mark">
-            <path className="ep-scapula-lead" d="M286 430 L118 352" />
-            <circle className="ep-pain-ring" cx="286" cy="430" r="18" />
-            <circle className="ep-pain-core" cx="286" cy="430" r="6" />
-            <text className="ep-post-label" x="24" y="344">
+            <path className="ep-scapula-lead" d="M658 493 L858 352" />
+            <circle className="ep-pain-ring" cx="658" cy="493" r="18" />
+            <circle className="ep-pain-core" cx="658" cy="493" r="6" />
+            <text className="ep-post-label" x="952" y="344" textAnchor="end">
               R-SCAP
             </text>
           </g>

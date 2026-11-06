@@ -1,5 +1,5 @@
 import { AnatomyViewport } from '../organ-monitor/AnatomyViewport'
-import { HeartVisual } from '../organ-monitor/heart/HeartVisual'
+import { CardiacTomographyLab } from '../organ-monitor/lab/CardiacTomographyLab'
 import { Waveform } from '../Waveform'
 import '../organ-monitor/organ-monitor.css'
 
@@ -63,7 +63,7 @@ export function HeartMonitorPlate({ variant }: { variant: 'elevated' | 'normal' 
             beatMs={Math.round(60_000 / bpm)}
             caption={elevated ? 'Rate high · sinus tach' : 'Sinus · steady'}
           >
-            <HeartVisual />
+            <CardiacTomographyLab presentation="inset" pace={elevated ? 'elevated' : 'steady'} />
           </AnatomyViewport>
         </div>
         <ol className="ep-code" aria-label="Cardiac code">

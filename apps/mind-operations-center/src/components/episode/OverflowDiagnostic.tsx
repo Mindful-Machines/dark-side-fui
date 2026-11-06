@@ -53,9 +53,6 @@ function OverflowPass({ onReplay }: { onReplay: () => void }) {
 
       <div className="ep-overflow-stage">
         <div className="ep-posterior">
-          <span className="thx-scan-band" aria-hidden="true" />
-          <span className="thx-reg-mark thx-reg-a" aria-hidden="true" />
-          <span className="thx-reg-mark thx-reg-b" aria-hidden="true" />
           <PosteriorBack />
         </div>
 

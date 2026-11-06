@@ -19,11 +19,19 @@ function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-export function CardiacTomographyLab() {
+export function CardiacTomographyLab({
+  presentation = 'lab',
+  pace = 'steady',
+}: {
+  /** `inset` keeps the scan and drops the lab chrome, for a plate that already has its own readout. */
+  presentation?: 'lab' | 'inset'
+  pace?: 'steady' | 'elevated'
+} = {}) {
   const { motion } = useScene()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [osReduce, setOsReduce] = useState(prefersReducedMotion)
   const playMotion = motion === 'full' || (motion === 'auto' && !osReduce)
+  const playbackRate = pace === 'elevated' ? 1.7 : 1
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -36,6 +44,7 @@ export function CardiacTomographyLab() {
     const video = videoRef.current
     if (!video) return
     const sync = () => {
+      video.playbackRate = playbackRate
       if (CAPTURE.enabled || !playMotion || document.hidden) {
         video.pause()
         return
@@ -45,10 +54,12 @@ export function CardiacTomographyLab() {
     sync()
     document.addEventListener('visibilitychange', sync)
     return () => document.removeEventListener('visibilitychange', sync)
-  }, [playMotion])
+  }, [playMotion, playbackRate])
+
+  const inset = presentation === 'inset'
 
   return (
-    <div className="ct-lab">
+    <div className={`ct-lab${inset ? ' is-inset' : ''}${pace === 'elevated' ? ' is-elevated' : ''}`}>
       {playMotion ? (
         <video
           ref={videoRef}
@@ -75,32 +86,36 @@ export function CardiacTomographyLab() {
           draggable={false}
         />
       )}
-      <div className="ct-lab-title">
-        <span className="kicker">Cardiac tomography</span>
-        <span className="ct-lab-dim">Volumetric cardiac scan</span>
-      </div>
-      <ol className="ct-lab-marks" aria-label="Landmarks">
-        {LANDMARKS.map((m) => (
-          <li
-            key={m.id}
-            className={m.focus ? 'is-focus' : undefined}
-            style={{ ['--ct-x' as string]: m.x, ['--ct-y' as string]: m.y }}
-          >
-            {m.label}
-          </li>
-        ))}
-      </ol>
-      <dl className="ct-lab-status">
-        <div>
-          <dt>Volumetric lock</dt>
-          <dd>Engaged</dd>
-        </div>
-        <div>
-          <dt>Tracking</dt>
-          <dd>Engaged</dd>
-        </div>
-      </dl>
-      <span className="ct-lab-source">SRC NIH 3D · 3DPX-002636</span>
+      {inset ? null : (
+        <>
+          <div className="ct-lab-title">
+            <span className="kicker">Cardiac tomography</span>
+            <span className="ct-lab-dim">Volumetric cardiac scan</span>
+          </div>
+          <ol className="ct-lab-marks" aria-label="Landmarks">
+            {LANDMARKS.map((m) => (
+              <li
+                key={m.id}
+                className={m.focus ? 'is-focus' : undefined}
+                style={{ ['--ct-x' as string]: m.x, ['--ct-y' as string]: m.y }}
+              >
+                {m.label}
+              </li>
+            ))}
+          </ol>
+          <dl className="ct-lab-status">
+            <div>
+              <dt>Volumetric lock</dt>
+              <dd>Engaged</dd>
+            </div>
+            <div>
+              <dt>Tracking</dt>
+              <dd>Engaged</dd>
+            </div>
+          </dl>
+          <span className="ct-lab-source">SRC NIH 3D · 3DPX-002636</span>
+        </>
+      )}
     </div>
   )
 }

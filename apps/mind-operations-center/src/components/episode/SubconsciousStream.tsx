@@ -58,11 +58,18 @@ export function SubconsciousStream({ overwhelmed }: { overwhelmed?: boolean }) {
       <header className="ep-head">
         <div>
           <span className="kicker">CH-7 · subconscious · observe only</span>
-          <h3>{overwhelmed ? 'Thought traffic' : 'Subconscious stream'}</h3>
+          <h3 className="ep-cluster">
+            {overwhelmed ? 'THOUGHT QUEUE' : 'SUBCONSCIOUS STREAM'}
+            <span className="ep-cluster-dot" aria-hidden="true">
+              ·
+            </span>
+            {overwhelmed ? (
+              <span className="ep-cluster-warn">SATURATED</span>
+            ) : (
+              <span>INCOMING</span>
+            )}
+          </h3>
         </div>
-        <span className={overwhelmed ? 'ep-stable is-hot' : 'ep-stable'}>
-          {overwhelmed ? 'SATURATED' : 'OPEN'}
-        </span>
       </header>
 
       <div className="ep-stream-body">
@@ -77,7 +84,7 @@ export function SubconsciousStream({ overwhelmed }: { overwhelmed?: boolean }) {
         {overwhelmed ? (
           <aside className="ep-queue" aria-label="Reroute queue">
             <span className="kicker">Inbound</span>
-            <strong>{depth >= 148 ? 'QUEUE SATURATED' : 'BACKLOG'}</strong>
+            <strong>QUEUE SATURATED</strong>
             <div className="ep-meter" aria-hidden="true">
               <span style={{ width: `${meter}%` }} />
             </div>

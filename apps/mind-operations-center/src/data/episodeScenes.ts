@@ -151,7 +151,7 @@ export const EPISODE_SCENES: Record<(typeof EPISODE_SCENE_ORDER)[number], Scene>
     scriptName: 'SHADOW',
     scriptStatus: 'INCOMPLETE',
     uploadProgress: 0.82,
-    initialLog: ['USB    stalled 82%', 'WARN   missing ending'],
-    logPool: ['USB    frozen 82%', 'WARN   missing ending', 'SCRIPT do not execute', 'UPLINK rtt 44ms'],
+    initialLog: ['KEY    removed', 'SCRIPT partial applied'],
+    logPool: ['USB    hold 82%', 'SCRIPT partial applied', 'WARN   ending missing', 'UPLINK rtt 44ms'],
   }),
 }

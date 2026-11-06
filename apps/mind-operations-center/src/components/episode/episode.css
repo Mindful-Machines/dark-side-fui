@@ -29,6 +29,23 @@
   text-shadow: 0 0 10px color-mix(in srgb, var(--green) 35%, transparent);
 }
 
+.ep-cluster {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 0.45em;
+  white-space: nowrap;
+}
+
+.ep-cluster-dot,
+.ep-cluster-quiet {
+  color: var(--text-muted);
+}
+
+.ep-cluster-warn {
+  color: var(--ep-alert);
+}
+
 .ep-stable,
 .ep-warn-icon {
   font-family: var(--font-mono);
@@ -255,6 +272,21 @@
   padding: 22px 24px;
 }
 
+.ep-script-edit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ep-script-phase {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--text);
+}
+
 .ep-script-hero p {
   margin: 0;
   max-width: 46rem;
@@ -463,6 +495,52 @@
   letter-spacing: 0.12em;
 }
 
+.ep-upload-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ep-upload-stage .ep-code {
+  flex: 1;
+}
+
+.ep-alert-card.is-held {
+  width: min(560px, 92%);
+  gap: 6px;
+  animation: ep-hold-glow 1.6s steps(2, end) infinite;
+}
+
+.ep-alert-title {
+  max-width: 18em;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1.35;
+}
+
+.ep-alert-card.is-held b {
+  font-size: 64px;
+  letter-spacing: 0.04em;
+  line-height: 0.9;
+}
+
+.ep-alert-facts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.ep-alert-hold {
+  animation: ep-hold-line 1.2s steps(2, end) infinite;
+}
+
 .ep-upload .progress {
   margin-top: 8px;
 }
@@ -547,6 +625,28 @@
   }
 }
 
+@keyframes ep-hold-glow {
+  0%,
+  49% {
+    box-shadow: 0 0 24px color-mix(in srgb, var(--ep-alert) 42%, transparent);
+  }
+  50%,
+  100% {
+    box-shadow: 0 0 8px color-mix(in srgb, var(--ep-alert) 16%, transparent);
+  }
+}
+
+@keyframes ep-hold-line {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.55;
+  }
+}
+
 @keyframes ep-modal-life {
   0%,
   30% {
@@ -580,12 +680,23 @@
   .app[data-motion='auto'] .ep-pain-core,
   .app[data-motion='auto'] .ep-alert,
   .app[data-motion='auto'] .ep-alert-card,
+  .app[data-motion='auto'] .ep-alert-hold,
   .app[data-motion='auto'] .ep-overflow-caption {
     animation: none;
   }
 
   .app[data-motion='auto'] .ep-alert {
     display: none;
+  }
+
+  .app[data-motion='auto'] .ep-upload.is-stalled .ep-alert {
+    display: grid;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .app[data-motion='auto'] .ep-alert-hold {
+    opacity: 1;
   }
 
   .app[data-motion='auto'] .ep-overflow-caption,
@@ -602,12 +713,23 @@
 .app[data-motion='reduce'] .ep-pain-core,
 .app[data-motion='reduce'] .ep-alert,
 .app[data-motion='reduce'] .ep-alert-card,
+.app[data-motion='reduce'] .ep-alert-hold,
 .app[data-motion='reduce'] .ep-overflow-caption {
   animation: none;
 }
 
 .app[data-motion='reduce'] .ep-alert {
   display: none;
+}
+
+.app[data-motion='reduce'] .ep-upload.is-stalled .ep-alert {
+  display: grid;
+  opacity: 1;
+  visibility: visible;
+}
+
+.app[data-motion='reduce'] .ep-alert-hold {
+  opacity: 1;
 }
 
 .app[data-motion='reduce'] .ep-overflow-caption,

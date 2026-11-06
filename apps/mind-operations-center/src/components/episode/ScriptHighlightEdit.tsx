@@ -62,11 +62,12 @@ function ScriptPass({ onReplay }: { onReplay: () => void }) {
         </div>
         <span className="ep-head-tools">
           <EpisodeReplay onReplay={onReplay} />
-          <span className="ep-stable">{PHASE_LABEL[phase]}</span>
         </span>
       </header>
 
       <div className="ep-script-hero" aria-live="polite">
+        <div className="ep-script-edit">
+          <span className="ep-script-phase">{PHASE_LABEL[phase]}</span>
         <p>
           {[
             SCRIPT_PREFIX,
@@ -81,6 +82,7 @@ function ScriptPass({ onReplay }: { onReplay: () => void }) {
             phase === 'delete' || phase === 'type' ? <i key="caret" className="ep-caret" aria-hidden="true" /> : null,
           ]}
         </p>
+        </div>
       </div>
 
       <ol className="ep-script-lines">

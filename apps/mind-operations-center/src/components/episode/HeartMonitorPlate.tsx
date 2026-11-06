@@ -40,16 +40,18 @@ export function HeartMonitorPlate({ variant }: { variant: 'elevated' | 'normal' 
       <header className="ep-head">
         <div>
           <span className="kicker">Cardiac · control</span>
-          <h3>{elevated ? 'Elevated Heart Rate' : 'Heart Rate'}</h3>
+          <h3 className="ep-cluster">
+            {elevated ? 'ELEVATED HEART RATE' : 'HEART RATE'}
+            <span className="ep-cluster-dot" aria-hidden="true">
+              ·
+            </span>
+            <span>{bpm} BPM</span>
+            <span className="ep-cluster-dot" aria-hidden="true">
+              ·
+            </span>
+            {elevated ? <span className="ep-cluster-warn">WARN</span> : <span className="ep-cluster-quiet">NOMINAL</span>}
+          </h3>
         </div>
-        {elevated ? (
-          <span className="ep-warn-icon" role="img" aria-label="Warning">
-            <i />
-            WARN
-          </span>
-        ) : (
-          <span className="ep-stable">NOMINAL</span>
-        )}
       </header>
 
       <div className="ep-heart-grid">
